@@ -14,6 +14,7 @@
     "baseUrl": ".",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+
     "paths": {
       "src/*": ["./src/*"],
       "routes/*": ["./src/routes/*"]
