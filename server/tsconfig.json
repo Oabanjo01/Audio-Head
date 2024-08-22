@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2016",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "alwaysStrict": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "src/*": ["./src/*"],
+      "routes/*": ["./src/routes/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
