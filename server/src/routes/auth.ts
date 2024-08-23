@@ -1,10 +1,16 @@
 import { Router } from "express";
+import { createaNewUser } from "src/controller";
 
 const authRouter = Router();
-export const a: string = "liking";
-export const b: string = "alike";
-export const c: string = "click";
 
-console.log(a);
+authRouter.use("/sign-in", createaNewUser);
+
+authRouter.use("/sign-up", (req, res) => {
+  res.send("Signed Up");
+});
+
+authRouter.use("/refresh-token", (req, res) => {
+  res.send("Token Refreshed");
+});
 
 export default authRouter;
