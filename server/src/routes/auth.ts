@@ -3,9 +3,9 @@ import { createaNewUser } from "src/controller";
 
 const authRouter = Router();
 
-authRouter.use("/sign-in", createaNewUser);
+authRouter.use("/sign-up", createaNewUser);
 
-authRouter.use("/sign-up", (req, res) => {
+authRouter.use("/sign-in", (req, res) => {
   res.send("Signed Up");
 });
 
