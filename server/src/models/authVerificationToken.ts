@@ -1,10 +1,24 @@
 import { compare, genSalt, hash } from "bcrypt";
 import { model, Schema } from "mongoose";
 
-const authVerificationSchema = new Schema(
+interface AuthVerificationSchemaDocument extends Document {
+  owner: Schema.Types.ObjectId;
+  token: string;
+  createdAt: Date;
+}
+
+interface Method {
+  validateToken(password: string): Promise<boolean>;
+}
+
+const authVerificationSchema = new Schema<
+  AuthVerificationSchemaDocument,
+  {},
+  Method
+>(
   {
     owner: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },

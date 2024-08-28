@@ -1,41 +1,66 @@
+import crypto from "crypto";
 import { RequestHandler } from "express";
-const crypto = require("crypto");
+import nodemailer from "nodemailer";
 
 import AuthVerificationModel from "./models/authVerificationToken";
 import UserModel from "./models/user";
+import { sendResponse } from "./utilities/sendRequest";
 
-const createaNewUser: RequestHandler = async (req, res) => {
-  const { email, name, password } = req.body;
+const createaNewUser: RequestHandler = async (req, res, next) => {
+  try {
+    const { email, name, password } = req.body;
 
-  if (!email) res.status(422).send({ message: "E-Mail is not valid" });
-  if (!name) res.status(422).send({ message: "Name is not valid" });
-  if (!password) res.status(422).send({ message: "Password is not incorrect" });
+    if (!email) sendResponse(res, 422, "E-Mail is not valid");
+    if (!name) sendResponse(res, 422, "Name is not valid");
+    if (!password) sendResponse(res, 422, "Password is not incorrect");
 
-  const userExists = await UserModel.findOne({
-    email,
-  });
-  if (userExists) {
-    console.log("User already exists");
-    return res.status(401).send({
-      message: "User already exists",
-    });
-  } else {
-    const user = await UserModel.create({
+    const userExists = await UserModel.findOne({
       email,
-      name,
-      password,
     });
+    if (userExists) {
+      console.log("User already exists");
 
-    // generating a new token
-    const token = crypto.randomBytes(36).toString("hex");
+      return sendResponse(res, 401, "User already exists");
+    } else {
+      const user = await UserModel.create({
+        email,
+        name,
+        password,
+      });
 
-    await AuthVerificationModel.create({
-      owner: user._id,
-      token: token,
-    });
-    console.log("got here in controller");
-    const link = `http://localhost:8000/verify?id=${user._id}&token=${token}`;
-    res.status(200).send(link);
+      // generating a new token
+      const token = crypto.randomBytes(36).toString("hex");
+
+      await AuthVerificationModel.create({
+        owner: user._id,
+        token: token,
+      });
+
+      const link = `http://localhost:8000/verify?id=${user._id}&token=${token}`;
+
+      const transport = nodemailer.createTransport({
+        host: "sandbox.smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+          user: "5c3ae3ab638a60",
+          pass: "71daf6c2929239",
+        },
+      });
+
+      await transport
+        .sendMail({
+          subject: "Verify Testing Works",
+          from: "banjola@gmail.com",
+          to: user.email,
+          html: `<h1>Click this <a href={"${link}"}>link</a>  to verify your email</h1>`,
+        })
+        .then(() => {
+          res.json({ message: "Verify Testing Works" });
+        });
+    }
+  } catch (error: unknown) {
+    // next(error);
+    throw error;
   }
 };
 
