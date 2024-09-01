@@ -8,7 +8,7 @@ interface AuthVerificationSchemaDocument extends Document {
 }
 
 interface Method {
-  validateToken(password: string): Promise<boolean>;
+  validateToken(token: string): Promise<boolean>;
 }
 
 const authVerificationSchema = new Schema<
@@ -39,9 +39,12 @@ const authVerificationSchema = new Schema<
 
 authVerificationSchema.pre("save", async function (next) {
   if (this.isModified("token") === true) {
+    console.log("token was not modified");
     const salt = await genSalt(10);
     this.token = await hash(this.token, salt);
     next();
+  } else {
+    console.log("token was  modified");
   }
 });
 
