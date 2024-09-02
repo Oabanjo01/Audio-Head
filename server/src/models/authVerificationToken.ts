@@ -39,12 +39,12 @@ const authVerificationSchema = new Schema<
 
 authVerificationSchema.pre("save", async function (next) {
   if (this.isModified("token") === true) {
-    console.log("token was not modified");
+    console.log("token was modified");
     const salt = await genSalt(10);
     this.token = await hash(this.token, salt);
     next();
   } else {
-    console.log("token was  modified");
+    console.log("token was not modified");
   }
 });
 

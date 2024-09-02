@@ -5,7 +5,7 @@ interface UserDocument extends Document {
   email: string;
   password: string;
   name: string;
-  verified: Boolean;
+  verified: boolean;
   tokens: string[];
 }
 

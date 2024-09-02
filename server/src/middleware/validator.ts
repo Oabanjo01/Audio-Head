@@ -8,6 +8,7 @@ export const validateUser = (
   schema: Schema<User | Verify | SignIn>
 ): RequestHandler => {
   return async (req, res, next) => {
+    console.log("heree", req.body);
     try {
       // parse and assert validity
       await schema.validate(

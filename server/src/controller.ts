@@ -1,7 +1,9 @@
 import crypto from "crypto";
+import ejs from "ejs";
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import path from "path";
 
 import AuthVerificationModel from "./models/authVerificationToken";
 import UserModel from "./models/user";
@@ -19,9 +21,9 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
 ) => {
   const { email, name, password } = req.body;
 
-  if (!email) sendResponse(res, 422, "E-Mail is not valid");
-  if (!name) sendResponse(res, 422, "Name is not valid");
-  if (!password) sendResponse(res, 422, "Password is not incorrect");
+  if (!email) return sendResponse(res, 422, "E-Mail is not valid");
+  if (!name) return sendResponse(res, 422, "Name is not valid");
+  if (!password) return sendResponse(res, 422, "Password is not incorrect");
 
   const userExists = await UserModel.findOne({
     email,
@@ -54,15 +56,28 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
       },
     });
 
+    const emailTemplatePath = path.join(
+      __dirname,
+      "/views/verificationLink.ejs"
+    );
+
+    console.log(emailTemplatePath, "emailTemplatePath");
+
+    const htmlContent = await ejs.renderFile(emailTemplatePath, {
+      title: "Verify your email",
+      message: "Click this link to verify your email",
+      verificationLink: link,
+    });
+
     await transport
       .sendMail({
-        subject: "Verify Testing Works",
+        subject: "Verify your email",
         from: "banjola@gmail.com",
         to: user.email,
-        html: `<h1>Click this <a href={"${link}"}>link</a>  to verify your email</h1>`,
+        html: htmlContent,
       })
       .then(() => {
-        res.json({ message: "Verify Testing Works" });
+        res.json({ message: "Verify your email" });
       });
   }
 };
@@ -72,6 +87,12 @@ const verifyUser: RequestHandler<{}, {}, VerifyUserRequestBody> = async (
   res
 ) => {
   const { owner, token } = req.body;
+  console.log("heree", req.body);
+  // ejs.render("verifyingEmail", {
+  //   title: "Account Verification",
+  //   message: "Your account has been verified successfully.",
+  //   description: "You can now close this page.",
+  // });
 
   const tokenIdExists = await AuthVerificationModel.findOne({
     owner: owner,
@@ -164,4 +185,8 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
   }
 };
 
-export { createaNewUser, signUserIn, verifyUser };
+const sendProfile: RequestHandler = (req, res) => {
+  return res.json({ profile: req.user });
+};
+
+export { createaNewUser, sendProfile, signUserIn, verifyUser };

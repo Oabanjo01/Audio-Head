@@ -10,13 +10,15 @@ export const userSignUpSchema = object({
 });
 
 export const verifyTokenSchema = object({
-  owner: string().test({
-    name: "valid-identity",
-    message: "This id is invalid",
-    test: (value) => {
-      return isValidObjectId(value);
-    },
-  }),
+  owner: string()
+    .test({
+      name: "valid-identity",
+      message: "This id is invalid",
+      test: (value) => {
+        return isValidObjectId(value);
+      },
+    })
+    .required("This id is missing"),
   token: string().required("Token is required to proceed"),
 });
 

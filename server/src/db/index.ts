@@ -7,8 +7,6 @@ const uri =
 //   "mongodb+srv://<db_username>:<db_password>@banjos-blog.2ehwwpa.mongodb.net/?retryWrites=true&w=majority&appName=Banjos-Blog";
 const uri2 = "mongodb://127.0.0.1:27017/chatApp";
 
-console.log("got here");
-
 connect(uri, {
   family: 4,
 })
