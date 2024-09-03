@@ -21,35 +21,30 @@ declare global {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    console.log(authToken, "authToken");
 
     if (!authToken) {
       return sendResponse(res, 403, "Unauthorized request");
     }
 
     const token = authToken.split("Bearer ")[1];
-    console.log(token, "token - got here");
 
     const decodedPayload = jwt.verify(token, "secretkey") as { id: string };
-    console.log(decodedPayload, "user");
 
     const user = await UserModel.findById(decodedPayload.id);
-    console.log(user, "user");
 
     if (!user) {
       return sendResponse(res, 403, "Unauthorized request");
     }
 
+    // why this works - Any modifications made to req in one middleware function will be available to subsequent middleware functions and route handlers.
     req.user = {
       email: user.email,
       id: user._id,
       name: user.name,
       verified: user.verified,
     };
-
     next();
   } catch (error) {
-    console.log(error);
     if (error instanceof TokenExpiredError) {
       return sendResponse(res, 401, "Session expired");
     } else if (error instanceof JsonWebTokenError) {

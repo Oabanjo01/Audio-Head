@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   createaNewUser,
+  generateNewRefreshToken,
+  regenerateVerificationLink,
   sendProfile,
   signUserIn,
   verifyUser,
@@ -16,12 +18,10 @@ import {
 const authRouter = Router();
 
 authRouter.use("/sign-up", validateUser(userSignUpSchema), createaNewUser);
-authRouter.use("/verify", validateUser(verifyTokenSchema), verifyUser);
+authRouter.use("/verify-token", validateUser(verifyTokenSchema), verifyUser);
 authRouter.use("/sign-in", validateUser(verifySignUpSchema), signUserIn);
 authRouter.use("/profile", isAuthenticated, sendProfile);
-
-authRouter.use("/refresh-token", (req, res) => {
-  res.send("Token Refreshed");
-});
+authRouter.use("/re-verify-user", isAuthenticated, regenerateVerificationLink);
+authRouter.use("/refresh-token", generateNewRefreshToken);
 
 export default authRouter;

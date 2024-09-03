@@ -5,5 +5,5 @@ export const sendResponse = (
   statusCode: number,
   message: string
 ) => {
-  return res.status(statusCode).send({ message: message });
+  res.status(statusCode).send({ message: message });
 };

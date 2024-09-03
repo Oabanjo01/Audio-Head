@@ -20,5 +20,6 @@
       "routes/*": ["./src/routes/*"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/*.ts", "src/express-router.d.ts"]
 }

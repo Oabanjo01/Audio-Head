@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        Verifying
-        <!-- <%= title %> -->
+        <%= title %>
     </title>
-    <link rel="stylesheet" href='staticFiles/styles.css'/>
+    <link rel="stylesheet" href='staticFiles/styles.css' />
 </head>
+
 <body>
     <div class="container">
+        
         <h1>
-            <% if (message) { %>
+            <p id="message">
                 <%= message %>
-            <% } else { %>
-                Please wait, we are verifying your account
-            <% } %></p>
+            </p>
         </h1>
-        <div class="loader"></div>
-        <p> 
-            <% if (description) { %>
+
+            <div id="loader" class="loader"></div>
+
+        <p id="description">
             <%= description %>
-        <% } else { %>
-            This may take a few moments. Please don't close this page.
-        <% } %></p>
+        </p>
     </div>
 
     <script src="js/verify.js"></script>
 </body>
+
 </html>

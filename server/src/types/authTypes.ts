@@ -15,3 +15,6 @@ export interface SignInUserRequestBody {
   email: string;
   password: string;
 }
+export interface GenerateNewRefreshTokenRequestBody {
+  refreshToken: string;
+}

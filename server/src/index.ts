@@ -34,8 +34,9 @@ app.use("/auth", authRouter);
 app.get("/verify", (req, res, next) => {
   res.render("verifyingEmail", {
     title: "Account Verification",
-    message: "Your account has been verified successfully.",
-    description: "You can now close this page.",
+    message: "Please wait, we are verifying your account.",
+    description: "This may take a few moment, please don't close this page.",
+    error: false,
   });
   next();
 });
