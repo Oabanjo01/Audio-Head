@@ -4,15 +4,18 @@ import jwt from "jsonwebtoken";
 import path from "path";
 
 import AuthVerificationModel from "./models/authVerificationToken";
+import PasswordVerificationModel from "./models/passwordVerificationToken";
 import UserModel from "./models/user";
 import {
   CreateUserRequestBody,
   GenerateNewRefreshTokenRequestBody,
+  PasswordResetTokenRequestBody,
   SignInUserRequestBody,
   VerifyUserRequestBody,
 } from "./types/authTypes";
 import mail from "./utilities/mail/sendMail";
 import { sendResponse } from "./utilities/sendRequest";
+import { storedValues } from "./variables";
 
 const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
   req,
@@ -29,7 +32,7 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
     email,
   });
   if (userExists) {
-    return sendResponse(res, 401, "User already exists");
+    sendResponse(res, 401, "User already exists");
   } else {
     const user = await UserModel.create({
       email,
@@ -45,7 +48,7 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
       token: token,
     });
 
-    const link = `http://localhost:8000/verify?id=${user._id}&token=${token}`;
+    const link = `${storedValues.verificationLink}?id=${user._id}&token=${token}`;
     const emailTemplatePath = path.join(
       __dirname,
       "/views/verificationLink.ejs"
@@ -61,7 +64,6 @@ const verifyUser: RequestHandler<{}, {}, VerifyUserRequestBody> = async (
   req,
   res
 ) => {
-  console.log("Got here while verifying your email");
   const { owner, token } = req.body;
   const tokenIdExists = await AuthVerificationModel.findOne({
     owner: owner,
@@ -110,10 +112,10 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
       id: user._id,
     };
 
-    const accessToken = jwt.sign(payload, "secretkey", {
+    const accessToken = jwt.sign(payload, storedValues.secretkey, {
       expiresIn: "15m",
     });
-    const refreshToken = jwt.sign(payload, "secretkey");
+    const refreshToken = jwt.sign(payload, storedValues.secretkey);
 
     if (!user.tokens) {
       user.tokens = [refreshToken];
@@ -144,7 +146,7 @@ const regenerateVerificationLink: RequestHandler = async (req, res) => {
 
   const emailTemplatePath = path.join(__dirname, "/views/verificationLink.ejs");
   const token = crypto.randomBytes(36).toString("hex");
-  const link = `http://localhost:8000/verify?id=${id}&token=${token}`;
+  const link = `${storedValues.verificationLink}?id=${id}&token=${token}`;
 
   await AuthVerificationModel.create({
     owner: id,
@@ -176,7 +178,7 @@ const generateNewRefreshToken: RequestHandler<
   if (!tokenExists) {
     sendResponse(res, 404, "Unauthorized request!");
   } else {
-    const decodedPayload = jwt.verify(refreshToken, "secretkey") as {
+    const decodedPayload = jwt.verify(refreshToken, storedValues.secretkey) as {
       id: string;
     };
 
@@ -193,10 +195,10 @@ const generateNewRefreshToken: RequestHandler<
         id: user._id,
       };
 
-      const accessToken = jwt.sign(payload, "secretkey", {
+      const accessToken = jwt.sign(payload, storedValues.secretkey, {
         expiresIn: "15m",
       });
-      const newRefreshToken = jwt.sign(payload, "secretkey");
+      const newRefreshToken = jwt.sign(payload, storedValues.secretkey);
 
       console.log("new refresh token generated", newRefreshToken);
       // filter token without the previous refresh token
@@ -226,11 +228,86 @@ const generateNewRefreshToken: RequestHandler<
   }
 };
 
+const signOut: RequestHandler = async (req, res) => {
+  console.log("here");
+  const { refreshToken } = req.body;
+
+  const userExists = await UserModel.findOne({
+    _id: req.user.id,
+    tokens: refreshToken,
+  });
+
+  if (!userExists) {
+    sendResponse(res, 401, "Your request could not be processed");
+  } else {
+    const newTokenList = userExists.tokens.filter(
+      (token) => token !== refreshToken
+    );
+
+    userExists.tokens = newTokenList;
+
+    userExists.save();
+
+    res.send();
+  }
+};
+
+const generatePasswordResetLink: RequestHandler<
+  {},
+  {},
+  PasswordResetTokenRequestBody
+> = async (req, res) => {
+  console.log(req.body, "getting here -- 1");
+  const { email } = req.body;
+  const userExists = await UserModel.findOne({
+    email: email,
+  });
+
+  console.log(email, userExists, "userExists");
+  if (!userExists) {
+    sendResponse(res, 404, "This user does not exist");
+  } else {
+    // checking if this token has been created already, then delete it
+    await PasswordVerificationModel.findOneAndDelete({
+      owner: userExists._id,
+    });
+
+    console.log("got here during verification");
+    // generating a new token
+    const token = crypto.randomBytes(36).toString("hex");
+    await PasswordVerificationModel.create({
+      owner: userExists._id,
+      token: token,
+    });
+
+    const link = `${storedValues.passwordVerificationLink}?id=${userExists._id}&token=${token}`;
+    const emailTemplatePath = path.join(
+      __dirname,
+      "/views/passwordVerificationLink.ejs"
+    );
+
+    await mail
+      .sendResetPasswordMail(link, userExists.email, emailTemplatePath)
+      .then(() => {
+        res.json({
+          message: "A password reset link has been sent to your email address",
+        });
+      });
+  }
+};
+
+const validGoThrough: RequestHandler = (req, res) => {
+  res.json({ message: "Password token is valid" });
+};
+
 export {
   createaNewUser,
   generateNewRefreshToken,
+  generatePasswordResetLink,
   regenerateVerificationLink,
   sendProfile,
+  signOut,
   signUserIn,
+  validGoThrough,
   verifyUser,
 };

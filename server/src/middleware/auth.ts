@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import PasswordVerificationModel from "src/models/passwordVerificationToken";
 import UserModel from "src/models/user";
 import { sendResponse } from "src/utilities/sendRequest";
 
@@ -17,6 +18,34 @@ declare global {
     }
   }
 }
+
+export const validatePasswordToken: RequestHandler = async (req, res, next) => {
+  const { owner, token } = req.body;
+
+  try {
+    const tokenExists = await PasswordVerificationModel.findOne({
+      owner: owner,
+    });
+
+    if (!tokenExists) {
+      return sendResponse(res, 403, "Unauthorized request");
+    } else {
+      const isValid = await tokenExists.validateToken(token);
+      if (!isValid) {
+        return sendResponse(res, 403, "Unauthorized request");
+      } else {
+        next();
+      }
+    }
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return sendResponse(res, 401, "Session expired");
+    } else if (error instanceof JsonWebTokenError) {
+      return sendResponse(res, 401, "Unauthorized access");
+    }
+    next(error);
+  }
+};
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {

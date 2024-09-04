@@ -1,12 +1,13 @@
 import ejs from "ejs";
 import nodemailer from "nodemailer";
+import { storedValues } from "src/variables";
 
 const transport = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
   port: 2525,
   auth: {
-    user: "5c3ae3ab638a60",
-    pass: "71daf6c2929239",
+    user: storedValues.mailTrapUser,
+    pass: storedValues.mailTrapPassword,
   },
 });
 const sendMail = async (
@@ -20,11 +21,27 @@ const sendMail = async (
     verificationLink: link,
   });
 
-  console.log(htmlContent, "html content");
-
   await transport.sendMail({
     subject: "Verify your email",
-    from: "banjola@gmail.com",
+    from: "banjolakunri@gmail.com",
+    to: email,
+    html: htmlContent,
+  });
+};
+const sendResetPasswordMail = async (
+  link: string,
+  email: string,
+  emailTemplatePath: string
+) => {
+  const htmlContent = await ejs.renderFile(emailTemplatePath, {
+    title: "Reset your password",
+    message: "Click this link to reset your password",
+    verificationLink: link,
+  });
+
+  await transport.sendMail({
+    subject: "Reset Password",
+    from: "security-reset@gmail.com",
     to: email,
     html: htmlContent,
   });
@@ -32,6 +49,7 @@ const sendMail = async (
 
 const mail = {
   sendMail,
+  sendResetPasswordMail,
 };
 
 export default mail;

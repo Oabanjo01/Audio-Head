@@ -18,3 +18,6 @@ export interface SignInUserRequestBody {
 export interface GenerateNewRefreshTokenRequestBody {
   refreshToken: string;
 }
+export interface PasswordResetTokenRequestBody {
+  email: string;
+}

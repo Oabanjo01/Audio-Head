@@ -12,6 +12,7 @@ npm-debug.*
 web-build/
 .vscode/
 eslint.config.mjs
+.env
 
 # macOS
 .DS_Store

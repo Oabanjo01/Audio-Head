@@ -1,3 +1,4 @@
+import "dotenv/config";
 import "express-async-errors";
 import "src/db/index";
 
@@ -36,7 +37,16 @@ app.get("/verify", (req, res, next) => {
     title: "Account Verification",
     message: "Please wait, we are verifying your account.",
     description: "This may take a few moment, please don't close this page.",
-    error: false,
+  });
+  next();
+});
+
+app.get("/password-verification", (req, res, next) => {
+  console.log(req.body);
+  res.render("resettingpassword", {
+    title: "Reset Password",
+    message: "Please wait, this might take a minute.",
+    description: "This may take a few moment, please don't close this page.",
   });
   next();
 });

@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     body: JSON.stringify({ owner, token }),
   })
     .then(async (res) => {
+      console.log("getting here why?");
       if (!res.ok) {
         const { message } = await res.json();
         if (res.status === 412) {
