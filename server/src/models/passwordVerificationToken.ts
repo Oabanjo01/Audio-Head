@@ -44,7 +44,6 @@ passwordVerificationSchema.pre("save", async function (next) {
     this.token = await hash(this.token, salt);
     next();
   } else {
-    console.log("token was not modified");
   }
 });
 

@@ -11,14 +11,16 @@ const transport = nodemailer.createTransport({
   },
 });
 const sendMail = async (
-  link: string,
   email: string,
-  emailTemplatePath: string
+  emailTemplatePath: string,
+  emailTitle?: string,
+  emailMessage?: string,
+  link?: string
 ) => {
   const htmlContent = await ejs.renderFile(emailTemplatePath, {
-    title: "Verify your email",
-    message: "Click this link to verify your email",
-    verificationLink: link,
+    title: emailTitle || "Verify your email",
+    message: emailMessage || "Click this link to verify your email",
+    verificationLink: "" || link,
   });
 
   await transport.sendMail({
@@ -28,6 +30,7 @@ const sendMail = async (
     html: htmlContent,
   });
 };
+
 const sendResetPasswordMail = async (
   link: string,
   email: string,

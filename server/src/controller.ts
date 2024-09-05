@@ -9,6 +9,7 @@ import UserModel from "./models/user";
 import {
   CreateUserRequestBody,
   GenerateNewRefreshTokenRequestBody,
+  PasswordResetRequestBody,
   PasswordResetTokenRequestBody,
   SignInUserRequestBody,
   VerifyUserRequestBody,
@@ -300,11 +301,53 @@ const validGoThrough: RequestHandler = (req, res) => {
   res.json({ message: "Password token is valid" });
 };
 
+const resetPassword: RequestHandler<{}, {}, PasswordResetRequestBody> = async (
+  req,
+  res
+) => {
+  const { owner, newPassword } = req.body;
+
+  const userExists = await UserModel.findById(owner);
+
+  if (!userExists) return sendResponse(res, 404, "User not found");
+
+  const matchesCurrent = await userExists.validatePassword(newPassword);
+
+  if (matchesCurrent)
+    return sendResponse(
+      res,
+      401,
+      "This Password exists already, use a new one"
+    );
+
+  await UserModel.findByIdAndUpdate(owner, {
+    password: newPassword,
+  });
+
+  await PasswordVerificationModel.findOneAndDelete({
+    owner: owner,
+  });
+
+  const emailTemplatePath = path.join(__dirname, "/views/verificationLink.ejs");
+
+  await mail
+    .sendMail(
+      userExists.email,
+      emailTemplatePath,
+      "Your email has been verified",
+      "You can now login with your new password, yay!"
+    )
+    .then(() => {
+      res.json({ message: "Your Password has been reset." });
+    });
+};
+
 export {
   createaNewUser,
   generateNewRefreshToken,
   generatePasswordResetLink,
   regenerateVerificationLink,
+  resetPassword,
   sendProfile,
   signOut,
   signUserIn,

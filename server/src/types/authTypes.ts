@@ -21,3 +21,8 @@ export interface GenerateNewRefreshTokenRequestBody {
 export interface PasswordResetTokenRequestBody {
   email: string;
 }
+export interface PasswordResetRequestBody {
+  token: Schema.Types.ObjectId;
+  owner: Schema.Types.ObjectId;
+  newPassword: string;
+}
