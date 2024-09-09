@@ -1,5 +1,5 @@
 import { compare, genSalt, hash } from "bcrypt";
-import { model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 interface PasswordVerificationSchemaDocument extends Document {
   owner: Schema.Types.ObjectId;

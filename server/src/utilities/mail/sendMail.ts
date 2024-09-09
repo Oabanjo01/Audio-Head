@@ -10,21 +10,33 @@ const transport = nodemailer.createTransport({
     pass: storedValues.mailTrapPassword,
   },
 });
-const sendMail = async (
-  email: string,
-  emailTemplatePath: string,
-  emailTitle?: string,
-  emailMessage?: string,
-  link?: string
-) => {
+
+const sendMail = async (emailTemplatePath: string, email: any, link: any) => {
   const htmlContent = await ejs.renderFile(emailTemplatePath, {
-    title: emailTitle || "Verify your email",
-    message: emailMessage || "Click this link to verify your email",
-    verificationLink: "" || link,
+    title: "Verify your email",
+    message: "Click this link to verify your email",
+    verificationLink: link,
   });
 
   await transport.sendMail({
     subject: "Verify your email",
+    from: "banjolakunri@gmail.com",
+    to: email,
+    html: htmlContent,
+  });
+};
+
+const sendPasswordSuccesResetMail = async (
+  emailTemplatePath: string,
+  email: any
+) => {
+  const htmlContent = await ejs.renderFile(emailTemplatePath, {
+    title: "Your password has been reset.",
+    message: "You can now login with your new password, yay!",
+  });
+
+  await transport.sendMail({
+    subject: "Passwrod has been reset",
     from: "banjolakunri@gmail.com",
     to: email,
     html: htmlContent,
@@ -53,6 +65,7 @@ const sendResetPasswordMail = async (
 const mail = {
   sendMail,
   sendResetPasswordMail,
+  sendPasswordSuccesResetMail,
 };
 
 export default mail;

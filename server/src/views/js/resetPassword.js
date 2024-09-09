@@ -17,8 +17,10 @@ const confirmPasswordInput = document.getElementById("confirmPassword");
 // notification
 const notificationTag = document.getElementById("notification");
 
+// button loader
+const btnLoader = document.querySelector(".btn-loader");
+
 formTag.style.display = "none";
-notificationTag.style.display = "none";
 
 let token, owner;
 
@@ -31,7 +33,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   token = params.token;
   owner = params.id;
-  console.log(token, owner, "params");
   await fetch("/auth/verify-password-reset-token", {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -64,24 +65,25 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-const displayNotification = (message, error) => {
-  notificationTag.style.display = "block";
+const displayNotification = (message) => {
   notificationTag.innerText = message;
-  notificationTag.classList = error;
+  notificationTag.style.display = "flex";
 };
 
-document.getElementById("form").addEventListener("submit", async function (e) {
-  e.preventDefault();
+const handleSubmit = async (ev) => {
+  ev.preventDefault();
 
   const newPassword = newPasswordInput.value.trim();
-  const confirmPassword = confirmPasswordInput.value.trim().value.trim();
+  const confirmPassword = confirmPasswordInput.value.trim();
 
   if (!newPassword) {
-    displayNotification("Please enter your new password", "error");
-  } else if (!confirmPassword) {
-    displayNotification("Re enter your new password", error);
+    return displayNotification("Please enter your new password");
+  } else if (confirmPassword !== newPassword) {
+    return displayNotification(
+      "Your confirmation password should be identical to the pre set password"
+    );
   } else {
-    await fetch("/auth//reset-password", {
+    await fetch("/auth/reset-password", {
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
@@ -91,18 +93,27 @@ document.getElementById("form").addEventListener("submit", async function (e) {
       .then(async (res) => {
         const { message } = await res.json();
         if (!res.ok) {
-          displayNotification(message, error);
+          return displayNotification(message);
         } else {
-          loaderTag.style.display = "none";
-          loaderInner.style.display = "none";
-          messageTag.style.display = "flex";
-          descriptionTag.style.display = "flex";
-
           messageTag.innerText = message;
           descriptionTag.innerText =
             "Your password has been reset successfully.";
+          btnLoader.style.display = "block";
+
+          notificationTag.style.display = "none";
+          notificationTag.innerText = message;
+          formTag.style.display = "none";
+
+          messageContainer.style.display = "flex";
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
+      .finally(() => {
+        btnLoader.style.display = "none";
+      });
   }
-});
+};
+
+const form = document.getElementById("form");
+
+form.addEventListener("submit", handleSubmit);

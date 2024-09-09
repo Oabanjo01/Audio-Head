@@ -15,12 +15,13 @@ html {
 .resetContainer {
   display: flex;
   justify-content: center;
-  flex-direction: column; /* Ensure that the elements are stacked vertically */
+  flex-direction: column;
   align-items: center;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   width: 300px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 h1 {
@@ -28,12 +29,6 @@ h1 {
   margin-bottom: 20px;
   font-size: 24px;
 }
-
-/* form {
-  display: flex;
-  flex-direction: column; /* Ensure that the form elements are stacked vertically */
-/* width: 100%; Ensure the form takes the full width of the container */
-/* } */
 
 .form-group {
   margin-bottom: 15px;
@@ -68,7 +63,7 @@ input[type="password"] {
 }
 
 .btn-confirm:hover {
-  background-color: #2980b9;
+  background-color: #616568;
 }
 
 .btn-text {
@@ -76,10 +71,10 @@ input[type="password"] {
   z-index: 1;
 }
 
-.loader {
+.btn-loader {
   display: none;
   position: absolute;
-  /* align-self: center; */
+  align-self: center;
   border: 5px solid #f3f3f3;
   border-top: 5px solid #3498db;
   border-radius: 50%;
@@ -88,24 +83,44 @@ input[type="password"] {
   animation: spin 1s linear infinite;
 }
 
+#notification {
+  background-color: #ffcccc;
+  border: 2px solid #cc0000;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.label {
+  font-size: 18px;
+  color: black;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
 
+/* 
 .btn-confirm.loading .btn-text {
   visibility: hidden;
 }
 
 .btn-confirm.loading .loader {
   display: block;
-}
+} */
 
-/* Additional Styles for Email Verification */
 p {
   font-size: 16px;
   color: #555;
@@ -132,6 +147,7 @@ p {
   justify-content: center;
   animation: spin 1s linear infinite;
   margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .loaderContainer {
@@ -140,6 +156,7 @@ p {
   justify-content: center;
   align-items: center;
   align-self: center;
+  background-color: #f0f2f5;
 }
 
 .loaderInner {
@@ -147,11 +164,12 @@ p {
   flex-direction: column;
   align-items: center;
   width: 400px;
-  height: 300px;
+  max-height: 300px;
   padding: 0 2rem;
   border-radius: 20px;
   background-color: white;
 }
+
 .loaderInner p {
   text-align: center;
 }
@@ -163,23 +181,11 @@ p {
   margin-top: 20px;
 }
 
-/* .loader {
-  display: none;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-} */
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

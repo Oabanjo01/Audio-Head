@@ -1,11 +1,29 @@
 import { isValidObjectId } from "mongoose";
-import { InferType, object, string } from "yup";
+import * as yup from "yup";
+
+declare module "yup" {
+  interface StringSchema {
+    validateEmail(message: string): this;
+  }
+}
 
 const regexPassword =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+// custom validation for emails
+yup.addMethod(yup.string, "validateEmail", function validateEmail(message) {
+  return this.matches(emailRegex, {
+    message,
+    name: "email",
+    excludeEmptyString: true,
+  });
+});
+
 const idAndToken = {
-  owner: string()
+  owner: yup
+    .string()
     .test({
       name: "valid-identity",
       message: "This id is invalid",
@@ -14,45 +32,62 @@ const idAndToken = {
       },
     })
     .required("This id is missing"),
-  token: string().required("Token is required to proceed"),
+  token: yup.string().required("Token is required to proceed"),
 };
 
-export const userSignUpSchema = object({
-  name: string().required("Username is required"),
-  password: string()
+export const userSignUpSchema = yup.object({
+  name: yup.string().required("Username is required"),
+  password: yup
+    .string()
     .required("Password is required")
     .matches(
       regexPassword,
       "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
     ),
-  email: string()
+  email: yup
+    .string()
     .email("A valid email is required")
     .required("An email address is required"),
 });
 
-export const verifyTokenSchema = object({
+export const verifyTokenSchema = yup.object({
   ...idAndToken,
 });
 
-export const verifySignUpSchema = object({
-  password: string().required("Password is required"),
-  email: string()
+export const verifySignUpSchema = yup.object({
+  password: yup.string().required("Password is required"),
+  email: yup
+    .string()
+    .validateEmail("This is an invalid email")
     .email("A valid email is required")
     .required("An email address is required"),
 });
 
-export const validateResetPassword = object({
+export const validateResetPassword = yup.object({
   ...idAndToken,
-  password: string()
+  newPassword: yup
+    .string()
     .required("Password is required")
     .matches(
       regexPassword,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      "Must Contain atleast 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
     ),
+});
+
+export const updateProfileSchema = yup.object({
+  // id: yup.string().test({
+  //   name: "valid-identity",
+  //   message: "This id is invalid",
+  //   test: (value) => {
+  //     return isValidObjectId(value);
+  //   },
+  // }),
+  name: yup.string().required("Username is required"),
 });
 
 // I just added this incase I want to infer the type from the schema later on
-export type User = InferType<typeof userSignUpSchema>;
-export type Verify = InferType<typeof verifyTokenSchema>;
-export type SignIn = InferType<typeof verifySignUpSchema>;
-export type Resetpassword = InferType<typeof validateResetPassword>;
+export type User = yup.InferType<typeof userSignUpSchema>;
+export type Verify = yup.InferType<typeof verifyTokenSchema>;
+export type SignIn = yup.InferType<typeof verifySignUpSchema>;
+export type Resetpassword = yup.InferType<typeof validateResetPassword>;
+export type UpdateProfile = yup.InferType<typeof updateProfileSchema>;

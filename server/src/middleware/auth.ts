@@ -3,6 +3,7 @@ import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import PasswordVerificationModel from "src/models/passwordVerificationToken";
 import UserModel from "src/models/user";
 import { sendResponse } from "src/utilities/sendRequest";
+import { storedValues } from "src/variables";
 
 interface UserProfileType {
   email: string;
@@ -57,7 +58,9 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
     const token = authToken.split("Bearer ")[1];
 
-    const decodedPayload = jwt.verify(token, "secretkey") as { id: string };
+    const decodedPayload = jwt.verify(token, storedValues.secretkey) as {
+      id: string;
+    };
 
     const user = await UserModel.findById(decodedPayload.id);
 

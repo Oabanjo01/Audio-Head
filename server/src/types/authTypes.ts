@@ -26,3 +26,7 @@ export interface PasswordResetRequestBody {
   owner: Schema.Types.ObjectId;
   newPassword: string;
 }
+export interface UpdateProfileRequestBody {
+  id: Schema.Types.ObjectId;
+  name: string;
+}
