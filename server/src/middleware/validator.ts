@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import {
+  CreateProduct,
   Resetpassword,
   SignIn,
   UpdateProfile,
@@ -10,8 +11,10 @@ import { sendResponse } from "src/utilities/sendRequest";
 import { Schema, ValidationError } from "yup";
 
 // < {}, {}, CreateUserRequestBody> This is for defining the RequestHandler type so its easy to predefine the req and res body
-export const validateUser = (
-  schema: Schema<User | Verify | SignIn | Resetpassword | UpdateProfile>
+export const validate = (
+  schema: Schema<
+    User | Verify | SignIn | Resetpassword | UpdateProfile | CreateProduct
+  >
 ): RequestHandler => {
   return async (req, res, next) => {
     try {

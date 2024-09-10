@@ -3,14 +3,14 @@ import categories from "src/utilities/categories";
 
 type ProductImage = { url: string; id: string };
 
-interface ProductDocument extends Document {
+export interface ProductDocument extends Document {
   owner: Schema.Types.ObjectId;
-  name: string;
-  price: number;
-  purchasingDate: Date;
-  category: string;
   images: ProductImage[];
   thumbnail: string;
+  name: string;
+  price: string;
+  purchasingDate: Date | string;
+  category: string;
   description: string;
 }
 
@@ -27,7 +27,7 @@ export const productSchema = new Schema<ProductDocument, {}>(
       trim: true,
     },
     price: {
-      type: Number,
+      type: String,
       required: true,
     },
     purchasingDate: {

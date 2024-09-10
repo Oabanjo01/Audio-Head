@@ -13,10 +13,10 @@ import {
   uploadAnAvatar,
   validGoThrough,
   verifyUser,
-} from "src/controller";
+} from "src/controllers/authController";
 import { isAuthenticated, validatePasswordToken } from "src/middleware/auth";
 import fileParser from "src/middleware/fileParser";
-import { validateUser } from "src/middleware/validator";
+import { validate } from "src/middleware/validator";
 import {
   updateProfileSchema,
   userSignUpSchema,
@@ -34,20 +34,20 @@ authRouter.get("/sign-out", isAuthenticated, signOut);
 authRouter.get("/public-profile/:id", isAuthenticated, getUserPublicProfile);
 
 // post requests
-authRouter.post("/sign-up", validateUser(userSignUpSchema), createaNewUser);
-authRouter.post("/verify-token", validateUser(verifyTokenSchema), verifyUser);
-authRouter.post("/sign-in", validateUser(verifySignUpSchema), signUserIn);
+authRouter.post("/sign-up", validate(userSignUpSchema), createaNewUser);
+authRouter.post("/verify-token", validate(verifyTokenSchema), verifyUser);
+authRouter.post("/sign-in", validate(verifySignUpSchema), signUserIn);
 authRouter.post("/refresh-token", generateNewRefreshToken);
 authRouter.post(
   "/verify-password-reset-token",
-  validateUser(verifyTokenSchema),
+  validate(verifyTokenSchema),
   validatePasswordToken,
   validGoThrough
 );
 authRouter.post("/generate-reset-password-link", generatePasswordResetLink);
 authRouter.post(
   "/reset-password",
-  validateUser(validateResetPassword),
+  validate(validateResetPassword),
   validatePasswordToken,
   resetPassword
 );
@@ -55,7 +55,7 @@ authRouter.post(
 // patch requests
 authRouter.patch(
   "/update-profile",
-  validateUser(updateProfileSchema),
+  validate(updateProfileSchema),
   isAuthenticated,
   updateProfile
 );

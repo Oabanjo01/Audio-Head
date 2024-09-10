@@ -1,13 +1,13 @@
-import { v2 as cloudinary } from "cloudinary";
 import crypto from "crypto";
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { isValidObjectId } from "mongoose";
 import path from "path";
+import cloud from "src/cloudinary/config";
 
-import AuthVerificationModel from "./models/authVerificationToken";
-import PasswordVerificationModel from "./models/passwordVerificationToken";
-import UserModel from "./models/user";
+import AuthVerificationModel from "../models/authVerificationToken";
+import PasswordVerificationModel from "../models/passwordVerificationToken";
+import UserModel from "../models/user";
 import {
   CreateUserRequestBody,
   GenerateNewRefreshTokenRequestBody,
@@ -16,17 +16,10 @@ import {
   SignInUserRequestBody,
   UpdateProfileRequestBody,
   VerifyUserRequestBody,
-} from "./types/authTypes";
-import mail from "./utilities/mail/sendMail";
-import { sendResponse } from "./utilities/sendRequest";
-import { storedValues } from "./variables";
-
-cloudinary.config({
-  cloud_name: storedValues.cloudName,
-  api_key: storedValues.cloudKey,
-  api_secret: storedValues.cloudSecret,
-  secure: true,
-});
+} from "../types/authTypes";
+import mail from "../utilities/mail/sendMail";
+import { sendResponse } from "../utilities/sendRequest";
+import { storedValues } from "../variables";
 
 const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
   req,
@@ -396,9 +389,9 @@ const uploadAnAvatar: RequestHandler = async (req, res) => {
   if (!userExists) return sendResponse(res, 404, "User does not exist");
 
   if (userExists.avatar?.id) {
-    await cloudinary.uploader.destroy(userExists.avatar.id);
+    await cloud.destroy(userExists.avatar.id);
   }
-  const { secure_url: url, public_id: id } = await cloudinary.uploader.upload(
+  const { secure_url: url, public_id: id } = await cloud.upload(
     filename.filepath,
     {
       transformation: {

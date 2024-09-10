@@ -22,13 +22,13 @@ const fileParser: RequestHandler = async (req, res, next) => {
   if (!req.files) req.files = {};
 
   for (let key in files) {
+    console.log(key);
     const actualFiles = files[key];
     if (!actualFiles) break;
 
     if (actualFiles.length > 1) {
       req.files[key] = actualFiles;
     } else {
-      console.log(req.files[key], "req.files[key]");
       req.files[key] = actualFiles[0];
     }
   }
