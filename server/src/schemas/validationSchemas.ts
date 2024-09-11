@@ -117,6 +117,10 @@ export const createProductSchema = new yup.ObjectSchema<
     .required("Price is required"),
 });
 
+export const updateProductSchema = yup.object({
+  name: yup.string().required("Username is required"),
+});
+
 // I just added this incase I want to infer the type from the schema later on
 export type User = yup.InferType<typeof userSignUpSchema>;
 export type Verify = yup.InferType<typeof verifyTokenSchema>;
@@ -124,3 +128,4 @@ export type SignIn = yup.InferType<typeof verifySignUpSchema>;
 export type Resetpassword = yup.InferType<typeof validateResetPassword>;
 export type UpdateProfile = yup.InferType<typeof updateProfileSchema>;
 export type CreateProduct = yup.InferType<typeof createProductSchema>;
+export type UpdateProduct = yup.InferType<typeof updateProductSchema>;

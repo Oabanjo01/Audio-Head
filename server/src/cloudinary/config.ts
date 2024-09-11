@@ -9,5 +9,6 @@ cloudinary.config({
 });
 
 const cloud = cloudinary.uploader;
+export const cloudApi = cloudinary.api;
 
 export default cloud;

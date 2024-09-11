@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createNewProduct,
+  deleteProduct,
   updateExistingProduct,
 } from "src/controllers/productController";
 import { isAuthenticated } from "src/middleware/auth";
@@ -18,12 +19,14 @@ productRouter.post(
   createNewProduct
 );
 
-productRouter.post(
+productRouter.patch(
   "/:id",
   isAuthenticated,
   fileParser,
   validate(createProductSchema),
   updateExistingProduct
 );
+
+productRouter.delete("/:id", isAuthenticated, deleteProduct);
 
 export default productRouter;
