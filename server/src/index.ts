@@ -19,7 +19,9 @@ const app = express();
 // };
 
 // to look up the views folder
-app.set("views", path.join(__dirname, "views", "uploads"));
+const directoryPath = path.join(__dirname, "views");
+app.set("views", directoryPath);
+console.log(__dirname, directoryPath);
 // registering view engine
 app.set("view engine", "ejs");
 

@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
     })
     .catch((err) => {
-      console.log("An error occurred", err);
+      console.log("An error occurred ====", err);
     });
 });
 

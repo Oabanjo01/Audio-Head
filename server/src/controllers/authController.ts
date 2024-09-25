@@ -21,6 +21,8 @@ import mail from "../utilities/mail/sendMail";
 import { sendResponse } from "../utilities/sendRequest";
 import { storedValues } from "../variables";
 
+const rootPath = path.resolve(__dirname, "../");
+
 const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
   req,
   res,
@@ -54,13 +56,19 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
 
     const link = `${storedValues.verificationLink}?id=${user._id}&token=${token}`;
     const emailTemplatePath = path.join(
-      __dirname,
+      rootPath,
       "/views/verificationLink.ejs"
     );
 
-    await mail.sendMail(emailTemplatePath, user.email, link).then(() => {
-      res.json({ message: "Verify your email" });
-    });
+    await mail
+      .sendMail(emailTemplatePath, user.email, link)
+      .then(() => {
+        res.json({ message: "Verify your email" });
+      })
+      .catch((err) => {
+        res.json({ message: "An error occured sending you an email" });
+        console.log(err, "===err");
+      });
   }
 };
 
@@ -148,7 +156,7 @@ const regenerateVerificationLink: RequestHandler = async (req, res) => {
 
   await AuthVerificationModel.findOneAndDelete({ owner: id });
 
-  const emailTemplatePath = path.join(__dirname, "/views/verificationLink.ejs");
+  const emailTemplatePath = path.join(rootPath, "/views/verificationLink.ejs");
   const token = crypto.randomBytes(36).toString("hex");
   const link = `${storedValues.verificationLink}?id=${id}&token=${token}`;
 
@@ -278,7 +286,7 @@ const generatePasswordResetLink: RequestHandler<
 
     const link = `${storedValues.passwordVerificationLink}?id=${userExists._id}&token=${token}`;
     const emailTemplatePath = path.join(
-      __dirname,
+      rootPath,
       "/views/passwordVerificationLink.ejs"
     );
 
@@ -324,7 +332,7 @@ const resetPassword: RequestHandler<{}, {}, PasswordResetRequestBody> = async (
   });
 
   const emailTemplatePath = path.join(
-    __dirname,
+    rootPath,
     "/views/successPasswordReset.ejs"
   );
 

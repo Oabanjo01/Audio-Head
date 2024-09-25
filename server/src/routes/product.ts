@@ -2,12 +2,16 @@ import { Router } from "express";
 import {
   createNewProduct,
   deleteProduct,
+  deleteProductImage,
   updateExistingProduct,
 } from "src/controllers/productController";
 import { isAuthenticated } from "src/middleware/auth";
 import fileParser from "src/middleware/fileParser";
 import { validate } from "src/middleware/validator";
-import { createProductSchema } from "src/schemas/validationSchemas";
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "src/schemas/validationSchemas";
 
 const productRouter = Router();
 
@@ -23,10 +27,16 @@ productRouter.patch(
   "/:id",
   isAuthenticated,
   fileParser,
-  validate(createProductSchema),
+  validate(updateProductSchema),
   updateExistingProduct
 );
 
 productRouter.delete("/:id", isAuthenticated, deleteProduct);
+
+productRouter.delete(
+  "/image/:id/:imageId",
+  isAuthenticated,
+  deleteProductImage
+);
 
 export default productRouter;

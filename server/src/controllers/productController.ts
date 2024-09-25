@@ -111,14 +111,14 @@ const updateExistingProduct: RequestHandler<
     >
   >
 > = async (req, res) => {
-  const id = req.params.id; // product id
-
+  const { id } = req.params; // product id
+  const { image } = req.files;
   const { id: userId } = req.user; // the users id
 
   const { category, description, name, price, purchasingDate, thumbnail } =
     req.body;
 
-  if (!isValidObjectId(userId) || !isValidObjectId(id))
+  if (!isValidObjectId(id))
     return sendResponse(res, 422, "Unauthorized request");
 
   //   if (userId === id) return sendResponse(res, 422, "Unauthorized request");
@@ -139,7 +139,6 @@ const updateExistingProduct: RequestHandler<
 
   if (typeof thumbnail === "string") productExists.thumbnail = thumbnail;
 
-  const { image } = req.files;
   let imageIsNotValid = false;
 
   const multipleImages = Array.isArray(image);
@@ -203,7 +202,7 @@ const deleteProduct: RequestHandler = async (req, res) => {
 
   const { id: userId } = req.user;
 
-  if (!isValidObjectId(userId) || !isValidObjectId(id))
+  if (!isValidObjectId(id))
     return sendResponse(res, 422, "Unauthorized request");
 
   const productExists = await ProductModel.findOneAndDelete({
@@ -215,15 +214,54 @@ const deleteProduct: RequestHandler = async (req, res) => {
 
   if (productExists.images.length) {
     // removing images
-    const ids = productExists.images.map((image) => {
-      const { id } = image;
-      return id;
-    });
+    const ids = productExists.images.map(({ id }) => id);
 
-    await cloudApi.delete_all_resources(ids);
+    await cloudApi.delete_resources(ids);
   }
 
   sendResponse(res, 201, "Product has been successfully deleted");
 };
 
-export { createNewProduct, deleteProduct, updateExistingProduct };
+const deleteProductImage: RequestHandler = async (req, res) => {
+  const { id, imageId } = req.params; // product id
+  const { id: userId } = req.user; // the users id
+
+  if (!isValidObjectId(id))
+    return sendResponse(res, 422, "Unauthorized request");
+
+  const productExists = await ProductModel.findOneAndUpdate(
+    { _id: id, owner: userId },
+    {
+      $pull: {
+        images: { id: imageId },
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  // updating the thumbnail
+  if (productExists?.thumbnail === imageId) {
+    await ProductModel.findOneAndUpdate(
+      { _id: id, owner: userId },
+      { $unset: { thumbnail: "" } },
+      {
+        new: true,
+      }
+    );
+  }
+
+  if (!productExists) return sendResponse(res, 404, "Product not found");
+
+  await cloud.destroy(imageId);
+
+  res.json({ message: "Removed image successfully" });
+};
+
+export {
+  createNewProduct,
+  deleteProduct,
+  deleteProductImage,
+  updateExistingProduct,
+};
