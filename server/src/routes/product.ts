@@ -3,6 +3,8 @@ import {
   createNewProduct,
   deleteProduct,
   deleteProductImage,
+  findByCategory,
+  getProductDetails,
   updateExistingProduct,
 } from "src/controllers/productController";
 import { isAuthenticated } from "src/middleware/auth";
@@ -14,6 +16,9 @@ import {
 } from "src/schemas/validationSchemas";
 
 const productRouter = Router();
+
+productRouter.get("/:id", isAuthenticated, getProductDetails);
+productRouter.get("/by-category/:category", isAuthenticated, findByCategory);
 
 productRouter.post(
   "/create",

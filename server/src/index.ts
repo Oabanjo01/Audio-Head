@@ -21,7 +21,7 @@ const app = express();
 // to look up the views folder
 const directoryPath = path.join(__dirname, "views");
 app.set("views", directoryPath);
-console.log(__dirname, directoryPath);
+
 // registering view engine
 app.set("view engine", "ejs");
 

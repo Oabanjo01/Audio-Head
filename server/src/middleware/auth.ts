@@ -64,6 +64,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
     const user = await UserModel.findById(decodedPayload.id);
 
+    console.log(decodedPayload, user, "decodedPayload");
     if (!user) {
       return sendResponse(res, 403, "Unauthorized request");
     }

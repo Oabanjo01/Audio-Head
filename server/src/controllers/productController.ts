@@ -3,6 +3,8 @@ import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 import cloud, { cloudApi } from "src/cloudinary/config";
 import ProductModel, { ProductDocument } from "src/models/productModel";
+import { UserDocument } from "src/models/user";
+import categories from "src/utilities/categories";
 import { sendResponse } from "src/utilities/sendRequest";
 
 const uploadImage = async (filePath: string): Promise<UploadApiResponse> => {
@@ -93,7 +95,7 @@ const createNewProduct: RequestHandler<
 
   await newProduct.save();
 
-  sendResponse(res, 422, "This product has been successfully created.");
+  sendResponse(res, 201, "This product has been successfully created.");
 };
 
 const updateExistingProduct: RequestHandler<
@@ -229,7 +231,25 @@ const deleteProductImage: RequestHandler = async (req, res) => {
   if (!isValidObjectId(id))
     return sendResponse(res, 422, "Unauthorized request");
 
-  const productExists = await ProductModel.findOneAndUpdate(
+  const productExists = await ProductModel.findOne({ _id: id, owner: userId });
+
+  if (!productExists) {
+    return sendResponse(res, 404, "Product not found");
+  }
+
+  const imageToDelete = productExists.images.find(
+    (image) => image.id === imageId
+  );
+
+  if (imageToDelete && productExists.thumbnail === imageToDelete.url) {
+    await ProductModel.updateOne({ _id: id }, { $unset: { thumbnail: "" } });
+
+    // This works for just updating the thumbnail to an empty string
+    // productExists.thumbnail = "";
+    // await productExists.save();
+  }
+
+  await ProductModel.findOneAndUpdate(
     { _id: id, owner: userId },
     {
       $pull: {
@@ -241,27 +261,107 @@ const deleteProductImage: RequestHandler = async (req, res) => {
     }
   );
 
-  // updating the thumbnail
-  if (productExists?.thumbnail === imageId) {
-    await ProductModel.findOneAndUpdate(
-      { _id: id, owner: userId },
-      { $unset: { thumbnail: "" } },
-      {
-        new: true,
-      }
-    );
-  }
-
-  if (!productExists) return sendResponse(res, 404, "Product not found");
-
   await cloud.destroy(imageId);
 
   res.json({ message: "Removed image successfully" });
+};
+
+const getProductDetails: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+
+  if (!isValidObjectId(id))
+    return sendResponse(res, 422, "Unauthorized request");
+
+  const productExists = await ProductModel.findById(id).populate<{
+    owner: UserDocument;
+  }>("owner");
+
+  if (!productExists) return sendResponse(res, 404, "Product not found");
+
+  const {
+    owner,
+    category,
+    price,
+    purchasingDate,
+    id: documentId,
+    description,
+    thumbnail,
+    name,
+    images,
+  } = productExists;
+
+  res.json({
+    productData: {
+      category,
+      price,
+      purchasingDate,
+      id: documentId,
+      description,
+      thumbnail,
+      images: images.map(({ url }) => url),
+      name,
+      seller: {
+        email: owner.email,
+        name: owner.name,
+        avatar: owner?.avatar,
+      },
+    },
+  });
+};
+
+const findByCategory: RequestHandler<
+  { category: string },
+  {},
+  {},
+  { page: string; limit: string }
+> = async (req, res) => {
+  const { category } = req.params;
+  const { page = "1", limit = "10" } = req.query;
+
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit); // amount of results returned
+
+  if (!categories.includes(category))
+    return res.status(400).json({ message: "Invalid category", category });
+
+  // This is to calculate the number of items to skip
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const productCategoryList = await ProductModel.find({
+    category: category,
+  })
+    .collation({ locale: "en", strength: 2 })
+    .sort({
+      name: 1,
+      categories: -1,
+    })
+    .skip(skip)
+    .limit(limitNumber);
+
+  if (!productCategoryList)
+    return res
+      .status(404)
+      .json({ message: "No product categories found", category });
+
+  const totalDocuments = await ProductModel.countDocuments({
+    category: category,
+  });
+
+  // Calculate total number of pages
+  const totalPages = Math.ceil(totalDocuments / limitNumber);
+
+  res.json({
+    categoryData: productCategoryList,
+    totalPages,
+    pageNumber,
+  });
 };
 
 export {
   createNewProduct,
   deleteProduct,
   deleteProductImage,
+  findByCategory,
+  getProductDetails,
   updateExistingProduct,
 };
