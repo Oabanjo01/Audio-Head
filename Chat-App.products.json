@@ -1,0 +1,171 @@
+[
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Test 2",
+    "price": "2000",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Fashion",
+    "images": [],
+    "description": "This is a test",
+    "createdAt": {
+      "$date": "2024-09-25T11:28:20.948Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T11:29:09.902Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Test 2",
+    "price": "2000",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Fashion",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727271664/baquxxdd2zaywyftdfkn.jpg",
+        "id": "baquxxdd2zaywyftdfkn"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727271664/baquxxdd2zaywyftdfkn.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T13:41:05.957Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T13:41:05.957Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Test 2",
+    "price": "200",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Books",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727273727/b2e6cbk5dsovwz1rryuc.jpg",
+        "id": "b2e6cbk5dsovwz1rryuc"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727273727/b2e6cbk5dsovwz1rryuc.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T14:15:27.782Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T14:15:27.782Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Test 2",
+    "price": "100",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Sports & Outdoors",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727273765/b6ax7tr39raesxyl8t1e.jpg",
+        "id": "b6ax7tr39raesxyl8t1e"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727273765/b6ax7tr39raesxyl8t1e.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T14:16:07.023Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T14:16:07.023Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Test 2",
+    "price": "100",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Fashion",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274146/hlluxeunucuoyucsdtkr.jpg",
+        "id": "hlluxeunucuoyucsdtkr"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274146/hlluxeunucuoyucsdtkr.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T14:22:26.687Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T14:22:26.687Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "est 2",
+    "price": "100",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Fashion",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274185/hc3mwdnczgvq0r8az7rk.jpg",
+        "id": "hc3mwdnczgvq0r8az7rk"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274185/hc3mwdnczgvq0r8az7rk.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T14:23:05.720Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T14:23:05.720Z"
+    }
+  },
+  {
+    "owner": {
+      "$oid": "66f3de03f28914e4d87e04e6"
+    },
+    "name": "Aest 2",
+    "price": "100",
+    "purchasingDate": {
+      "$date": "2024-09-10T08:27:59.094Z"
+    },
+    "category": "Fashion",
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274190/g3c414rjip2f0jybo6ot.jpg",
+        "id": "g3c414rjip2f0jybo6ot"
+      }
+    ],
+    "description": "This is a test",
+    "thumbnail": "https://res.cloudinary.com/dtm4t0ied/image/upload/v1727274190/g3c414rjip2f0jybo6ot.jpg",
+    "createdAt": {
+      "$date": "2024-09-25T14:23:10.897Z"
+    },
+    "updatedAt": {
+      "$date": "2024-09-25T14:23:10.897Z"
+    }
+  }
+]

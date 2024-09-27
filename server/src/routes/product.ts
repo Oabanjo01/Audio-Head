@@ -4,7 +4,9 @@ import {
   deleteProduct,
   deleteProductImage,
   findByCategory,
+  getLatestProducts,
   getProductDetails,
+  getUserListings,
   updateExistingProduct,
 } from "src/controllers/productController";
 import { isAuthenticated } from "src/middleware/auth";
@@ -17,8 +19,14 @@ import {
 
 const productRouter = Router();
 
-productRouter.get("/:id", isAuthenticated, getProductDetails);
+productRouter.get("/detail/:id", isAuthenticated, getProductDetails);
 productRouter.get("/by-category/:category", isAuthenticated, findByCategory);
+productRouter.get(
+  "/latest",
+  // isAuthenticated,
+  getLatestProducts
+);
+productRouter.get("/listings", isAuthenticated, getUserListings);
 
 productRouter.post(
   "/create",
@@ -37,7 +45,6 @@ productRouter.patch(
 );
 
 productRouter.delete("/:id", isAuthenticated, deleteProduct);
-
 productRouter.delete(
   "/image/:id/:imageId",
   isAuthenticated,

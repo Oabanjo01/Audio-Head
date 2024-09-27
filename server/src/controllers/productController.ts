@@ -357,11 +357,110 @@ const findByCategory: RequestHandler<
   });
 };
 
+const getLatestProducts: RequestHandler<{}, {}, {}, {}> = async (req, res) => {
+  const products = await ProductModel.find().sort("-createdAt").limit(10);
+
+  const listings = products.map((p) => {
+    return {
+      id: p._id,
+      name: p.name,
+      thumbnail: p.thumbnail,
+      category: p.category,
+      price: p.price,
+    };
+  });
+
+  res.json({
+    listings,
+  });
+
+  // This is for if I wanted to add authentication and others
+  // const { page = "1", limit = "10" } = req.query;
+
+  // const pageNumber = parseInt(page);
+  // const limitNumber = parseInt(limit);
+
+  // if (isNaN(pageNumber) || pageNumber < 1)
+  //   return sendResponse(res, 422, "Invalid page number");
+
+  // if (isNaN(limitNumber) || limitNumber < 1)
+  //   return sendResponse(res, 422, "Invalid limit number");
+
+  // const skip = (pageNumber - 1) * limitNumber;
+
+  // try {
+  //   const allProducts = await ProductModel.find()
+  //     .collation({ locale: "en", strength: 2 })
+  //     .sort({ purchasingDate: 1 })
+  //     .skip(skip)
+  //     .limit(limitNumber);
+
+  //   console.log("got here ===", allProducts);
+  //   if (!allProducts) return sendResponse(res, 404, "No product found");
+
+  //   res.json({
+  //     productData: allProducts,
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  //   sendResponse(res, 400, "An eerror occured");
+  // }
+};
+
+const getUserListings: RequestHandler<
+  {},
+  {},
+  {},
+  { page: string; limit: string }
+> = async (req, res) => {
+  const { id, avatar, name } = req.user;
+
+  const { page = "1", limit = "10" } = req.query;
+
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit);
+
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const products = await ProductModel.find({ owner: id })
+    .collation({ locale: "en", strength: 2 })
+    .sort({
+      name: 1,
+      categories: -1,
+    })
+    .skip(skip)
+    .limit(limitNumber);
+
+  const listings = products.map((p) => {
+    return {
+      id: p._id,
+      name: p.name,
+      thumbnail: p.thumbnail,
+      category: p.category,
+      price: p.price,
+      images: p.images.map(({ url }) => url),
+      date: p.purchasingDate,
+      description: p.description,
+      seller: {
+        id,
+        name,
+        avatar: avatar?.url,
+      },
+    };
+  });
+
+  res.json({
+    listings,
+  });
+};
+
 export {
   createNewProduct,
   deleteProduct,
   deleteProductImage,
   findByCategory,
+  getLatestProducts,
   getProductDetails,
+  getUserListings,
   updateExistingProduct,
 };

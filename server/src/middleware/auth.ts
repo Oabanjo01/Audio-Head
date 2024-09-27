@@ -10,6 +10,10 @@ interface UserProfileType {
   id: any;
   name: string;
   verified: boolean;
+  avatar?: {
+    url: string;
+    id: string;
+  };
 }
 
 declare global {
@@ -49,6 +53,8 @@ export const validatePasswordToken: RequestHandler = async (req, res, next) => {
 };
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  const url = req.url;
+  const quiery = req.query;
   try {
     const authToken = req.headers.authorization;
 
@@ -64,17 +70,17 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
     const user = await UserModel.findById(decodedPayload.id);
 
-    console.log(decodedPayload, user, "decodedPayload");
     if (!user) {
       return sendResponse(res, 403, "Unauthorized request");
     }
-
+    console.log(url, "===url", quiery);
     // why this works - Any modifications made to req in one middleware function will be available to subsequent middleware functions and route handlers.
     req.user = {
       email: user.email,
       id: user._id,
       name: user.name,
       verified: user.verified,
+      avatar: user.avatar,
     };
     next();
   } catch (error) {
