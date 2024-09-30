@@ -8,14 +8,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": "./app",
+    "rootDir": "./",
     "baseUrl": ".",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
 
     "paths": {
       "src/*": ["./app/*"],
-      "routes/*": ["./app/routes/*"]
+      "routes/*": ["./app/routes/*"],
+      "root/*": ["./*"]
     }
   },
   "exclude": ["node_modules"],
