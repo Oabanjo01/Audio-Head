@@ -3,10 +3,11 @@ import "react-native-reanimated";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {
+  console.log("AuthLayout mounted");
   return (
-    <Stack initialRouteName="signIn">
+    <Stack>
       <Stack.Screen
-        name="signIn"
+        name="index"
         options={{
           headerShown: false,
         }}
