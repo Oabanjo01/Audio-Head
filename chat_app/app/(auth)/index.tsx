@@ -1,80 +1,151 @@
+import { Formik } from "formik";
 import React from "react";
 import {
   Image,
   KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "root/components/auth/Button";
 import TextField from "root/components/auth/TextField";
+import TextFieldError from "root/components/auth/TextFieldError";
 import { height, width } from "root/constants/Dimensions";
 import images from "root/constants/Images";
+import { toSentenceCase } from "root/utils/toSentenceCase";
+import { signUpSchema } from "root/utils/validations";
 
-export default function signIn() {
+const LoginScreen = () => {
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView
-        style={{
-          alignItems: "center",
-          height: "100%",
-          backgroundColor: "white",
-          paddingTop: height * 0.05,
-        }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboardAvoidingView}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
       >
         <Image
           source={images.authImage}
           resizeMode="contain"
-          style={{
-            width: width * 0.75,
-            height: height * 0.4,
-          }}
+          style={styles.image}
         />
-        <Text
-          style={{
-            textAlign: "center",
-            fontWeight: "600",
-            fontSize: 20,
-            marginBottom: 10,
+        <Text style={styles.title}>Online Marketplace for Used Goods</Text>
+        <Text style={styles.subtitle}>
+          Buy or sell used goods with trust. Chat directly with sellers,
+          ensuring a seamless, authentic experience.
+        </Text>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={signUpSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            console.log(values);
+            setSubmitting(false);
           }}
         >
-          Online Marketplace for Used Goods
-        </Text>
-        <Text style={{ textAlign: "center", marginBottom: height * 0.025 }}>
-          Buy or sell used goods with trust.Chat directly with sellers, ensuring
-          a seamless, authentic experience.
-        </Text>
-
-        <TextField label="Email" />
-        <TextField label="Password" />
-
-        <Button label={"Login"} />
-
-        <View
-          style={{
-            height: 2,
-            backgroundColor: "grey",
-            width: width * 0.6,
-            alignItems: "center",
-            borderRadius: 5,
+          {({
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            setFieldValue,
+            isValid,
+            isSubmitting,
+          }) => {
+            console.log(!isSubmitting, "===", values.email);
+            return (
+              <>
+                <TextField
+                  label="Email"
+                  autoCapitalize="none"
+                  setFieldValue={setFieldValue}
+                />
+                {errors.email && touched.email ? (
+                  <TextFieldError error={errors.email} />
+                ) : null}
+                <TextField
+                  label="Password"
+                  autoCapitalize="none"
+                  secureTextEntry
+                  setFieldValue={setFieldValue}
+                />
+                {errors.password && touched.password ? (
+                  <TextFieldError error={toSentenceCase(errors.password)} />
+                ) : null}
+                <Button
+                  label="Login"
+                  onPress={handleSubmit}
+                  disabled={
+                    isSubmitting ||
+                    !isValid ||
+                    values.email === "" ||
+                    values.password === ""
+                  }
+                />
+              </>
+            );
           }}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: height * 0.03,
-            width: "90%",
-          }}
-        >
-          <Text>Forgot Password?</Text>
-          <Text>Sign Up</Text>
+        </Formik>
+        <View style={styles.divider} />
+        <View style={styles.footer}>
+          <Pressable>
+            <Text>Forgot Password?</Text>
+          </Pressable>
+          <Pressable>
+            <Text>Sign Up</Text>
+          </Pressable>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-}
+};
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    alignItems: "center",
+    paddingTop: height * 0.05,
+    paddingHorizontal: 20,
+  },
+  image: {
+    width: width * 0.75,
+    height: height * 0.4,
+  },
+  title: {
+    textAlign: "center",
+    fontWeight: "600",
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  subtitle: {
+    textAlign: "center",
+    marginBottom: height * 0.025,
+  },
+  divider: {
+    height: 2,
+    backgroundColor: "grey",
+    width: width * 0.6,
+    borderRadius: 5,
+    marginVertical: height * 0.02,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: height * 0.02,
+  },
+});
+
+export default LoginScreen;
