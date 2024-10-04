@@ -19,7 +19,23 @@ yup.addMethod(yup.string, "validateEmail", function validateEmail(message) {
   });
 });
 
+export const signInSchema = yup.object({
+  password: yup
+    .string()
+    .required("Password is required")
+    .matches(
+      regexPassword,
+      "Must Contain atleast 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    ),
+  email: yup
+    .string()
+    .validateEmail("This is an invalid email")
+    .email("A valid email is required")
+    .required("An email address is required"),
+});
+
 export const signUpSchema = yup.object({
+  fullName: yup.string().required("Your full name is required"),
   password: yup
     .string()
     .required("Password is required")

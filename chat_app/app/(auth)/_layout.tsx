@@ -3,7 +3,6 @@ import "react-native-reanimated";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {
-  console.log("AuthLayout mounted");
   return (
     <Stack>
       <Stack.Screen
@@ -20,6 +19,12 @@ export default function AuthLayout() {
       />
       <Stack.Screen
         name="signUp"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="forgotPassord"
         options={{
           headerShown: false,
         }}
