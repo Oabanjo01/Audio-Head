@@ -35,7 +35,7 @@ export const signInSchema = yup.object({
 });
 
 export const signUpSchema = yup.object({
-  fullName: yup.string().required("Your full name is required"),
+  name: yup.string().required("Your full name is required"),
   password: yup
     .string()
     .required("Password is required")
@@ -49,3 +49,17 @@ export const signUpSchema = yup.object({
     .email("A valid email is required")
     .required("An email address is required"),
 });
+
+export const forgotPasswordSchema = yup.object({
+  email: yup
+    .string()
+    .validateEmail("This is an invalid email")
+    .email("A valid email is required")
+    .required("An email address is required"),
+});
+
+export type SignInSchemaType = yup.InferType<typeof signInSchema>;
+export type SignUpSchemaType = yup.InferType<typeof signUpSchema>;
+export type ForgotPasswordSchemaType = yup.InferType<
+  typeof forgotPasswordSchema
+>;

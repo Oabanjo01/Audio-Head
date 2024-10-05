@@ -63,7 +63,10 @@ const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
     await mail
       .sendMail(emailTemplatePath, user.email, link)
       .then(() => {
-        res.json({ message: "Verify your email" });
+        console.log("Mail sent");
+        res
+          .status(200)
+          .json({ message: "Check your email for a verification link" });
       })
       .catch((err) => {
         res.json({ message: "An error occured sending you an email" });

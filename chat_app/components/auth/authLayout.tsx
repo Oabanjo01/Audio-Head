@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   Image,
   Keyboard,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,11 +11,26 @@ import {
 } from "react-native";
 import { height, width } from "root/constants/Dimensions";
 import images from "root/constants/Images";
-import { signInSchema, signUpSchema } from "root/utils/validations";
+import {
+  SignInModel,
+  SignUpModel,
+  VerifyEmailModel,
+} from "root/constants/types/authFunctions";
+import {
+  ForgotPasswordSchemaType,
+  SignInSchemaType,
+  SignUpSchemaType,
+} from "root/utils/validations";
+import { ObjectSchema } from "yup";
 
 import Button from "./Button";
 import TextField from "./TextField";
 import TextFieldError from "./TextFieldError";
+
+type SchemaType =
+  | SignInSchemaType
+  | ForgotPasswordSchemaType
+  | SignUpSchemaType;
 
 interface AuthLayoutProp {
   title: string;
@@ -24,12 +38,18 @@ interface AuthLayoutProp {
   initialValues: {
     email: string;
     password?: string;
-    fullName?: string;
+    name?: string;
   };
-  submit: () => void;
+  submit: (
+    newPayLoad: SignInModel | SignUpModel | VerifyEmailModel
+  ) => Promise<void> | void;
+  firstButton: string;
   secondButton: string;
-  signUp?: boolean;
   pathName: "signUp" | "verifyEmail" | "";
+  signUp?: boolean;
+  signIn?: boolean;
+  buttonLabel: string;
+  schema: ObjectSchema<SchemaType>;
 }
 
 const AuthLayout: React.FC<AuthLayoutProp> = ({
@@ -37,11 +57,40 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
   submit,
   subtitle,
   title,
+  firstButton,
   secondButton,
   signUp,
   pathName,
+  signIn,
+  buttonLabel,
+  schema,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const setPayLoad: (v: any) => SignInModel | SignUpModel | VerifyEmailModel = (
+    values: any
+  ) => {
+    if (signIn) {
+      const payLoad: SignInModel = {
+        email: values.email,
+        password: values.password,
+      };
+      return payLoad;
+    }
+    if (signUp) {
+      const payLoad: SignUpModel = {
+        email: values.email,
+        password: values.password,
+        name: values.name,
+      };
+      return payLoad;
+    }
+    const payLoad: VerifyEmailModel = {
+      email: values.email,
+    };
+    return payLoad;
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollViewContent}
@@ -56,22 +105,16 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       <Text style={styles.subtitle}>{subtitle}</Text>
       <Formik
         initialValues={initialValues}
-        validationSchema={signUp ? signUpSchema : signInSchema}
+        validationSchema={schema}
         onSubmit={(values, { setSubmitting }) => {
+          const newPayLoad = setPayLoad(values);
           Keyboard.dismiss();
-          submit();
+          submit(newPayLoad);
           setSubmitting(false);
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          isSubmitting,
-        }) => {
+        {({ handleSubmit, errors, touched, setFieldValue, isSubmitting }) => {
+          console.log(isSubmitting);
           return (
             <>
               <TextField
@@ -84,18 +127,22 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
                 <TextFieldError error={errors.email} />
               ) : null}
 
-              <TextField
-                label="Password"
-                autoCapitalize="none"
-                secureTextEntry={isOpen}
-                showPasswords={() => setIsOpen((prev) => !prev)}
-                isOpen={isOpen}
-                setFieldValue={setFieldValue}
-                fieldName="password"
-              />
-              {errors.password && touched.password ? (
-                <TextFieldError error={errors.password} />
-              ) : null}
+              {(signUp || signIn) && (
+                <>
+                  <TextField
+                    label="Password"
+                    autoCapitalize="none"
+                    secureTextEntry={isOpen}
+                    showPasswords={() => setIsOpen((prev) => !prev)}
+                    isOpen={isOpen}
+                    setFieldValue={setFieldValue}
+                    fieldName="password"
+                  />
+                  {errors.password && touched.password ? (
+                    <TextFieldError error={errors.password} />
+                  ) : null}
+                </>
+              )}
 
               {signUp && (
                 <>
@@ -103,24 +150,18 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
                     label="Full Name"
                     autoCapitalize="none"
                     setFieldValue={setFieldValue}
-                    fieldName="fullName"
+                    fieldName="name"
                   />
-                  {errors.fullName && touched.fullName ? (
-                    <TextFieldError error={errors.fullName} />
+                  {errors.name && touched.name ? (
+                    <TextFieldError error={errors.name} />
                   ) : null}
                 </>
               )}
 
               <Button
-                label={signUp ? "Sign Up" : "Login"}
+                label={buttonLabel}
                 onPress={handleSubmit}
-                disabled={
-                  isSubmitting ||
-                  !isValid ||
-                  values.email === "" ||
-                  values?.password === "" ||
-                  values?.fullName === ""
-                }
+                disabled={isSubmitting}
               />
             </>
           );
@@ -128,9 +169,7 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       </Formik>
       <View style={styles.divider} />
       <View style={styles.footer}>
-        <Pressable>
-          <Text>Forgot Password?</Text>
-        </Pressable>
+        <Link href={{ pathname: `/(auth)/forgotPassord` }}>{firstButton}</Link>
         <Link href={{ pathname: `/(auth)/${pathName}` }}>{secondButton}</Link>
       </View>
     </ScrollView>

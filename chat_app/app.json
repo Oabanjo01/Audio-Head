@@ -20,7 +20,20 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.olabanjo01.chat_app"
+      "ios": {
+        "infoPlist": {
+          "NSAppTransportSecurity": {
+            "NSAllowsArbitraryLoads": true,
+            "NSExceptionDomains": {
+              "localhost": {
+                "NSExceptionAllowsInsecureHTTPLoads": true
+              }
+            }
+          }
+        }
+      },
+      "package": "com.olabanjo01.chat_app",
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
     },
     "web": {
       "bundler": "metro",

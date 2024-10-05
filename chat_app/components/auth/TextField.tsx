@@ -17,6 +17,18 @@ interface TextFieldProps extends TextInputProps {
     value: any,
     shouldValidate?: boolean
   ) => Promise<void | FormikErrors<any>>;
+  // setTouched: (
+  //   touched: FormikTouched<{
+  //     email: string;
+  //     password?: string;
+  //     name?: string;
+  //   }>,
+  //   shouldValidate?: boolean
+  // ) => Promise<void | FormikErrors<{
+  //   email: string;
+  //   password?: string;
+  //   name?: string;
+  // }>>;
 }
 
 export const TextField: FC<TextFieldProps> = ({
@@ -51,7 +63,9 @@ export const TextField: FC<TextFieldProps> = ({
           setFieldValue(fieldName, text, true);
         }}
         value={texts}
-        onFocus={() => setIsFocused(true)}
+        onFocus={() => {
+          setIsFocused(true);
+        }}
         onBlur={() => setIsFocused(false)}
         {...props}
       />

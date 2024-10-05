@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 
@@ -19,6 +19,7 @@ const Button: React.FC<ButtonProps> = ({ label, onPress, disabled }) => {
       }}
     >
       <Text style={[styles.innerTextStyle]}>{label}</Text>
+      {disabled && <ActivityIndicator color={Colors.light.redColor} />}
     </Pressable>
   );
 };
