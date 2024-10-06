@@ -150,6 +150,7 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
         refreshToken: refreshToken,
         accessToken: accessToken,
       },
+      message: "Logged in successfully",
     });
   }
 };

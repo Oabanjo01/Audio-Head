@@ -1,7 +1,8 @@
-import axios, { AxiosError } from "axios";
 import React from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
+import { SignInModel } from "root/constants/types/authFunctions";
+import { authService } from "root/services/auth";
 import { signInSchema } from "root/utils/validations";
 
 export interface LoginProps {
@@ -22,20 +23,14 @@ const LoginScreen = () => {
     >
       <AuthLayout
         initialValues={LoginInitialValues}
-        submit={async (newPayLoad: any) => {
-          try {
-            const { data } = await axios.post("sign-in", newPayLoad);
-            console.log(data, "data ===>");
-          } catch (error) {
-            if (error instanceof AxiosError) {
-              const response = error.response;
-              if (response) {
-                const { message } = response.data;
-                console.log("Axios error", message);
-              }
-            }
-          }
-          // await signIn("sign-in", newPayLoad);
+        submit={async (newPayLoad) => {
+          const response = await authService<SignInModel>({
+            data: newPayLoad as SignInModel,
+            endPoint: "sign-in",
+            method: "post",
+          });
+
+          console.log(response, "response.userData");
         }}
         secondButton="Sign up"
         firstButton="Forgot Password"

@@ -14,21 +14,9 @@ interface TextFieldProps extends TextInputProps {
   isOpen?: boolean;
   setFieldValue: (
     field: string,
-    value: any,
+    value: string,
     shouldValidate?: boolean
   ) => Promise<void | FormikErrors<any>>;
-  // setTouched: (
-  //   touched: FormikTouched<{
-  //     email: string;
-  //     password?: string;
-  //     name?: string;
-  //   }>,
-  //   shouldValidate?: boolean
-  // ) => Promise<void | FormikErrors<{
-  //   email: string;
-  //   password?: string;
-  //   name?: string;
-  // }>>;
 }
 
 export const TextField: FC<TextFieldProps> = ({

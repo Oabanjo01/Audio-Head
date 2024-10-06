@@ -2,7 +2,7 @@ import React from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
 import { SignUpModel } from "root/constants/types/authFunctions";
-import { signUp } from "root/services/auth";
+import { authService } from "root/services/auth";
 import { signUpSchema } from "root/utils/validations";
 
 import { authStyles } from ".";
@@ -28,8 +28,10 @@ const SignUpScreen = () => {
       <AuthLayout
         initialValues={SignUpInitialValues}
         submit={async (newPayLoad) => {
-          await signUp("sign-up", newPayLoad as SignUpModel).catch((err) => {
-            console.log(err);
+          await authService<SignUpModel>({
+            data: newPayLoad as SignUpModel,
+            endPoint: "sign-up",
+            method: "post",
           });
         }}
         secondButton="Sign in"

@@ -11,11 +11,7 @@ import {
 } from "react-native";
 import { height, width } from "root/constants/Dimensions";
 import images from "root/constants/Images";
-import {
-  SignInModel,
-  SignUpModel,
-  VerifyEmailModel,
-} from "root/constants/types/authFunctions";
+import { AuthData } from "root/services/auth";
 import {
   ForgotPasswordSchemaType,
   SignInSchemaType,
@@ -32,17 +28,17 @@ type SchemaType =
   | ForgotPasswordSchemaType
   | SignUpSchemaType;
 
+type initialValueType = {
+  email: string;
+  password?: string;
+  name?: string;
+};
+
 interface AuthLayoutProp {
   title: string;
   subtitle: string;
-  initialValues: {
-    email: string;
-    password?: string;
-    name?: string;
-  };
-  submit: (
-    newPayLoad: SignInModel | SignUpModel | VerifyEmailModel
-  ) => Promise<void> | void;
+  initialValues: initialValueType;
+  submit: (newPayLoad: AuthData) => Promise<void> | void;
   firstButton: string;
   secondButton: string;
   pathName: "signUp" | "verifyEmail" | "";
@@ -67,25 +63,25 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const setPayLoad: (v: any) => SignInModel | SignUpModel | VerifyEmailModel = (
-    values: any
+  const setPayLoad: (v: initialValueType) => AuthData = (
+    values: initialValueType
   ) => {
     if (signIn) {
-      const payLoad: SignInModel = {
+      const payLoad = {
         email: values.email,
         password: values.password,
       };
       return payLoad;
     }
     if (signUp) {
-      const payLoad: SignUpModel = {
+      const payLoad = {
         email: values.email,
         password: values.password,
         name: values.name,
       };
       return payLoad;
     }
-    const payLoad: VerifyEmailModel = {
+    const payLoad = {
       email: values.email,
     };
     return payLoad;
@@ -106,15 +102,14 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           const newPayLoad = setPayLoad(values);
           Keyboard.dismiss();
-          submit(newPayLoad);
+          await submit(newPayLoad);
           setSubmitting(false);
         }}
       >
         {({ handleSubmit, errors, touched, setFieldValue, isSubmitting }) => {
-          console.log(isSubmitting);
           return (
             <>
               <TextField

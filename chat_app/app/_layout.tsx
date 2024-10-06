@@ -11,7 +11,9 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import Toast from "react-native-toast-message";
+import { Provider } from "react-redux";
 import { useColorScheme } from "root/hooks/useColorScheme";
+import { store } from "root/redux/store";
 import { toastConfig } from "root/utils/toast";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -33,30 +35,32 @@ export default function RootLayout() {
     return null;
   }
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <StatusBar
-        networkActivityIndicatorVisible
-        barStyle={"dark-content"}
-        backgroundColor="transparent"
-        translucent
-        animated
-      />
+    <Provider store={store}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar
+          networkActivityIndicatorVisible
+          barStyle={"dark-content"}
+          backgroundColor="transparent"
+          translucent
+          animated
+        />
 
-      <Stack initialRouteName="(auth)">
-        <Stack.Screen
-          name="(auth)"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="(app)"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
-      <Toast config={toastConfig} />
-    </ThemeProvider>
+        <Stack initialRouteName="(auth)">
+          <Stack.Screen
+            name="(auth)"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(app)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+        <Toast config={toastConfig} />
+      </ThemeProvider>
+    </Provider>
   );
 }

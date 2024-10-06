@@ -19,7 +19,9 @@ const Button: React.FC<ButtonProps> = ({ label, onPress, disabled }) => {
       }}
     >
       <Text style={[styles.innerTextStyle]}>{label}</Text>
-      {disabled && <ActivityIndicator color={Colors.light.redColor} />}
+      {disabled === true ? (
+        <ActivityIndicator color={Colors.light.background} />
+      ) : null}
     </Pressable>
   );
 };
@@ -29,10 +31,12 @@ export default Button;
 const styles = StyleSheet.create({
   buttonStyle: {
     width: width * 0.9,
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 5,
     marginBottom: height * 0.075,
     paddingVertical: 10,
     borderRadius: 5,
   },
-  innerTextStyle: { color: "white", alignSelf: "center" },
+  innerTextStyle: { color: "white", alignSelf: "center", marginRight: 10 },
 });
