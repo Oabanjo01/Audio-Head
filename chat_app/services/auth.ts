@@ -1,33 +1,52 @@
 import { AxiosError, AxiosResponse, Method } from "axios";
 import {
+  LoginResponse,
+  ProfileResponse,
   SignInModel,
   SignUpModel,
+  SignUpResponse,
   VerifyEmailModel,
-} from "root/constants/types/authFunctions";
+  VerifyEmailResponse,
+} from "root/constants/types/authTypes";
 import { showToast } from "root/utils/toast";
 import { instance } from "src/api";
 
 export type AuthData = SignUpModel | VerifyEmailModel | SignInModel;
 
-type EndPointType = "sign-in" | "sign-up" | "verify-token";
+export type AuthResponse =
+  | LoginResponse
+  | SignUpResponse
+  | VerifyEmailResponse
+  | ProfileResponse;
 
-type AuthProps<T extends AuthData> = {
+type EndPointType = "sign-in" | "sign-up" | "verify-token" | "profile";
+
+type AuthProps<T extends AuthData, E extends EndPointType> = {
   method: Method;
-  endPoint: EndPointType;
-  data: T;
+  endPoint: E;
+  data?: T;
+  token?: string;
 };
 
-export const authService = async <T extends AuthData>({
+export const authService = async <T extends AuthData, E extends EndPointType>({
   data,
   endPoint,
   method,
-}: AuthProps<T>): Promise<AxiosResponse | unknown> => {
+  token,
+}: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | unknown> => {
   try {
-    const response = await instance.request({
+    const headers = endPoint.startsWith("profile")
+      ? { Authorization: `Bearer ${token}` }
+      : {};
+
+    console.log(`AuthService`, headers);
+    const payLoad = {
       method,
       url: `auth/${endPoint}`,
       data,
-    });
+      headers,
+    };
+    const response = await instance.request(payLoad);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {

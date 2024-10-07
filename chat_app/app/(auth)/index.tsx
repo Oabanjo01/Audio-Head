@@ -1,7 +1,10 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
-import { SignInModel } from "root/constants/types/authFunctions";
+import { LoginResponse, SignInModel } from "root/constants/types/authTypes";
+import { login } from "root/redux/slices/authSlice";
+import { useAppDispatch } from "root/redux/store";
 import { authService } from "root/services/auth";
 import { signInSchema } from "root/utils/validations";
 
@@ -16,6 +19,9 @@ const LoginInitialValues = {
 };
 
 const LoginScreen = () => {
+  const dispatch = useAppDispatch();
+
+  console.log("LoginScreen");
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -24,11 +30,19 @@ const LoginScreen = () => {
       <AuthLayout
         initialValues={LoginInitialValues}
         submit={async (newPayLoad) => {
-          const response = await authService<SignInModel>({
+          const response = await authService<SignInModel, "sign-in">({
             data: newPayLoad as SignInModel,
             endPoint: "sign-in",
             method: "post",
           });
+
+          const { tokens, userData } = response as LoginResponse;
+
+          const token = JSON.stringify(tokens);
+
+          await AsyncStorage.setItem("tokens", token);
+
+          dispatch(login(userData));
 
           console.log(response, "response.userData");
         }}

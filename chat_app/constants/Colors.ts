@@ -19,6 +19,7 @@ export const Colors = {
     errorClor: "#FF6262",
     blueColor: "#48A2F5",
     greenColor: "#2DDA93",
+    backDrop: "rgba(220, 220, 220, 0.5)",
   },
   dark: {
     text: "#ECEDEE",

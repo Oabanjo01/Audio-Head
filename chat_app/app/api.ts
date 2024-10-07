@@ -47,14 +47,16 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   async (response) => {
     const { data } = response;
-    const { message, userData } = data;
-    console.log(userData, response);
-    showToast({
-      text1: "Success",
-      text2: message,
-      type: "success",
-      position: "top",
-    });
+    const { message } = data;
+    console.log(response.config.url, "here ===");
+    if (!response.config.url?.includes("profile")) {
+      showToast({
+        text1: "Success",
+        text2: message,
+        type: "success",
+        position: "top",
+      });
+    }
     return data;
   },
   (error) => {

@@ -177,7 +177,10 @@ const regenerateVerificationLink: RequestHandler = async (req, res) => {
 };
 
 const sendProfile: RequestHandler = (req, res) => {
-  return res.json({ profile: req.user });
+  return res.json({
+    profile: req.user,
+    message: "Fetched profile successfully",
+  });
 };
 
 const generateNewRefreshToken: RequestHandler<
