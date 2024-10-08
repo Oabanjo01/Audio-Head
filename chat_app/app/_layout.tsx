@@ -12,7 +12,7 @@ import { useColorScheme } from "react-native";
 import { Provider } from "react-redux";
 import { store } from "root/redux/store";
 
-import { AuthProvider } from "./authProvider.tsx ";
+import { AuthProvider } from "./authProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

@@ -4,7 +4,7 @@ import { Modal, View } from "react-native";
 import { Colors } from "root/constants/Colors";
 
 export default function Loader() {
-  console.log("Loading");
+  console.log("Loading ====");
   return (
     <Modal transparent animationType="slide">
       <View

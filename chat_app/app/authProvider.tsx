@@ -17,11 +17,18 @@ export const AuthProvider = () => {
   const router = useRouter();
 
   const fetchItems = async () => {
+    console.log("Fetching items...");
     dispatch(loading(true));
     try {
       const token = await AsyncStorage.getItem("tokens");
+      console.log(token, "token");
       if (!token) return;
       const parsedAccessToken = JSON.parse(token);
+      console.log(
+        token,
+        parsedAccessToken.accessToken,
+        "parsedAccessToken.accessToken"
+      );
       const { profile } = (await authService<any, "profile">({
         endPoint: "profile",
         method: "GET",
@@ -31,8 +38,6 @@ export const AuthProvider = () => {
       if (profile) {
         router.replace("/(app)");
         dispatch(login(profile));
-      } else {
-        router.replace("/(auth)");
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -42,7 +47,7 @@ export const AuthProvider = () => {
           type: "info",
         });
       }
-      router.replace("/(auth)");
+      dispatch(loading(false));
     } finally {
       dispatch(loading(false));
     }
@@ -50,8 +55,7 @@ export const AuthProvider = () => {
   useEffect(() => {
     fetchItems();
   }, []);
-
-  console.log(`Loading: ${userData}`, isLoading);
+  console.log("userData ======", userData);
   return (
     <>
       <StatusBar
@@ -63,8 +67,7 @@ export const AuthProvider = () => {
       />
       {isLoading && <Loader />}
       <Stack initialRouteName={"(auth)"} screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" />
-        {/* <Stack.Screen name="(app)" /> */}
+        <Stack.Screen name={userData === null ? `(auth)` : `(app)`} />
       </Stack>
       <Toast config={toastConfig} />
     </>

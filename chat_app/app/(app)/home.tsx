@@ -3,7 +3,9 @@ import { Text, View } from "react-native";
 
 export default function Homepage() {
   return (
-    <View style={{ height: "100%" }}>
+    <View
+      style={{ height: "100%", alignItems: "center", justifyContent: "center" }}
+    >
       <Text>Homepage</Text>
     </View>
   );

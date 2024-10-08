@@ -1,16 +1,9 @@
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import {
-  Image,
-  Keyboard,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Keyboard, ScrollView, StyleSheet, Text, View } from "react-native";
+import Auth from "root/assets/svg/auth.svg";
 import { height, width } from "root/constants/Dimensions";
-import images from "root/constants/Images";
 import { AuthData } from "root/services/auth";
 import {
   ForgotPasswordSchemaType,
@@ -92,11 +85,12 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       contentContainerStyle={styles.scrollViewContent}
       keyboardShouldPersistTaps="handled"
     >
-      <Image
+      {/* <Image
         source={images.authImage}
         resizeMode="contain"
-        style={styles.image}
-      />
+        /> */}
+
+      <Auth {...styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
       <Formik
@@ -181,8 +175,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   image: {
-    width: width * 0.75,
-    height: height * 0.4,
+    width: width * 0.7,
+    height: height * 0.3,
+    marginBottom: height * 0.05,
   },
   title: {
     textAlign: "center",

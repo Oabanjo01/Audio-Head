@@ -8,6 +8,7 @@ import {
   VerifyEmailModel,
   VerifyEmailResponse,
 } from "root/constants/types/authTypes";
+import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
 import { instance } from "src/api";
 
@@ -39,7 +40,7 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
       ? { Authorization: `Bearer ${token}` }
       : {};
 
-    console.log(`AuthService`, headers);
+    console.log(`AuthServicesss§`, headers);
     const payLoad = {
       method,
       url: `auth/${endPoint}`,
@@ -49,6 +50,7 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
     const response = await instance.request(payLoad);
     return response;
   } catch (error) {
+    logErrorDetails(error);
     if (error instanceof AxiosError) {
       if (error.code === "ERR_NETWORK") {
         const response = error.request;

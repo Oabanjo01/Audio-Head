@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
 
 export const instance = axios.create({
@@ -60,7 +61,7 @@ instance.interceptors.response.use(
     return data;
   },
   (error) => {
-    // logErrorDetails(error);
+    logErrorDetails(error);
 
     if (error instanceof AxiosError) {
       const response = error.response;
