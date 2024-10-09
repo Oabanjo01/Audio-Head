@@ -2,17 +2,17 @@ import { AxiosError, AxiosResponse, Method } from "axios";
 import {
   LoginResponse,
   ProfileResponse,
+  ResetPasswordModel,
   SignInModel,
   SignUpModel,
   SignUpResponse,
-  VerifyEmailModel,
   VerifyEmailResponse,
 } from "root/constants/types/authTypes";
 import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
 import { instance } from "src/api";
 
-export type AuthData = SignUpModel | VerifyEmailModel | SignInModel;
+export type AuthData = SignUpModel | ResetPasswordModel | SignInModel;
 
 export type AuthResponse =
   | LoginResponse
@@ -20,7 +20,13 @@ export type AuthResponse =
   | VerifyEmailResponse
   | ProfileResponse;
 
-type EndPointType = "sign-in" | "sign-up" | "verify-token" | "profile";
+type EndPointType =
+  | "sign-in"
+  | "sign-up"
+  | "verify-token"
+  | "profile"
+  | "sign-out"
+  | "generate-reset-password-link";
 
 type AuthProps<T extends AuthData, E extends EndPointType> = {
   method: Method;
@@ -36,11 +42,11 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
   token,
 }: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | unknown> => {
   try {
-    const headers = endPoint.startsWith("profile")
-      ? { Authorization: `Bearer ${token}` }
-      : {};
+    const headers =
+      endPoint.startsWith("profile") || endPoint.includes("sign-out")
+        ? { Authorization: `Bearer ${token}` }
+        : {};
 
-    console.log(`AuthServicesss§`, headers);
     const payLoad = {
       method,
       url: `auth/${endPoint}`,

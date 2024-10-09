@@ -28,7 +28,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-  console.log("fonts loaded", fontsLoaded);
   if (!fontsLoaded) {
     return null;
   }

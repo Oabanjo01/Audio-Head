@@ -1,8 +1,7 @@
 import React from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
-import { SignUpModel } from "root/constants/types/authTypes";
-import { authService } from "root/services/auth";
+import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { signUpSchema } from "root/utils/validations";
 
 import { authStyles } from ".";
@@ -20,6 +19,7 @@ const SignUpInitialValues = {
 };
 
 const SignUpScreen = () => {
+  const { signUp } = useAuthentication();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -28,11 +28,7 @@ const SignUpScreen = () => {
       <AuthLayout
         initialValues={SignUpInitialValues}
         submit={async (newPayLoad) => {
-          await authService<SignUpModel, "sign-up">({
-            data: newPayLoad as SignUpModel,
-            endPoint: "sign-up",
-            method: "post",
-          });
+          signUp(newPayLoad);
         }}
         secondButton="Sign in"
         title="Online Marketplace for Used Goods"

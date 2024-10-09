@@ -1,9 +1,18 @@
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import React, { useState } from "react";
-import { Keyboard, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Keyboard,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Auth from "root/assets/svg/auth.svg";
 import { height, width } from "root/constants/Dimensions";
+import images from "root/constants/Images";
 import { AuthData } from "root/services/auth";
 import {
   ForgotPasswordSchemaType,
@@ -85,11 +94,6 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       contentContainerStyle={styles.scrollViewContent}
       keyboardShouldPersistTaps="handled"
     >
-      {/* <Image
-        source={images.authImage}
-        resizeMode="contain"
-        /> */}
-
       <Auth {...styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
@@ -156,11 +160,44 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
           );
         }}
       </Formik>
-      <View style={styles.divider} />
       <View style={styles.footer}>
-        <Link href={{ pathname: `/(auth)/forgotPassord` }}>{firstButton}</Link>
+        {
+          <Link href={{ pathname: `/(auth)/forgotPassord` }}>
+            {signIn || signUp ? firstButton : ""}
+          </Link>
+        }
         <Link href={{ pathname: `/(auth)/${pathName}` }}>{secondButton}</Link>
       </View>
+      {signIn && (
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: height * 0.025,
+            }}
+          >
+            <View style={styles.divider} />
+            <Text style={{ paddingHorizontal: 10 }}>Or sign in with</Text>
+            <View style={styles.divider} />
+          </View>
+          <Pressable
+            onPress={() => {
+              console.log("use google to sign in");
+            }}
+          >
+            <Image
+              source={images.google}
+              style={{
+                height: width * 0.1,
+                width: width * 0.1,
+              }}
+              resizeMode="contain"
+            />
+          </Pressable>
+        </>
+      )}
     </ScrollView>
   );
 };
@@ -192,14 +229,14 @@ const styles = StyleSheet.create({
   divider: {
     height: 2,
     backgroundColor: "grey",
-    width: width * 0.6,
+    width: width * 0.15,
     borderRadius: 5,
-    marginVertical: height * 0.02,
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    marginBottom: height * 0.02,
     marginTop: height * 0.02,
   },
 });

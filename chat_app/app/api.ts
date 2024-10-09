@@ -3,7 +3,9 @@ import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
 
 export const instance = axios.create({
-  baseURL: "http://192.168.0.168:8000/",
+  // baseURL: "http://localhost/",
+  // baseURL: "http://192.168.0.168:8000/",
+  baseURL: "http://10.128.59.200:8000/",
 });
 
 instance.defaults.timeout = 10000;
@@ -14,12 +16,10 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log(error, "error");
     if (error instanceof AxiosError) {
       const response = error.response;
       if (response) {
         const { message } = response.data;
-        console.log(message, "====message====");
         showToast({
           text1: "Error",
           text2: message,

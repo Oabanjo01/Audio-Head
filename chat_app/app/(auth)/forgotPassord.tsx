@@ -1,6 +1,7 @@
 import React from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
+import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { forgotPasswordSchema } from "root/utils/validations";
 
 import { authStyles } from ".";
@@ -14,13 +15,16 @@ const VerifyEmailValues = {
 };
 
 const VerifyEmailScreen = () => {
+  const { forgotPassword } = useAuthentication();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={authStyles.keyboardAvoidingView}
     >
       <AuthLayout
-        submit={() => {}}
+        submit={async (email) => {
+          forgotPassword(email);
+        }}
         initialValues={VerifyEmailValues}
         secondButton="Sign up"
         firstButton="Forgot Password"

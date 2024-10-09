@@ -3,7 +3,6 @@ import "react-native-reanimated";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {
-  console.log("AuthLayout: ");
   return (
     <Stack
       screenOptions={{

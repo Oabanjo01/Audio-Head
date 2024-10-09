@@ -48,6 +48,6 @@ export type SignInModel = {
   email: string;
   password: string;
 };
-export type VerifyEmailModel = {
+export type ResetPasswordModel = {
   email: string;
 };
