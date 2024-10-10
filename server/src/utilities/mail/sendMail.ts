@@ -18,8 +18,6 @@ const sendMail = async (emailTemplatePath: string, email: any, link: any) => {
     verificationLink: link,
   });
 
-  console.log("got here ===");
-
   await transport.sendMail({
     subject: "Verify your email",
     from: "banjolakunri@gmail.com",

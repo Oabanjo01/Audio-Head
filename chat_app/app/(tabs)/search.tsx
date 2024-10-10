@@ -13,7 +13,7 @@ export default function Search() {
     >
       <Button
         onPress={() => {
-          signOut();
+          //   signOut();
         }}
         label={"Logout"}
       />

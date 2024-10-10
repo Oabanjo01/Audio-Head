@@ -108,7 +108,7 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
   res
 ) => {
   const { email, password } = req.body;
-
+  console.log("got here");
   if (!email) sendResponse(res, 422, "E-Mail is not valid");
   if (!password) sendResponse(res, 422, "Password is not incorrect");
 
@@ -132,11 +132,11 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
     });
     const refreshToken = jwt.sign(payload, storedValues.secretkey);
 
-    if (!user.tokens) {
-      user.tokens = [refreshToken];
-    } else {
-      user.tokens.push(refreshToken);
-    }
+    // if (!user.tokens) {
+    user.tokens = [refreshToken];
+    // } else {
+    //   user.tokens.push(refreshToken);
+    // }
 
     await user.save();
     res.json({
@@ -245,10 +245,10 @@ const generateNewRefreshToken: RequestHandler<
 
 const signOut: RequestHandler = async (req, res) => {
   const { refreshToken } = req.body;
+  console.log(refreshToken, req.body, "req.user.id");
 
   const userExists = await UserModel.findOne({
     _id: req.user.id,
-    tokens: refreshToken,
   });
 
   if (!userExists) {
@@ -262,7 +262,9 @@ const signOut: RequestHandler = async (req, res) => {
 
     userExists.save();
 
-    res.send();
+    res.send().json({
+      message: "You have been signed out successfully",
+    });
   }
 };
 
@@ -317,6 +319,7 @@ const resetPassword: RequestHandler<{}, {}, PasswordResetRequestBody> = async (
 ) => {
   const { owner, newPassword } = req.body;
 
+  console.log(newPassword, "newPassword");
   const userExists = await UserModel.findById(owner);
 
   if (!userExists) return sendResponse(res, 404, "User not found");
@@ -330,9 +333,7 @@ const resetPassword: RequestHandler<{}, {}, PasswordResetRequestBody> = async (
       "This Password exists already, use a new one"
     );
 
-  await UserModel.findByIdAndUpdate(owner, {
-    password: newPassword,
-  });
+  userExists.password = newPassword;
 
   await PasswordVerificationModel.findOneAndDelete({
     owner: owner,
@@ -342,6 +343,8 @@ const resetPassword: RequestHandler<{}, {}, PasswordResetRequestBody> = async (
     rootPath,
     "/views/successPasswordReset.ejs"
   );
+
+  userExists.save();
 
   await mail
     .sendPasswordSuccesResetMail(emailTemplatePath, userExists.email)

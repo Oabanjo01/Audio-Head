@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AxiosError } from "axios";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { StatusBar } from "react-native";
+import { Platform, StatusBar, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ProfileResponse } from "root/constants/types/authTypes";
 import { getAuthState, loading, login } from "root/redux/slices/authSlice";
@@ -15,6 +15,8 @@ export const AuthProvider = () => {
   const { loading: isLoading, userData } = useAppSelector(getAuthState);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  console.log("AuthProvider");
 
   const fetchItems = async () => {
     dispatch(loading(true));
@@ -31,6 +33,9 @@ export const AuthProvider = () => {
       if (profile) {
         router.replace("/(tabs)");
         dispatch(login(profile));
+      } else {
+        router.replace("/(tabs)/home");
+        dispatch(login(null));
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -50,13 +55,20 @@ export const AuthProvider = () => {
   }, []);
   return (
     <>
-      <StatusBar
-        networkActivityIndicatorVisible
-        barStyle={"dark-content"}
-        backgroundColor="transparent"
-        translucent
-        animated
-      />
+      <View
+        style={{
+          height: Platform.OS === "ios" ? 20 : StatusBar.currentHeight,
+          backgroundColor: "transparent",
+        }}
+      >
+        <StatusBar
+          networkActivityIndicatorVisible
+          barStyle="dark-content"
+          backgroundColor="rgba(0,0,0,0)"
+          translucent
+          animated
+        />
+      </View>
       {isLoading && <Loader />}
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name={userData === null ? `(auth)` : `(tabs)`} />

@@ -48,7 +48,7 @@ export const useAuthentication = () => {
     dispatch(loading(false));
   };
 
-  const signOut = async () => {
+  const signOut = async (refreshToken: string) => {
     const token = await AsyncStorage.getItem("tokens");
     if (!token) return;
     const parsedAccessToken = JSON.parse(token);
@@ -57,8 +57,9 @@ export const useAuthentication = () => {
       endPoint: "sign-out",
       method: "GET",
       token: parsedAccessToken.accessToken,
+      data: refreshToken,
     });
-    if (response) return router.replace("/(auth)/");
+    if (response) return router.replace("/(auth)/signUp");
   };
 
   const forgotPassword = async (email: ResetPasswordModel) => {

@@ -4,8 +4,9 @@ import { showToast } from "root/utils/toast";
 
 export const instance = axios.create({
   // baseURL: "http://localhost/",
-  // baseURL: "http://192.168.0.168:8000/",
-  baseURL: "http://10.128.59.200:8000/",
+  baseURL: "http://192.168.1.168:8000/", // shaks wifi
+  // baseURL: "http://10.128.59.200:8000/", // office wifi
+  // baseURL: "http://192.168.0.168:8000/", // house wifi
 });
 
 instance.defaults.timeout = 10000;
@@ -49,7 +50,7 @@ instance.interceptors.response.use(
   async (response) => {
     const { data } = response;
     const { message } = data;
-    console.log(response.config.url, "here ===");
+    console.log(response.config.url, "here ===", response);
     if (!response.config.url?.includes("profile")) {
       showToast({
         text1: "Success",

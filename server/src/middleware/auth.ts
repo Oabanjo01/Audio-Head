@@ -53,8 +53,6 @@ export const validatePasswordToken: RequestHandler = async (req, res, next) => {
 };
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const url = req.url;
-  const quiery = req.query;
   try {
     const authToken = req.headers.authorization;
 
@@ -73,7 +71,6 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     if (!user) {
       return sendResponse(res, 403, "Unauthorized request");
     }
-    console.log(url, "===url", quiery);
     // why this works - Any modifications made to req in one middleware function will be available to subsequent middleware functions and route handlers.
     req.user = {
       email: user.email,

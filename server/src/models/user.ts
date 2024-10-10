@@ -51,7 +51,10 @@ userSchema.pre("save", async function (next) {
   if (this.isModified("password") === true) {
     const salt = await genSalt(10);
     this.password = await hash(this.password, salt);
+    console.log(this.password);
     next();
+  } else {
+    console.log(this.password, "was not rest");
   }
 });
 

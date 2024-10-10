@@ -43,10 +43,10 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
 }: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | unknown> => {
   try {
     const headers =
-      endPoint.startsWith("profile") || endPoint.includes("sign-out")
+      endPoint.startsWith("profile") || endPoint.includes("out")
         ? { Authorization: `Bearer ${token}` }
         : {};
-
+    console.log(headers, token);
     const payLoad = {
       method,
       url: `auth/${endPoint}`,

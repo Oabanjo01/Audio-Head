@@ -13,7 +13,7 @@ export default function Profile() {
     >
       <Button
         onPress={() => {
-          signOut();
+          //   signOut();
         }}
         label={"Logout"}
       />
