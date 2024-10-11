@@ -25,9 +25,6 @@ export interface AuthSliceState {
 // Sign Up
 export interface SignUpResponse {}
 
-// Verify Email
-export interface VerifyEmailResponse {}
-
 // Fetch Profile
 export interface ProfileResponse {
   profile: UserData & {

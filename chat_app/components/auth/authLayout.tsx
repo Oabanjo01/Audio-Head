@@ -43,7 +43,7 @@ interface AuthLayoutProp {
   submit: (newPayLoad: AuthData) => Promise<void> | void;
   firstButton: string;
   secondButton: string;
-  pathName: "signUp" | "verifyEmail" | "";
+  pathName: "signUp" | "";
   signUp?: boolean;
   signIn?: boolean;
   buttonLabel: string;

@@ -1,4 +1,4 @@
-import { AxiosError, AxiosResponse, Method } from "axios";
+import axios, { AxiosResponse, Method } from "axios";
 import {
   LoginResponse,
   ProfileResponse,
@@ -6,7 +6,6 @@ import {
   SignInModel,
   SignUpModel,
   SignUpResponse,
-  VerifyEmailResponse,
 } from "root/constants/types/authTypes";
 import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
@@ -14,11 +13,7 @@ import { instance } from "src/api";
 
 export type AuthData = SignUpModel | ResetPasswordModel | SignInModel;
 
-export type AuthResponse =
-  | LoginResponse
-  | SignUpResponse
-  | VerifyEmailResponse
-  | ProfileResponse;
+export type AuthResponse = LoginResponse | SignUpResponse | ProfileResponse;
 
 type EndPointType =
   | "sign-in"
@@ -42,11 +37,11 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
   token,
 }: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | unknown> => {
   try {
-    const headers =
-      endPoint.startsWith("profile") || endPoint.includes("out")
-        ? { Authorization: `Bearer ${token}` }
-        : {};
-    console.log(headers, token);
+    const headers: Record<string, string> = {};
+    if (endPoint.startsWith("profile") || endPoint.includes("out")) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const payLoad = {
       method,
       url: `auth/${endPoint}`,
@@ -57,12 +52,12 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
     return response;
   } catch (error) {
     logErrorDetails(error);
-    if (error instanceof AxiosError) {
+    if (axios.isAxiosError(error)) {
       if (error.code === "ERR_NETWORK") {
         const response = error.request;
         if (response) {
           const message = response?._response;
-          return showToast({
+          showToast({
             text1: "Error",
             text2: message,
             type: "error",
@@ -71,5 +66,6 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
         }
       }
     }
+    return null;
   }
 };

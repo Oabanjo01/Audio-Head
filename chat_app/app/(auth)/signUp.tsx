@@ -1,10 +1,9 @@
 import React from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { signUpSchema } from "root/utils/validations";
 
-import { authStyles } from ".";
+import CustomWrapper from "../../utils/customWrapper";
 
 export interface SignUpProps {
   name: string;
@@ -21,10 +20,7 @@ const SignUpInitialValues = {
 const SignUpScreen = () => {
   const { signUp } = useAuthentication();
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={authStyles.keyboardAvoidingView}
-    >
+    <CustomWrapper>
       <AuthLayout
         initialValues={SignUpInitialValues}
         submit={async (newPayLoad) => {
@@ -40,7 +36,7 @@ const SignUpScreen = () => {
         buttonLabel="Sign Up"
         schema={signUpSchema}
       />
-    </KeyboardAvoidingView>
+    </CustomWrapper>
   );
 };
 

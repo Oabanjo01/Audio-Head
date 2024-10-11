@@ -1,8 +1,9 @@
 import React from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { signInSchema } from "root/utils/validations";
+
+import CustomWrapper from "../../utils/customWrapper";
 
 export interface LoginProps {
   email: string;
@@ -18,10 +19,7 @@ const LoginScreen = () => {
   const { signIn } = useAuthentication();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={authStyles.keyboardAvoidingView}
-    >
+    <CustomWrapper>
       <AuthLayout
         initialValues={LoginInitialValues}
         submit={async (newPayLoad) => {
@@ -37,15 +35,8 @@ const LoginScreen = () => {
         schema={signInSchema}
         signIn
       />
-    </KeyboardAvoidingView>
+    </CustomWrapper>
   );
 };
-
-export const authStyles = StyleSheet.create({
-  keyboardAvoidingView: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-});
 
 export default LoginScreen;

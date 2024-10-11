@@ -252,20 +252,18 @@ const signOut: RequestHandler = async (req, res) => {
   });
 
   if (!userExists) {
-    sendResponse(res, 401, "Your request could not be processed");
-  } else {
-    const newTokenList = userExists.tokens.filter(
-      (token) => token !== refreshToken
-    );
-
-    userExists.tokens = newTokenList;
-
-    userExists.save();
-
-    res.send().json({
-      message: "You have been signed out successfully",
-    });
+    return sendResponse(res, 401, "Your request could not be processed");
   }
+  const newTokenList = userExists.tokens.filter(
+    (token) => token !== refreshToken
+  );
+
+  userExists.tokens = newTokenList;
+  userExists.save();
+
+  res.json({
+    message: "You have been signed out successfully",
+  });
 };
 
 const generatePasswordResetLink: RequestHandler<

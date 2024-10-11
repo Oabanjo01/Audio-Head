@@ -1,31 +1,27 @@
 import React from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { forgotPasswordSchema } from "root/utils/validations";
 
-import { authStyles } from ".";
+import CustomWrapper from "../../utils/customWrapper";
 
-export interface VerifyEmailProps {
+export interface ForgotPassswordProps {
   email: string;
 }
 
-const VerifyEmailValues = {
+const ForgotPassswordValues = {
   email: "",
 };
 
-const VerifyEmailScreen = () => {
+const ForgotPassswordScreen = () => {
   const { forgotPassword } = useAuthentication();
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={authStyles.keyboardAvoidingView}
-    >
+    <CustomWrapper>
       <AuthLayout
         submit={async (email) => {
           forgotPassword(email);
         }}
-        initialValues={VerifyEmailValues}
+        initialValues={ForgotPassswordValues}
         secondButton="Sign up"
         firstButton="Forgot Password"
         title="Online Marketplace for Used Goods"
@@ -35,8 +31,8 @@ const VerifyEmailScreen = () => {
         buttonLabel="Request Link"
         schema={forgotPasswordSchema}
       />
-    </KeyboardAvoidingView>
+    </CustomWrapper>
   );
 };
 
-export default VerifyEmailScreen;
+export default ForgotPassswordScreen;

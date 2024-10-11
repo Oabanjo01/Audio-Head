@@ -1,3 +1,4 @@
+import { CreateProductModel } from "root/constants/types/productTypes";
 import * as yup from "yup";
 
 declare module "yup" {
@@ -58,8 +59,25 @@ export const forgotPasswordSchema = yup.object({
     .required("An email address is required"),
 });
 
+export const createProductSchema = new yup.ObjectSchema<
+  Pick<
+    CreateProductModel,
+    "name" | "description" | "price" | "purchasingDate" | "category"
+  >
+>({
+  name: yup.string().required("Product name is requird"),
+  price: yup.number().required("Product price is requird"),
+  description: yup.string().required("Product descriptioname is requird"),
+  purchasingDate: yup.string().required("Product creation date is requird"),
+  category: yup
+    .string()
+    // .oneOf(categories)
+    .required("Product category is requird"),
+});
+
 export type SignInSchemaType = yup.InferType<typeof signInSchema>;
 export type SignUpSchemaType = yup.InferType<typeof signUpSchema>;
 export type ForgotPasswordSchemaType = yup.InferType<
   typeof forgotPasswordSchema
 >;
+export type CreateProductSchemaType = yup.InferType<typeof createProductSchema>;

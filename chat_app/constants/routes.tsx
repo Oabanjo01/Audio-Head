@@ -1,7 +1,7 @@
 const authRoutes = {
   signIn: "signIn",
   signUp: "signUp",
-  verifyEmail: "verifyEmail",
+  forgotPassword: "forgotPassword",
 };
 
 const tabRoutes = {

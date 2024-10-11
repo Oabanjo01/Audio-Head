@@ -11,7 +11,6 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="verifyEmail" />
       <Stack.Screen name="signUp" />
       <Stack.Screen name="forgotPassord" />
     </Stack>

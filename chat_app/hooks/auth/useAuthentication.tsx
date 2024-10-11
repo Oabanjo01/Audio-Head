@@ -9,6 +9,7 @@ import {
 import { loading, login } from "root/redux/slices/authSlice";
 import { useAppDispatch } from "root/redux/store";
 import { AuthData, authService } from "root/services/auth";
+import clearAllTokens from "root/utils/clearStorage";
 import { showToast } from "root/utils/toast";
 
 export const useAuthentication = () => {
@@ -24,6 +25,8 @@ export const useAuthentication = () => {
       });
 
       const { tokens, userData } = response as LoginResponse;
+
+      console.log(tokens, userData);
 
       const token = JSON.stringify(tokens);
 
@@ -48,18 +51,20 @@ export const useAuthentication = () => {
     dispatch(loading(false));
   };
 
-  const signOut = async (refreshToken: string) => {
+  const signOut = async () => {
     const token = await AsyncStorage.getItem("tokens");
     if (!token) return;
     const parsedAccessToken = JSON.parse(token);
-    console.log(parsedAccessToken.accessToken, "parsedAccessToken.accessToken");
     const response = await authService<any, "sign-out">({
       endPoint: "sign-out",
       method: "GET",
       token: parsedAccessToken.accessToken,
-      data: refreshToken,
+      data: { refreshToken: parsedAccessToken.refreshToken },
     });
-    if (response) return router.replace("/(auth)/signUp");
+    if (response) {
+      router.replace("/(auth)/");
+      clearAllTokens();
+    }
   };
 
   const forgotPassword = async (email: ResetPasswordModel) => {

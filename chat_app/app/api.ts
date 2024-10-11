@@ -1,11 +1,10 @@
 import axios, { AxiosError } from "axios";
-import { logErrorDetails } from "root/utils/customErrorLogger";
 import { showToast } from "root/utils/toast";
 
 export const instance = axios.create({
   // baseURL: "http://localhost/",
-  baseURL: "http://192.168.1.168:8000/", // shaks wifi
-  // baseURL: "http://10.128.59.200:8000/", // office wifi
+  // baseURL: "http://192.168.1.168:8000/", // shaks wifi
+  baseURL: "http://10.128.59.200:8000/", // office wifi
   // baseURL: "http://192.168.0.168:8000/", // house wifi
 });
 
@@ -50,7 +49,7 @@ instance.interceptors.response.use(
   async (response) => {
     const { data } = response;
     const { message } = data;
-    console.log(response.config.url, "here ===", response);
+    console.log("here ===", data);
     if (!response.config.url?.includes("profile")) {
       showToast({
         text1: "Success",
@@ -62,7 +61,8 @@ instance.interceptors.response.use(
     return data;
   },
   (error) => {
-    logErrorDetails(error);
+    console.log("error ===", error);
+    // logErrorDetails(error);
 
     if (error instanceof AxiosError) {
       const response = error.response;
