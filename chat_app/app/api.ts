@@ -4,8 +4,8 @@ import { showToast } from "root/utils/toast";
 export const instance = axios.create({
   // baseURL: "http://localhost/",
   // baseURL: "http://192.168.1.168:8000/", // shaks wifi
-  baseURL: "http://10.128.59.200:8000/", // office wifi
-  // baseURL: "http://192.168.0.168:8000/", // house wifi
+  // baseURL: "http://10.128.59.200:8000/", // office wifi
+  baseURL: "http://192.168.0.168:8000/", // house wifi
 });
 
 instance.defaults.timeout = 10000;

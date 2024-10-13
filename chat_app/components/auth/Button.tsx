@@ -13,7 +13,7 @@ import { height, width } from "root/constants/Dimensions";
 interface ButtonProps extends PressableProps {
   label: string;
   disabled?: boolean;
-  onPress?: () => void;
+  onPress?(): void;
   buttonStyle?: ViewStyle;
   submitting?: boolean;
 }

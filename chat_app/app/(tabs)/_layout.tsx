@@ -5,7 +5,6 @@ import { Colors } from "root/constants/Colors";
 import { height } from "root/constants/Dimensions";
 
 export default function TabLayout() {
-  console.log("================================");
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: "white" }}
