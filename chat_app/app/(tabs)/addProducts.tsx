@@ -4,17 +4,17 @@ import {
   BottomSheetModal,
   useBottomSheetModal,
 } from "@gorhom/bottom-sheet";
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 import React, { useCallback, useRef } from "react";
-import { Keyboard, StyleSheet, Text, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
 import Button from "root/components/auth/Button";
 import { TextField } from "root/components/auth/TextField";
+import CustomWrapper from "root/components/customWrapper";
 import GeneralModal from "root/components/modal";
-import categories from "root/constants/categories";
+import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CreateProductModel } from "root/constants/types/productTypes";
-import CustomWrapper from "root/utils/customWrapper";
 import { createProductSchema } from "root/utils/validations";
 
 const initialValues: CreateProductModel = {
@@ -28,41 +28,45 @@ const initialValues: CreateProductModel = {
 
 export default function Search() {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  console.log("bottomSheetModalRefs", bottomSheetModalRef);
+  const formikRef = useRef<FormikProps<CreateProductModel> | null>(null);
 
   const { dismiss } = useBottomSheetModal();
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const renderItem = useCallback(
-    ({ item }: { item: (typeof categories)[number] }) => {
-      const IconComponent =
-        item.icon.library === "Ionicons" ? Ionicons : MaterialIcons;
-      return (
-        <View style={styles.itemStyle}>
-          <IconComponent
-            name={item.icon.name}
-            size={26}
-            color={Colors.light.primary}
-          />
-          <Text style={{ marginLeft: 15, fontSize: 16, fontWeight: "500" }}>
-            {item.name}
-          </Text>
-        </View>
-      );
-    },
-    []
-  );
+  const renderItem = useCallback(({ item }: { item: CategoryItemType }) => {
+    const IconComponent =
+      item.icon.library === "Ionicons" ? Ionicons : MaterialIcons;
+    return (
+      <Pressable
+        style={styles.itemStyle}
+        onPress={() => {
+          formikRef.current?.setFieldValue("category", item.name);
+          dismiss();
+        }}
+      >
+        <IconComponent
+          name={item.icon.name as any}
+          size={26}
+          color={Colors.light.primary}
+        />
+        <Text style={{ marginLeft: 15, fontSize: 16, fontWeight: "500" }}>
+          {item.name}
+        </Text>
+      </Pressable>
+    );
+  }, []);
 
   return (
     <>
       <CustomWrapper
-        title="Add a New Product"
+        title="New Product"
         rightHeaderIcon
         rightHeaderIconTitle="cart"
       >
         <Formik
+          innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={createProductSchema}
           onSubmit={async (values, { validateForm }) => {
@@ -78,7 +82,9 @@ export default function Search() {
             isValidating,
             isValid,
             handleChange,
+            values,
           }) => {
+            console.log(values, "validation");
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
@@ -146,6 +152,8 @@ export default function Search() {
                   />
                   <TextField
                     label="Category"
+                    editable={false}
+                    categoryValue={values.category}
                     autoCapitalize="none"
                     viewProps={{
                       paddingVertical: 15,
@@ -200,7 +208,7 @@ export default function Search() {
                   }}
                   disabled={!isValid}
                   onPress={handleSubmit}
-                  label={"Add"}
+                  label={"Create"}
                 />
               </>
             );

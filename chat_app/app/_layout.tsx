@@ -12,7 +12,8 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import { store } from "root/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "root/redux/store";
 
 import { AuthProvider } from "./authProvider";
 
@@ -36,15 +37,17 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <AuthProvider />
-          </ThemeProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
+      <PersistGate persistor={persistor}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <BottomSheetModalProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <AuthProvider />
+            </ThemeProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </PersistGate>
     </Provider>
   );
 }

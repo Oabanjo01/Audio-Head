@@ -4,20 +4,18 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Platform, StatusBar, View } from "react-native";
 import Toast from "react-native-toast-message";
+import Loader from "root/components/customLoader";
+import { showToast, toastConfig } from "root/components/toast";
 import { height } from "root/constants/Dimensions";
 import { ProfileResponse } from "root/constants/types/authTypes";
+import { authService } from "root/controllers/auth/auth";
 import { getAuthState, loading, login } from "root/redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "root/redux/store";
-import { authService } from "root/services/auth";
-import Loader from "root/utils/loader";
-import { showToast, toastConfig } from "root/utils/toast";
 
 export const AuthProvider = () => {
   const { loading: isLoading, userData } = useAppSelector(getAuthState);
   const dispatch = useAppDispatch();
   const router = useRouter();
-
-  console.log("AuthProvider");
 
   const fetchItems = async () => {
     dispatch(loading(true));
@@ -25,19 +23,22 @@ export const AuthProvider = () => {
       const token = await AsyncStorage.getItem("tokens");
       if (!token) return;
       const parsedAccessToken = JSON.parse(token);
-      const { profile } = (await authService<any, "profile">({
+      const response = (await authService<any, "profile">({
         endPoint: "profile",
         method: "GET",
-        token: parsedAccessToken.accessToken,
+        token: parsedAccessToken.refreshToken,
       })) as ProfileResponse;
-      console.log(profile, "===profile ---");
+
+      const { profile } = response;
+
       if (profile) {
         router.replace("/(tabs)/home");
         dispatch(login(profile));
-      } else {
-        router.replace("/(auth)/");
-        dispatch(login(null));
       }
+      // else {
+      //   dispatch(login(null));
+      //   router.replace("/(auth)/");
+      // }
     } catch (error) {
       if (error instanceof AxiosError) {
         showToast({

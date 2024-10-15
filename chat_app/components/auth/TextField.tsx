@@ -12,14 +12,17 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { CategoriesNameType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
-import { fontSize, height, width } from "root/constants/Dimensions";
+import { fontSize, width } from "root/constants/Dimensions";
+import { CategoryIconName } from "root/constants/icons/icon";
 import {
   handleChangeType,
   handleDateChangeType,
   setFieldValueType,
 } from "root/constants/types/textInputs/formik";
 
+import IconComponent from "../customIcon";
 import TextFieldError from "./TextFieldError";
 
 const textWidth = width * 0.9;
@@ -32,7 +35,7 @@ interface TextFieldProps extends TextInputProps {
   fieldName: string;
   showPasswords?(): void;
   isOpen?: boolean;
-  leftIconTitle?: IconName;
+  leftIconTitle?: CategoryIconName;
   setFieldValue: setFieldValueType;
   leftIcon?: boolean;
   viewProps?: ViewStyle;
@@ -40,10 +43,10 @@ interface TextFieldProps extends TextInputProps {
   errorMessage?: string;
   price?: boolean;
   isDateField?: boolean;
-  dateValue?: string;
+  categoryValue?: CategoriesNameType | "";
   handleChange?: handleChangeType;
   rightIcon?: boolean;
-  rightIconName?: IconName;
+  rightIconName?: CategoryIconName;
   rightIconPress?(): void;
 }
 
@@ -59,7 +62,7 @@ export const TextField: FC<TextFieldProps> = ({
   error,
   errorMessage,
   price,
-  dateValue,
+  categoryValue,
   isDateField,
   rightIcon,
   rightIconName,
@@ -78,7 +81,6 @@ export const TextField: FC<TextFieldProps> = ({
   };
 
   const handleDateChange: handleDateChangeType = async (_, selectedDate) => {
-    console.log("unformatted date", selectedDate);
     setShowDatePicker(false);
     if (selectedDate) {
       const formattedDate = selectedDate.toDateString();
@@ -108,28 +110,28 @@ export const TextField: FC<TextFieldProps> = ({
               justifyContent: "flex-start",
               flexDirection: "row",
               width: "90%",
-              height: Platform.select({
-                ios: height * 0.0325,
-              }),
+              // height: Platform.select({
+              //   ios: height * 0.0325,
+              // }),
             }}
           >
             {leftIcon && (
-              <Ionicons
+              <IconComponent
                 onPress={showPasswords}
-                name={leftIconTitle}
+                name={leftIconTitle || "hourglass-empty"}
                 size={24}
                 style={{
                   alignSelf: "center",
                   marginRight: 15,
                 }}
-                color="black"
+                color={Colors.light.primary}
               />
             )}
             <TextInput
               placeholder={label}
               cursorColor={"black"}
               selectionColor={Colors.light.primary}
-              style={{ flex: 1 }}
+              style={{ flex: 1, color: "black" }}
               onPress={Platform.select({
                 ios: handlePress,
               })}
@@ -144,7 +146,7 @@ export const TextField: FC<TextFieldProps> = ({
                   setFieldValue(fieldName, text, true);
                 }
               }}
-              value={dateValue ? dateValue : texts}
+              value={categoryValue ? categoryValue : texts}
               onFocus={() => {
                 setIsFocused(true);
               }}
@@ -160,19 +162,18 @@ export const TextField: FC<TextFieldProps> = ({
               style={{
                 alignSelf: "center",
               }}
-              color="black"
+              color={Colors.light.primary}
             />
           )}
           {rightIcon && (
-            <Ionicons
+            <IconComponent
               onPress={rightIconPress}
-              name={rightIconName}
+              name={rightIconName || "hourglass-empty"}
               size={24}
               style={{
                 alignSelf: "center",
-                // marginRight: ,
               }}
-              color="black"
+              color={Colors.light.primary}
             />
           )}
         </View>

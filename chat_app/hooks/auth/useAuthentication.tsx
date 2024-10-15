@@ -1,16 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { showToast } from "root/components/toast";
 import {
   LoginResponse,
   ResetPasswordModel,
   SignInModel,
   SignUpModel,
 } from "root/constants/types/authTypes";
+import { AuthData, authService } from "root/controllers/auth/auth";
 import { loading, login } from "root/redux/slices/authSlice";
 import { useAppDispatch } from "root/redux/store";
-import { AuthData, authService } from "root/services/auth";
 import clearAllTokens from "root/utils/clearStorage";
-import { showToast } from "root/utils/toast";
 
 export const useAuthentication = () => {
   const dispatch = useAppDispatch();
@@ -24,15 +24,17 @@ export const useAuthentication = () => {
         method: "post",
       });
 
+      console.log(response, "response ===");
+      if (!response) return;
       const { tokens, userData } = response as LoginResponse;
 
-      console.log(tokens, userData);
+      dispatch(login({ ...userData, accessToken: tokens.accessToken }));
 
-      const token = JSON.stringify(tokens);
-
-      await AsyncStorage.setItem("tokens", token);
+      console.log(tokens, userData, "wetin dey shele???");
+      await AsyncStorage.setItem("tokens", JSON.stringify(tokens));
       router.replace("/(tabs)/home");
-      dispatch(login(userData));
+    } catch (e) {
+      console.log(e, "errorrr ===");
     } finally {
       dispatch(loading(false));
     }

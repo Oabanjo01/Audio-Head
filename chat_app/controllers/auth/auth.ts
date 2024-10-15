@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, Method } from "axios";
+import { showToast } from "root/components/toast";
 import {
   LoginResponse,
   ProfileResponse,
@@ -7,13 +8,16 @@ import {
   SignUpModel,
   SignUpResponse,
 } from "root/constants/types/authTypes";
-import { logErrorDetails } from "root/utils/customErrorLogger";
-import { showToast } from "root/utils/toast";
-import { instance } from "src/api";
+
+import { refreshInstance } from "../tokenManager";
 
 export type AuthData = SignUpModel | ResetPasswordModel | SignInModel;
 
-export type AuthResponse = LoginResponse | SignUpResponse | ProfileResponse;
+export type AuthResponse =
+  | LoginResponse
+  | SignUpResponse
+  | ProfileResponse
+  | AxiosResponse;
 
 type EndPointType =
   | "sign-in"
@@ -21,6 +25,7 @@ type EndPointType =
   | "verify-token"
   | "profile"
   | "sign-out"
+  | "refresh-token"
   | "generate-reset-password-link";
 
 type AuthProps<T extends AuthData, E extends EndPointType> = {
@@ -35,23 +40,25 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
   endPoint,
   method,
   token,
-}: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | unknown> => {
+}: AuthProps<T, E>): Promise<AuthResponse | null> => {
   try {
     const headers: Record<string, string> = {};
-    if (endPoint.startsWith("profile") || endPoint.includes("out")) {
+    if (endPoint.includes("profile") || endPoint.includes("out")) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
     const payLoad = {
       method,
       url: `auth/${endPoint}`,
-      data,
+      data: data,
       headers,
     };
-    const response = await instance.request(payLoad);
+
+    const response = await refreshInstance.request(payLoad);
+
     return response;
   } catch (error) {
-    logErrorDetails(error);
+    // logErrorDetails(error);
     if (axios.isAxiosError(error)) {
       if (error.code === "ERR_NETWORK") {
         const response = error.request;

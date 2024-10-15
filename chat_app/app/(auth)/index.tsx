@@ -3,7 +3,7 @@ import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/hooks/auth/useAuthentication";
 import { signInSchema } from "root/utils/validations";
 
-import CustomWrapper from "../../utils/customWrapper";
+import CustomWrapper from "../../components/customWrapper";
 
 export interface LoginProps {
   email: string;

@@ -1,3 +1,4 @@
+import { categoryNames } from "root/constants/categories";
 import { CreateProductModel } from "root/constants/types/productTypes";
 import * as yup from "yup";
 
@@ -71,7 +72,7 @@ export const createProductSchema = new yup.ObjectSchema<
   purchasingDate: yup.string().required("Product creation date is requird"),
   category: yup
     .string()
-    // .oneOf(categories)
+    .oneOf(categoryNames, "Invalid category selectd")
     .required("Product category is requird"),
 });
 

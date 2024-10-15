@@ -128,7 +128,7 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
     };
 
     const accessToken = jwt.sign(payload, storedValues.secretkey, {
-      expiresIn: "15m",
+      expiresIn: "1m",
     });
     const refreshToken = jwt.sign(payload, storedValues.secretkey);
 

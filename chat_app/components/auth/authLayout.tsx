@@ -13,7 +13,7 @@ import {
 import Auth from "root/assets/svg/auth.svg";
 import { height, width } from "root/constants/Dimensions";
 import images from "root/constants/Images";
-import { AuthData } from "root/services/auth";
+import { AuthData } from "root/controllers/auth/auth";
 import {
   ForgotPasswordSchemaType,
   SignInSchemaType,
@@ -112,6 +112,8 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
             <>
               <TextField
                 label="Email"
+                leftIcon
+                leftIconTitle="email"
                 autoCapitalize="none"
                 setFieldValue={setFieldValue}
                 fieldName="email"
@@ -124,6 +126,8 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
                 <>
                   <TextField
                     label="Password"
+                    leftIcon
+                    leftIconTitle="password"
                     autoCapitalize="none"
                     secureTextEntry={isOpen}
                     showPasswords={() => setIsOpen((prev) => !prev)}
@@ -140,6 +144,8 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
               {signUp && (
                 <>
                   <TextField
+                    leftIcon
+                    leftIconTitle="person-pin"
                     label="Full Name"
                     autoCapitalize="none"
                     setFieldValue={setFieldValue}

@@ -55,7 +55,7 @@ export const validatePasswordToken: RequestHandler = async (req, res, next) => {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-
+    console.log(`isAuthenticated`, authToken);
     if (!authToken) {
       return sendResponse(res, 403, "Unauthorized request");
     }

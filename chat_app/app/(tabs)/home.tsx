@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "react-native";
-import CustomWrapper from "root/utils/customWrapper";
+import CustomWrapper from "root/components/customWrapper";
 
 export default function Homepage() {
   return (

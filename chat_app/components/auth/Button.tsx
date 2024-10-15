@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.025,
     paddingVertical: 10,
     borderRadius: 5,
-    backgroundColor: Colors.light.text,
+    backgroundColor: Colors.light.primary,
   },
   disabledButton: {
     backgroundColor: Colors.light.lightGrey,

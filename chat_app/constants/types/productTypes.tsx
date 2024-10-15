@@ -1,3 +1,5 @@
+import { CategoriesNameType } from "../categories";
+
 type ProductImage = { url: string; id: string };
 
 export type CreateProductModel = {
@@ -6,6 +8,6 @@ export type CreateProductModel = {
   name: string;
   price: number;
   purchasingDate: Date | string;
-  category: string;
+  category: CategoriesNameType | "";
   description: string;
 };

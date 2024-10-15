@@ -9,6 +9,8 @@ export interface UserData {
   id: string;
   name: string;
   verified: boolean;
+  avatar?: string;
+  accessToken?: string;
 }
 
 export interface LoginResponse {

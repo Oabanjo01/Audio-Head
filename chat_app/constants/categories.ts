@@ -1,11 +1,4 @@
-import { IconName, MaterialIconName } from "root/components/auth/TextField";
-
-export type CategoryIconName = MaterialIconName | IconName;
-
-type Icon = {
-  library: "Ionicons" | "MaterialIcons";
-  name: CategoryIconName;
-};
+import { Icon } from "./icons/icon";
 
 type CategoryType = {
   name:
@@ -59,7 +52,9 @@ const categories: CategoryType[] = [
   },
 ];
 
-export type Category = (typeof categories)[number]["name"];
-export type IconLibray = (typeof categories)[number]["icon"]["library"];
+export const categoryNames = categories.map((category) => category.name);
+
+export type CategoryItemType = (typeof categories)[number];
+export type CategoriesNameType = (typeof categoryNames)[number];
 
 export default categories.sort();
