@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, Method } from "axios";
+import { AxiosResponse, Method } from "axios";
 import { showToast } from "root/components/toast";
 import {
   LoginResponse,
@@ -8,8 +8,12 @@ import {
   SignUpModel,
   SignUpResponse,
 } from "root/constants/types/authTypes";
-
-import { refreshInstance } from "../tokenManager";
+import {
+  handleApiError,
+  isNetworkError,
+  isServerError,
+} from "root/utils/errorHandlers/axiosErrorHandler";
+import { instance } from "src/apiInstance";
 
 export type AuthData = SignUpModel | ResetPasswordModel | SignInModel;
 
@@ -54,24 +58,25 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
       headers,
     };
 
-    const response = await refreshInstance.request(payLoad);
-
+    const response = await instance.request(payLoad);
     return response;
-  } catch (error) {
-    // logErrorDetails(error);
-    if (axios.isAxiosError(error)) {
-      if (error.code === "ERR_NETWORK") {
-        const response = error.request;
-        if (response) {
-          const message = response?._response;
-          showToast({
-            text1: "Error",
-            text2: message,
-            type: "error",
-            position: "top",
-          });
-        }
-      }
+  } catch (error: any) {
+    if (isNetworkError(error)) {
+      showToast({
+        text1: "Connection Error",
+        text2: "Please check your internet connection and try again.",
+        type: "error",
+        position: "top",
+      });
+    } else if (isServerError(error)) {
+      showToast({
+        text1: "Server Error",
+        text2: "Our servers are experiencing issues. Please try again later.",
+        type: "error",
+        position: "top",
+      });
+    } else {
+      handleApiError(error);
     }
     return null;
   }

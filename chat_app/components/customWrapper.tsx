@@ -11,7 +11,7 @@ import {
 import { IconName } from "root/components/auth/TextField";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
-import { useAuthentication } from "root/hooks/auth/useAuthentication";
+import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 
 export interface KeyboardAvoidingViewProps {
   children: JSX.Element;

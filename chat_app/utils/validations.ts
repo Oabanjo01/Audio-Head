@@ -33,7 +33,7 @@ export const signInSchema = yup.object({
     .string()
     .validateEmail("This is an invalid email")
     .email("A valid email is required")
-    .required("An email address is required"),
+    .required("Email address is required"),
 });
 
 export const signUpSchema = yup.object({

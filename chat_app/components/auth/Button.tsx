@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Pressable,
   PressableProps,
+  StyleProp,
   StyleSheet,
   Text,
   ViewStyle,
@@ -14,7 +15,7 @@ interface ButtonProps extends PressableProps {
   label: string;
   disabled?: boolean;
   onPress?(): void;
-  buttonStyle?: ViewStyle;
+  buttonStyle?: StyleProp<ViewStyle>;
   submitting?: boolean;
 }
 
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: height * 0.025,
     paddingVertical: 10,
     borderRadius: 5,

@@ -23,15 +23,17 @@ export const useAuthentication = () => {
         endPoint: "sign-in",
         method: "post",
       });
-
-      console.log(response, "response ===");
+      console.log(response, "response");
       if (!response) return;
       const { tokens, userData } = response as LoginResponse;
+      const stringifiedTokens = JSON.stringify(tokens);
 
-      dispatch(login({ ...userData, accessToken: tokens.accessToken }));
+      await AsyncStorage.setItem("tokens", stringifiedTokens);
 
-      console.log(tokens, userData, "wetin dey shele???");
-      await AsyncStorage.setItem("tokens", JSON.stringify(tokens));
+      dispatch(
+        login({ ...userData, accessToken: JSON.stringify(tokens.accessToken) })
+      );
+
       router.replace("/(tabs)/home");
     } catch (e) {
       console.log(e, "errorrr ===");
@@ -55,16 +57,18 @@ export const useAuthentication = () => {
 
   const signOut = async () => {
     const token = await AsyncStorage.getItem("tokens");
+    console.log(token, "token ??");
     if (!token) return;
     const parsedAccessToken = JSON.parse(token);
     const response = await authService<any, "sign-out">({
       endPoint: "sign-out",
-      method: "GET",
+      method: "POST",
       token: parsedAccessToken.accessToken,
       data: { refreshToken: parsedAccessToken.refreshToken },
     });
     if (response) {
       router.replace("/(auth)/");
+      dispatch(login(null));
       clearAllTokens();
     }
   };

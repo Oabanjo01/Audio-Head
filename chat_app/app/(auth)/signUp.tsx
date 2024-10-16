@@ -1,6 +1,6 @@
 import React from "react";
 import AuthLayout from "root/components/auth/authLayout";
-import { useAuthentication } from "root/hooks/auth/useAuthentication";
+import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { signUpSchema } from "root/utils/validations";
 
 import CustomWrapper from "../../components/customWrapper";

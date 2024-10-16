@@ -132,11 +132,11 @@ const signUserIn: RequestHandler<{}, {}, SignInUserRequestBody> = async (
     });
     const refreshToken = jwt.sign(payload, storedValues.secretkey);
 
-    // if (!user.tokens) {
-    user.tokens = [refreshToken];
-    // } else {
-    //   user.tokens.push(refreshToken);
-    // }
+    if (!user.tokens) {
+      user.tokens = [refreshToken];
+    } else {
+      user.tokens.push(refreshToken);
+    }
 
     await user.save();
     res.json({
@@ -245,7 +245,6 @@ const generateNewRefreshToken: RequestHandler<
 
 const signOut: RequestHandler = async (req, res) => {
   const { refreshToken } = req.body;
-  console.log(refreshToken, req.body, "req.user.id");
 
   const userExists = await UserModel.findOne({
     _id: req.user.id,

@@ -30,7 +30,7 @@ const authRouter = Router();
 // get requests
 authRouter.get("/profile", isAuthenticated, sendProfile);
 authRouter.get("/re-verify-user", isAuthenticated, regenerateVerificationLink);
-authRouter.get("/sign-out", isAuthenticated, signOut);
+authRouter.post("/sign-out", isAuthenticated, signOut);
 authRouter.get("/public-profile/:id", isAuthenticated, getUserPublicProfile);
 
 // post requests

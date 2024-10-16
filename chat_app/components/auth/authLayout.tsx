@@ -21,6 +21,7 @@ import {
 } from "root/utils/validations";
 import { ObjectSchema } from "yup";
 
+import IconComponent from "../customIcon";
 import Button from "./Button";
 import TextField from "./TextField";
 import TextFieldError from "./TextFieldError";
@@ -64,6 +65,7 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
   schema,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   const setPayLoad: (v: initialValueType) => AuthData = (
     values: initialValueType
@@ -156,6 +158,25 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
                   ) : null}
                 </>
               )}
+              {signIn && (
+                <View
+                  style={{
+                    alignSelf: "flex-end",
+                    flexDirection: "row-reverse",
+                    alignItems: "center",
+                    marginVertical: 5,
+                  }}
+                >
+                  <IconComponent
+                    name={isChecked ? "check-box" : "check-box-outline-blank"}
+                    onPress={() => setIsChecked((prev) => !prev)}
+                    style={{
+                      marginLeft: 5,
+                    }}
+                  />
+                  <Text>Remember me</Text>
+                </View>
+              )}
 
               <Button
                 label={buttonLabel}
@@ -214,13 +235,13 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     alignItems: "center",
-    paddingTop: height * 0.05,
+    // paddingTop: height * 0.05,
     paddingHorizontal: 20,
   },
   image: {
     width: width * 0.7,
-    height: height * 0.3,
-    marginBottom: height * 0.05,
+    height: height * 0.29,
+    marginBottom: height * 0.02,
   },
   title: {
     textAlign: "center",

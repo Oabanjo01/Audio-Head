@@ -1,9 +1,5 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  useBottomSheetModal,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Formik, FormikProps } from "formik";
 import React, { useCallback, useRef } from "react";
 import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
@@ -27,15 +23,16 @@ const initialValues: CreateProductModel = {
 };
 
 export default function Search() {
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const categoriesBottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const imageOptionsBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const formikRef = useRef<FormikProps<CreateProductModel> | null>(null);
 
   const { dismiss } = useBottomSheetModal();
   const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+    categoriesBottomSheetModalRef.current?.present();
   }, []);
 
-  const renderItem = useCallback(({ item }: { item: CategoryItemType }) => {
+  const renderItem = useCallback((item: CategoryItemType, index: number) => {
     const IconComponent =
       item.icon.library === "Ionicons" ? Ionicons : MaterialIcons;
     return (
@@ -71,7 +68,6 @@ export default function Search() {
           validationSchema={createProductSchema}
           onSubmit={async (values, { validateForm }) => {
             Keyboard.dismiss();
-            const response = await validateForm(values);
           }}
         >
           {({
@@ -84,10 +80,12 @@ export default function Search() {
             handleChange,
             values,
           }) => {
-            console.log(values, "validation");
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
+                  <View style={styles.addImageBox}>
+                    <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
+                  </View>
                   <TextField
                     label="Name"
                     leftIconTitle="bag-outline"
@@ -215,16 +213,13 @@ export default function Search() {
           }}
         </Formik>
       </CustomWrapper>
-      <GeneralModal ref={bottomSheetModalRef} title="Categories">
-        <View style={{ padding: 20 }}>
-          <BottomSheetFlatList
-            showsVerticalScrollIndicator={false}
-            data={categories}
-            keyExtractor={({ name }) => name}
-            renderItem={renderItem}
-          />
-        </View>
-      </GeneralModal>
+      <GeneralModal
+        ref={categoriesBottomSheetModalRef}
+        title="Categories"
+        itemsList={categories}
+        keyExtractor={(item) => item.name}
+        renderItem={renderItem}
+      />
     </>
   );
 }
@@ -239,5 +234,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     width: width * 0.9,
+  },
+  addImageBox: {
+    width: width * 0.25,
+    height: width * 0.25,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
   },
 });
