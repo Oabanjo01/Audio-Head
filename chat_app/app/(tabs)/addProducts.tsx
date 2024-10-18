@@ -1,16 +1,27 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Formik, FormikProps } from "formik";
-import React, { useCallback, useRef } from "react";
-import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import {
+  Image,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import Button from "root/components/auth/Button";
 import { TextField } from "root/components/auth/TextField";
+import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customWrapper";
 import GeneralModal from "root/components/modal";
+import { showToast } from "root/components/toast";
 import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CreateProductModel } from "root/constants/types/productTypes";
+import { pickImage } from "root/utils/pickImage";
 import { createProductSchema } from "root/utils/validations";
 
 const initialValues: CreateProductModel = {
@@ -22,15 +33,54 @@ const initialValues: CreateProductModel = {
   description: "",
 };
 
-export default function Search() {
+export default function AddProduct() {
   const categoriesBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const imageOptionsBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const formikRef = useRef<FormikProps<CreateProductModel> | null>(null);
 
+  const [images, setImages] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
   const { dismiss } = useBottomSheetModal();
+
   const handlePresentModalPress = useCallback(() => {
     categoriesBottomSheetModalRef.current?.present();
   }, []);
+  const handlePresentOptionsModalPress = useCallback(() => {
+    imageOptionsBottomSheetModalRef.current?.present();
+  }, []);
+
+  const options = [
+    {
+      title: "Remove",
+      id: "remove",
+      onPress: () => {
+        console.log("presses");
+        const newImages = images.filter((image) => image !== selectedImage);
+        setImages(newImages);
+      },
+    },
+  ];
+
+  const renderDeleteOption = (item: any) => {
+    return (
+      <Pressable
+        onPress={item.onPress}
+        style={{
+          borderColor: Colors.light.primary,
+          borderWidth: 1,
+          paddingVertical: 10,
+          paddingLeft: 10,
+          borderRadius: 10,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <IconComponent name="trash-bin-outline" color={Colors.light.redColor} />
+        <Text style={{ fontSize: 16, marginLeft: 10 }}>{item.title}</Text>
+      </Pressable>
+    );
+  };
 
   const renderItem = useCallback((item: CategoryItemType, index: number) => {
     const IconComponent =
@@ -83,8 +133,51 @@ export default function Search() {
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
-                  <View style={styles.addImageBox}>
-                    <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
+                  <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                    <Pressable
+                      style={styles.addImageBox}
+                      onPress={async () => {
+                        const response = await pickImage();
+                        if (!response) return;
+
+                        const imageList = response?.map((image) => {
+                          return image.uri;
+                        });
+                        if (images.length + imageList.length > 5) {
+                          console.log("got here instead ");
+                          return showToast({
+                            text1: `Too many images selected`,
+                            text2: `Image length exceeds 5`,
+                            type: `info`,
+                            position: "top",
+                          });
+                        }
+                        setImages([...images, ...imageList]);
+                      }}
+                    >
+                      <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
+                    </Pressable>
+                    <View style={{ flex: 1 }}>
+                      <FlatList
+                        data={images}
+                        horizontal
+                        renderItem={({ item, index }) => {
+                          return (
+                            <Pressable
+                              onLongPress={() => {
+                                setSelectedImage(item);
+                                handlePresentOptionsModalPress();
+                              }}
+                            >
+                              <Image
+                                source={{ uri: item }}
+                                style={styles.image}
+                              />
+                            </Pressable>
+                          );
+                        }}
+                      />
+                    </View>
                   </View>
                   <TextField
                     label="Name"
@@ -220,6 +313,14 @@ export default function Search() {
         keyExtractor={(item) => item.name}
         renderItem={renderItem}
       />
+      <GeneralModal
+        ref={imageOptionsBottomSheetModalRef}
+        title="Options"
+        initialSnap={0}
+        itemsList={options}
+        keyExtractor={(item) => item.id}
+        renderItem={renderDeleteOption}
+      />
     </>
   );
 }
@@ -237,6 +338,7 @@ const styles = StyleSheet.create({
   },
   addImageBox: {
     width: width * 0.25,
+    marginRight: 20,
     height: width * 0.25,
     alignItems: "center",
     justifyContent: "center",
@@ -244,5 +346,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: Colors.light.primary,
+  },
+  image: {
+    width: width * 0.25,
+    height: width * 0.25,
+    marginRight: 10,
+    borderRadius: 10,
+    borderWidth: 1,
   },
 });

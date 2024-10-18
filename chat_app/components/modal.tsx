@@ -11,12 +11,20 @@ export type Ref = BottomSheetModal;
 type BottomSheetProps = {
   itemsList: any[];
   title: string;
+  initialSnap?: number;
   renderItem: (item: any, index: number) => ReactElement;
   keyExtractor: (item: any, index: number) => string;
 };
 
 const GeneralModal = forwardRef<Ref, BottomSheetProps>((props, ref) => {
-  const { title, itemsList, renderItem, keyExtractor, ...rest } = props;
+  const {
+    title,
+    itemsList,
+    renderItem,
+    keyExtractor,
+    initialSnap = 1,
+    ...rest
+  } = props;
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -33,7 +41,7 @@ const GeneralModal = forwardRef<Ref, BottomSheetProps>((props, ref) => {
   return (
     <BottomSheetModal
       ref={ref}
-      index={1}
+      index={initialSnap}
       snapPoints={snapPoints}
       backdropComponent={renderBackdrop}
       enablePanDownToClose
