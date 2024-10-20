@@ -6,11 +6,11 @@ import { Colors } from "root/constants/Colors";
 import { CategoryIconName } from "root/constants/icons/icon";
 
 type IconComponentProps = {
-  name: CategoryIconName;
+  name: CategoryIconName | string;
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;
-  onPress?: () => void;
+  onPress?(): void;
 };
 
 const IconComponent: React.FC<IconComponentProps> = ({

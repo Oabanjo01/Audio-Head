@@ -14,6 +14,7 @@ import { height, width } from "root/constants/Dimensions";
 interface ButtonProps extends PressableProps {
   label: string;
   disabled?: boolean;
+  // loveeeee this
   onPress?(): void;
   buttonStyle?: StyleProp<ViewStyle>;
   submitting?: boolean;

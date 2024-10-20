@@ -21,6 +21,7 @@ import {
   handleDateChangeType,
   setFieldValueType,
 } from "root/constants/types/textInputs/formik";
+import { cleanCurrencyString, formatPrice } from "root/utils/formatPrice";
 
 import IconComponent from "../customIcon";
 import TextFieldError from "./TextFieldError";
@@ -83,8 +84,8 @@ export const TextField: FC<TextFieldProps> = ({
   const handleDateChange: handleDateChangeType = async (_, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      const formattedDate = selectedDate.toDateString();
-      setText(formattedDate);
+      const formattedDate = selectedDate.toISOString();
+      setText(formattedDate.split("T")[0]);
       setFieldValue(fieldName, formattedDate, true);
     }
   };
@@ -137,10 +138,19 @@ export const TextField: FC<TextFieldProps> = ({
               })}
               onChangeText={(text) => {
                 if (price) {
-                  const numbersOnly = text.replaceAll(/[^\d.]/g, "");
-                  console.log(numbersOnly, "Number");
-                  setText(numbersOnly);
-                  setFieldValue("price", numbersOnly, true);
+                  const validText = text.replace(/[^0-9.]/g, "");
+                  const dotCount = (validText.match(/\./g) || []).length;
+
+                  if (dotCount < 2 && price) {
+                    const { formattedValue } = formatPrice(text);
+                    setFieldValue(fieldName, cleanCurrencyString(text), true);
+                    setText(formattedValue);
+                  } else if (dotCount === 2) {
+                    return text;
+                  } else {
+                    setFieldValue(fieldName, cleanCurrencyString(text), true);
+                    setText(text);
+                  }
                 } else {
                   setText(text);
                   setFieldValue(fieldName, text, true);

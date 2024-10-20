@@ -41,8 +41,11 @@ const createNewProduct: RequestHandler<
     purchasingDate: purchasingDate,
   });
 
+  console.log(req.body, "new Product");
+
   const { image } = req.files;
 
+  console.log(image, "new Image");
   let imageIsNotValid = false;
 
   const multipleImages = Array.isArray(image);
@@ -93,8 +96,11 @@ const createNewProduct: RequestHandler<
     }
   }
 
+  console.log("validaror");
+
   await newProduct.save();
 
+  // res.json({ message: "This product has been successfully created." });
   sendResponse(res, 201, "This product has been successfully created.");
 };
 

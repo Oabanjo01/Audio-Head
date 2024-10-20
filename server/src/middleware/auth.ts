@@ -55,7 +55,7 @@ export const validatePasswordToken: RequestHandler = async (req, res, next) => {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    console.log(`isAuthenticated`, authToken);
+
     if (!authToken) {
       return sendResponse(res, 403, "Unauthorized request");
     }
@@ -67,7 +67,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     };
 
     const user = await UserModel.findById(decodedPayload.id);
-
+    console.log(`isAuthenticated`, req.user);
     if (!user) {
       return sendResponse(res, 403, "Unauthorized request");
     }
@@ -79,6 +79,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
       verified: user.verified,
       avatar: user.avatar,
     };
+
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {

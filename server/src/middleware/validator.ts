@@ -22,6 +22,7 @@ export const validate = (
         { ...req.body },
         { abortEarly: true, strict: true }
       );
+
       next();
     } catch (error) {
       if (error instanceof ValidationError) {

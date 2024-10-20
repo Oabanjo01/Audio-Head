@@ -11,3 +11,11 @@ export type CreateProductModel = {
   category: CategoriesNameType | "";
   description: string;
 };
+
+export type CreateProductPayload = {
+  formData: FormData;
+};
+
+export type CreateProductResponse = {
+  message: string;
+};

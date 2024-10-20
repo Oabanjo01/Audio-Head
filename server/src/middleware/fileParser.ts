@@ -12,6 +12,7 @@ declare global {
 const fileParser: RequestHandler = async (req, res, next) => {
   const form = formidable();
   const [fields, files] = await form.parse(req);
+  console.log("fileParser: ", fields, files);
 
   if (!req.body) req.body = {};
 

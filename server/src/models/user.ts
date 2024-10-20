@@ -54,7 +54,7 @@ userSchema.pre("save", async function (next) {
     console.log(this.password);
     next();
   } else {
-    console.log(this.password, "was not rest");
+    // console.log(this.password, "was not rest");
   }
 });
 

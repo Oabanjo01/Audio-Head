@@ -1,6 +1,6 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Formik, FormikProps } from "formik";
+import mime from "mime";
 import React, { useCallback, useRef, useState } from "react";
 import {
   Image,
@@ -11,9 +11,9 @@ import {
   View,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import Button from "root/components/auth/Button";
 import { TextField } from "root/components/auth/TextField";
-import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customWrapper";
 import GeneralModal from "root/components/modal";
 import { showToast } from "root/components/toast";
@@ -21,16 +21,17 @@ import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CreateProductModel } from "root/constants/types/productTypes";
+import { useProduct } from "root/utils/hooks/product/useProduct";
 import { pickImage } from "root/utils/pickImage";
 import { createProductSchema } from "root/utils/validations";
 
 const initialValues: CreateProductModel = {
-  images: [],
   name: "",
   price: 0,
   purchasingDate: "",
   category: "",
   description: "",
+  images: [],
 };
 
 export default function AddProduct() {
@@ -43,67 +44,81 @@ export default function AddProduct() {
 
   const { dismiss } = useBottomSheetModal();
 
-  const handlePresentModalPress = useCallback(() => {
+  const handlePresentCategoryModalPress = useCallback(() => {
     categoriesBottomSheetModalRef.current?.present();
   }, []);
-  const handlePresentOptionsModalPress = useCallback(() => {
+  const handlePresentImageModalPress = useCallback(() => {
     imageOptionsBottomSheetModalRef.current?.present();
   }, []);
+
+  const { createProduct } = useProduct();
 
   const options = [
     {
       title: "Remove",
       id: "remove",
       onPress: () => {
-        console.log("presses");
         const newImages = images.filter((image) => image !== selectedImage);
         setImages(newImages);
+        formikRef.current?.setFieldValue("images", [...newImages]);
       },
     },
   ];
 
-  const renderDeleteOption = (item: any) => {
-    return (
-      <Pressable
-        onPress={item.onPress}
-        style={{
-          borderColor: Colors.light.primary,
-          borderWidth: 1,
-          paddingVertical: 10,
-          paddingLeft: 10,
-          borderRadius: 10,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <IconComponent name="trash-bin-outline" color={Colors.light.redColor} />
-        <Text style={{ fontSize: 16, marginLeft: 10 }}>{item.title}</Text>
-      </Pressable>
-    );
-  };
-
   const renderItem = useCallback((item: CategoryItemType, index: number) => {
-    const IconComponent =
-      item.icon.library === "Ionicons" ? Ionicons : MaterialIcons;
     return (
-      <Pressable
-        style={styles.itemStyle}
+      <BaseModalOption
+        title={item.name}
+        icon={item.icon}
         onPress={() => {
           formikRef.current?.setFieldValue("category", item.name);
           dismiss();
         }}
-      >
-        <IconComponent
-          name={item.icon.name as any}
-          size={26}
-          color={Colors.light.primary}
-        />
-        <Text style={{ marginLeft: 15, fontSize: 16, fontWeight: "500" }}>
-          {item.name}
-        </Text>
-      </Pressable>
+      />
     );
   }, []);
+
+  const renderDeleteOption = (item: any) => (
+    <BaseModalOption
+      title={item.title}
+      icon="trash-bin-outline"
+      color={Colors.light.redColor}
+      onPress={() => {
+        item.onPress();
+        dismiss();
+      }}
+    />
+  );
+
+  const handleSubmit = async (values: CreateProductModel, images: string[]) => {
+    Keyboard.dismiss();
+
+    const formData = new FormData();
+
+    type FormKeys = keyof Omit<CreateProductModel, "thumbnail">;
+
+    const appendInitialFormData = (key: FormKeys, value: any) => {
+      if (key === "purchasingDate" && typeof value === "string") {
+        formData.append(key, value);
+      } else {
+        formData.append(key, value.toString());
+      }
+    };
+
+    Object.entries(values).forEach(([key, value]) =>
+      appendInitialFormData(key as FormKeys, value)
+    );
+
+    const imageBlob = images.map((image, index) => ({
+      name: `image_${index}`,
+      type: mime.getType(image),
+      uri: image,
+    }));
+
+    imageBlob.forEach((img) => formData.append("image", img as any));
+
+    await createProduct(formData);
+  };
 
   return (
     <>
@@ -116,9 +131,7 @@ export default function AddProduct() {
           innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={createProductSchema}
-          onSubmit={async (values, { validateForm }) => {
-            Keyboard.dismiss();
-          }}
+          onSubmit={async (values) => handleSubmit(values, images)}
         >
           {({
             handleSubmit,
@@ -130,6 +143,7 @@ export default function AddProduct() {
             handleChange,
             values,
           }) => {
+            console.log(errors);
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
@@ -144,7 +158,6 @@ export default function AddProduct() {
                           return image.uri;
                         });
                         if (images.length + imageList.length > 5) {
-                          console.log("got here instead ");
                           return showToast({
                             text1: `Too many images selected`,
                             text2: `Image length exceeds 5`,
@@ -153,6 +166,7 @@ export default function AddProduct() {
                           });
                         }
                         setImages([...images, ...imageList]);
+                        setFieldValue("images", [...images, ...imageList]);
                       }}
                     >
                       <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
@@ -166,7 +180,7 @@ export default function AddProduct() {
                             <Pressable
                               onLongPress={() => {
                                 setSelectedImage(item);
-                                handlePresentOptionsModalPress();
+                                handlePresentImageModalPress();
                               }}
                             >
                               <Image
@@ -198,7 +212,7 @@ export default function AddProduct() {
                   <TextField
                     label="Price"
                     autoCapitalize="none"
-                    maxLength={10}
+                    maxLength={15}
                     keyboardType="numeric"
                     viewProps={{
                       paddingVertical: 15,
@@ -254,7 +268,7 @@ export default function AddProduct() {
                     leftIconTitle="grid-outline"
                     rightIconName="caret-down"
                     rightIcon
-                    rightIconPress={handlePresentModalPress}
+                    rightIconPress={handlePresentCategoryModalPress}
                     secureTextEntry={false}
                     error={
                       errors.category && isValidating && touched.category
@@ -297,7 +311,7 @@ export default function AddProduct() {
                     alignSelf: "center",
                     paddingVertical: 10,
                   }}
-                  disabled={!isValid}
+                  disabled={!isValid || images.length === 0}
                   onPress={handleSubmit}
                   label={"Create"}
                 />
@@ -326,16 +340,6 @@ export default function AddProduct() {
 }
 
 const styles = StyleSheet.create({
-  itemStyle: {
-    flexDirection: "row",
-    height: height * 0.08,
-    alignItems: "center",
-    padding: 10,
-    marginBottom: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    width: width * 0.9,
-  },
   addImageBox: {
     width: width * 0.25,
     marginRight: 20,

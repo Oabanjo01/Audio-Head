@@ -67,7 +67,12 @@ export const createProductSchema = new yup.ObjectSchema<
   >
 >({
   name: yup.string().required("Product name is requird"),
-  price: yup.number().required("Product price is requird"),
+  price: yup
+    .number()
+    // .typeError("Must be a number")
+    // .strict(true)
+    .required("Product price is requird"),
+  // .min(0, "Price must be greater than 0"),
   description: yup.string().required("Product descriptioname is requird"),
   purchasingDate: yup.string().required("Product creation date is requird"),
   category: yup

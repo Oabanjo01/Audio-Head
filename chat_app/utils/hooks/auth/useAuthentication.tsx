@@ -62,7 +62,7 @@ export const useAuthentication = () => {
     const parsedAccessToken = JSON.parse(token);
     const response = await authService<any, "sign-out">({
       endPoint: "sign-out",
-      method: "POST",
+      method: "post",
       token: parsedAccessToken.accessToken,
       data: { refreshToken: parsedAccessToken.refreshToken },
     });

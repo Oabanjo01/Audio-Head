@@ -1,6 +1,5 @@
-export const formatAmount: (value: string) => {
+export const formatPrice: (value: string) => {
   formattedValue: string;
-  numbersOnly: string;
 } = (value: string) => {
   const numbersOnly = value.replace(/[^\d.]/g, "");
 
@@ -20,5 +19,14 @@ export const formatAmount: (value: string) => {
     ? `${integerPart}.${decimalPart !== undefined ? decimalPart : ""}`
     : integerPart;
 
-  return { formattedValue, numbersOnly };
+  //   if (formattedValue.length > 14 && formattedValue.endsWith(".")) {
+  //     console.log("got here");
+  //     formattedValue = formattedValue.slice(0, 13);
+  //   }
+
+  return { formattedValue };
+};
+
+export const cleanCurrencyString = (value: string): string => {
+  return value.replace(/[^0-9.]/g, "");
 };
