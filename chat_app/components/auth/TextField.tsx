@@ -49,6 +49,7 @@ interface TextFieldProps extends TextInputProps {
   rightIcon?: boolean;
   rightIconName?: CategoryIconName;
   rightIconPress?(): void;
+  values: any;
 }
 
 export const TextField: FC<TextFieldProps> = ({
@@ -68,6 +69,7 @@ export const TextField: FC<TextFieldProps> = ({
   rightIcon,
   rightIconName,
   rightIconPress,
+  values,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -111,9 +113,6 @@ export const TextField: FC<TextFieldProps> = ({
               justifyContent: "flex-start",
               flexDirection: "row",
               width: "90%",
-              // height: Platform.select({
-              //   ios: height * 0.0325,
-              // }),
             }}
           >
             {leftIcon && (
@@ -156,7 +155,7 @@ export const TextField: FC<TextFieldProps> = ({
                   setFieldValue(fieldName, text, true);
                 }
               }}
-              value={categoryValue ? categoryValue : texts}
+              value={values}
               onFocus={() => {
                 setIsFocused(true);
               }}

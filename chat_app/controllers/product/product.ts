@@ -10,7 +10,7 @@ import { instance } from "src/apiInstance";
 
 export type ProductData = FormData;
 
-export type ProductResponse = CreateProductResponse | AxiosResponse;
+export type ProductResponse = CreateProductResponse | null;
 
 type EndPointType = "create";
 
@@ -28,25 +28,19 @@ export const productService = async <
   data,
   endPoint,
   method,
-  token,
-}: ProductProps<T, E>): Promise<ProductResponse | null> => {
+}: ProductProps<T, E>): Promise<AxiosResponse<ProductResponse> | null> => {
   try {
-    const headers: Record<string, string> = {};
-    // if (endPoint.includes("profile") || endPoint.includes("out")) {
-    headers["Authorization"] = `Bearer ${token}`;
-    headers["Content-Type"] = "multipart/form-data";
-    // }
-
     const payLoad = {
       method,
       url: `product/${endPoint}`,
       data: data,
-      headers,
     };
 
-    console.log(payLoad, "Payload");
-
-    const response = await instance.request(payLoad);
+    const response = await instance.request<
+      T,
+      AxiosResponse<ProductResponse, any>,
+      any
+    >(payLoad);
     return response;
   } catch (error: any) {
     if (isNetworkError(error)) {

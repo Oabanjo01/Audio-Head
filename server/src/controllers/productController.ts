@@ -1,24 +1,80 @@
 import { UploadApiResponse } from "cloudinary";
 import { RequestHandler } from "express";
+import { unlink } from "fs";
 import { isValidObjectId } from "mongoose";
+import path from "path";
+import sharp from "sharp";
 import cloud, { cloudApi } from "src/cloudinary/config";
 import ProductModel, { ProductDocument } from "src/models/productModel";
 import { UserDocument } from "src/models/user";
 import categories from "src/utilities/categories";
 import { sendResponse } from "src/utilities/sendRequest";
+import { promisify } from "util";
+
+const unlinkAsync = promisify(unlink);
+
+// Compress image before upload
+const compressImage = async (filePath: string): Promise<string> => {
+  const filename = path.parse(filePath).name;
+  const outputPath = path.join(
+    path.dirname(filePath),
+    `${filename}_compressed.jpg`
+  );
+
+  await sharp(filePath)
+    .resize(1280, 720, {
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .jpeg({
+      quality: 80,
+      progressive: true,
+    })
+    .toFile(outputPath);
+
+  return outputPath;
+};
 
 const uploadImage = async (filePath: string): Promise<UploadApiResponse> => {
-  const response = await cloud.upload(filePath, {
-    transformation: {
-      width: 1280,
-      height: 720,
-      crop: "fill",
-      background: "transparent",
-      gravity: "face",
-    },
-  });
+  console.log(`Starting compression for ${filePath}`);
+  const compressStartTime = Date.now();
 
-  return response;
+  try {
+    // Compress image before upload
+    const compressedPath = await compressImage(filePath);
+    const compressEndTime = Date.now();
+    console.log(
+      `Compression completed in ${compressEndTime - compressStartTime}ms`
+    );
+
+    // Upload with optimized settings
+    const uploadStartTime = Date.now();
+    const response = await cloud.upload(compressedPath, {
+      resource_type: "auto",
+      quality: "auto:good",
+      fetch_format: "auto",
+      flags: "progressive",
+      transformation: {
+        width: 1280,
+        height: 720,
+        crop: "fill",
+        background: "transparent",
+        gravity: "face",
+      },
+    });
+    const uploadEndTime = Date.now();
+    console.log(
+      `Cloudinary upload completed in ${uploadEndTime - uploadStartTime}ms`
+    );
+
+    // Cleanup files
+    await Promise.all([unlinkAsync(filePath), unlinkAsync(compressedPath)]);
+
+    return response;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 };
 
 const createNewProduct: RequestHandler<
@@ -31,77 +87,100 @@ const createNewProduct: RequestHandler<
     >
   >
 > = async (req, res) => {
-  const { category, description, name, price, purchasingDate } = req.body;
-  const newProduct = new ProductModel({
-    owner: req.user.id,
-    category: category,
-    description: description,
-    name: name,
-    price: price,
-    purchasingDate: purchasingDate,
-  });
+  const startTime = Date.now();
+  console.log(
+    `Starting product creation at ${new Date(startTime).toISOString()}`
+  );
 
-  console.log(req.body, "new Product");
+  try {
+    const { category, description, name, price, purchasingDate } = req.body;
+    const { image } = req.files;
 
-  const { image } = req.files;
-
-  console.log(image, "new Image");
-  let imageIsNotValid = false;
-
-  const multipleImages = Array.isArray(image);
-
-  if (multipleImages && image.length > 5)
-    return sendResponse(res, 422, "Cannot upload more than 5 images");
-
-  if (multipleImages) {
-    // Image is an array
-    for (let key in image) {
-      if (!image[key].mimetype?.startsWith("image")) {
-        imageIsNotValid = true;
-        break;
-      }
+    if (!image) {
+      return sendResponse(res, 422, "No image provided");
     }
-  } else {
-    // Image is not an array
-    if (!image.mimetype?.startsWith("image")) {
-      imageIsNotValid = true;
-    }
-  }
 
-  if (imageIsNotValid) {
-    return sendResponse(res, 422, "Invalid image format");
-  } else {
+    const newProduct = new ProductModel({
+      owner: req.user.id,
+      category,
+      description,
+      name,
+      price,
+      purchasingDate,
+      images: [],
+    });
+
+    const multipleImages = Array.isArray(image);
+
+    // Validate image count
+    if (multipleImages && image.length > 5) {
+      return sendResponse(res, 422, "Cannot upload more than 5 images");
+    }
+
+    // Validate image types
+    const isValidImage = (file: any) =>
+      file.mimetype?.startsWith("image") &&
+      ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype);
+
     if (multipleImages) {
-      const promisedResponse = image.map((image) => {
-        return uploadImage(image.filepath);
-      });
+      if (!image.every(isValidImage)) {
+        return sendResponse(res, 422, "Invalid image format");
+      }
+    } else if (!isValidImage(image)) {
+      return sendResponse(res, 422, "Invalid image format");
+    }
 
-      const expectedResponse = await Promise.all(promisedResponse);
+    console.log("Starting upload process");
+    if (multipleImages) {
+      // Process images in smaller batches to prevent overwhelming the server
+      const batchSize = 2;
+      const images = [];
 
-      newProduct.images = expectedResponse.map((image) => {
-        const { secure_url: url, public_id: id } = image;
-        return {
-          id,
-          url,
-        };
-      });
+      for (let i = 0; i < image.length; i += batchSize) {
+        const batch = image.slice(i, i + batchSize);
+        const batchStartTime = Date.now();
 
+        const batchResults = await Promise.all(
+          batch.map((img) => uploadImage(img.filepath))
+        );
+
+        console.log(
+          `Batch ${i / batchSize + 1} completed in ${
+            Date.now() - batchStartTime
+          }ms`
+        );
+        images.push(...batchResults);
+      }
+
+      newProduct.images = images.map(({ secure_url: url, public_id: id }) => ({
+        id,
+        url,
+      }));
       newProduct.thumbnail = newProduct.images[0].url;
     } else {
-      const { secure_url: url, public_id: id } = await uploadImage(
-        image.filepath
-      );
-      newProduct.images[0] = { url: url, id: id };
-      newProduct.thumbnail = url;
+      const result = await uploadImage(image.filepath);
+      newProduct.images = [
+        {
+          id: result.public_id,
+          url: result.secure_url,
+        },
+      ];
+      newProduct.thumbnail = result.secure_url;
     }
+
+    await newProduct.save();
+
+    const endTime = Date.now();
+    console.log(
+      `Product creation completed at ${new Date(endTime).toISOString()}`
+    );
+    console.log(`Total duration: ${endTime - startTime}ms`);
+
+    return sendResponse(res, 201, "Product has been successfully created.");
+  } catch (error) {
+    console.error("Product creation error:", error);
+    return sendResponse(res, 500, "Failed to create product");
   }
-
-  console.log("validaror");
-
-  await newProduct.save();
-
-  // res.json({ message: "This product has been successfully created." });
-  sendResponse(res, 201, "This product has been successfully created.");
 };
 
 const updateExistingProduct: RequestHandler<

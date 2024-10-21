@@ -25,14 +25,12 @@ export const useAuthentication = () => {
       });
       console.log(response, "response");
       if (!response) return;
-      const { tokens, userData } = response as LoginResponse;
+      const { tokens, userData } = response.data as LoginResponse;
       const stringifiedTokens = JSON.stringify(tokens);
 
       await AsyncStorage.setItem("tokens", stringifiedTokens);
 
-      dispatch(
-        login({ ...userData, accessToken: JSON.stringify(tokens.accessToken) })
-      );
+      dispatch(login({ ...userData, accessToken: tokens.accessToken }));
 
       router.replace("/(tabs)/home");
     } catch (e) {
@@ -49,7 +47,7 @@ export const useAuthentication = () => {
       endPoint: "sign-up",
       method: "post",
     });
-    if (response) {
+    if (response?.data && response.status >= 200 && response.status < 300) {
       router.back();
     }
     dispatch(loading(false));
@@ -66,7 +64,7 @@ export const useAuthentication = () => {
       token: parsedAccessToken.accessToken,
       data: { refreshToken: parsedAccessToken.refreshToken },
     });
-    if (response) {
+    if (response?.data && response.status >= 200 && response.status < 300) {
       router.replace("/(auth)/");
       dispatch(login(null));
       clearAllTokens();
@@ -85,7 +83,7 @@ export const useAuthentication = () => {
         data: email,
       });
       console.log(response, "response");
-      if (response)
+      if (response?.data && response.status >= 200 && response.status < 300)
         showToast({
           text1: "Success",
           text2: (response as any).message,

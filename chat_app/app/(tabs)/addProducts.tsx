@@ -28,7 +28,7 @@ import { createProductSchema } from "root/utils/validations";
 const initialValues: CreateProductModel = {
   name: "",
   price: 0,
-  purchasingDate: "",
+  purchasingDate: new Date().toISOString().split("T")[0],
   category: "",
   description: "",
   images: [],
@@ -117,7 +117,10 @@ export default function AddProduct() {
 
     imageBlob.forEach((img) => formData.append("image", img as any));
 
-    await createProduct(formData);
+    await createProduct(formData).then(() => {
+      setImages([]);
+      formikRef.current?.resetForm();
+    });
   };
 
   return (
@@ -143,7 +146,7 @@ export default function AddProduct() {
             handleChange,
             values,
           }) => {
-            console.log(errors);
+            console.log(values);
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
@@ -202,6 +205,7 @@ export default function AddProduct() {
                       paddingVertical: 15,
                       marginBottom: 10,
                     }}
+                    values={values.name}
                     autoCapitalize="none"
                     secureTextEntry={false}
                     setFieldValue={setFieldValue}
@@ -218,6 +222,7 @@ export default function AddProduct() {
                       paddingVertical: 15,
                       marginBottom: 10,
                     }}
+                    values={values.price}
                     leftIcon
                     leftIconTitle="cash-outline"
                     secureTextEntry={false}
@@ -235,6 +240,7 @@ export default function AddProduct() {
                   <TextField
                     label="Purchasing Date"
                     editable={false}
+                    values={values.purchasingDate}
                     autoCapitalize="none"
                     viewProps={{
                       paddingVertical: 15,
@@ -258,6 +264,7 @@ export default function AddProduct() {
                   <TextField
                     label="Category"
                     editable={false}
+                    values={values.category}
                     categoryValue={values.category}
                     autoCapitalize="none"
                     viewProps={{
@@ -281,6 +288,7 @@ export default function AddProduct() {
                   />
                   <TextField
                     label="Description"
+                    values={values.name}
                     numberOfLines={5}
                     maxLength={150}
                     multiline

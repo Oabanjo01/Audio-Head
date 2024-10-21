@@ -17,11 +17,7 @@ import { instance } from "src/apiInstance";
 
 export type AuthData = SignUpModel | ResetPasswordModel | SignInModel;
 
-export type AuthResponse =
-  | LoginResponse
-  | SignUpResponse
-  | ProfileResponse
-  | AxiosResponse;
+export type AuthResponse = LoginResponse | SignUpResponse | ProfileResponse;
 
 type EndPointType =
   | "sign-in"
@@ -43,22 +39,19 @@ export const authService = async <T extends AuthData, E extends EndPointType>({
   data,
   endPoint,
   method,
-  token,
-}: AuthProps<T, E>): Promise<AuthResponse | null> => {
+}: AuthProps<T, E>): Promise<AxiosResponse<AuthResponse> | null> => {
   try {
-    const headers: Record<string, string> = {};
-    if (endPoint.includes("profile") || endPoint.includes("out")) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
     const payLoad = {
       method,
       url: `auth/${endPoint}`,
       data: data,
-      headers,
     };
 
-    const response = await instance.request(payLoad);
+    const response = await instance.request<
+      any,
+      AxiosResponse<AuthResponse>,
+      T
+    >(payLoad);
     return response;
   } catch (error: any) {
     if (isNetworkError(error)) {

@@ -7,7 +7,7 @@ export type CreateProductModel = {
   thumbnail?: string;
   name: string;
   price: number;
-  purchasingDate: Date | string;
+  purchasingDate: unknown;
   category: CategoriesNameType | "";
   description: string;
 };

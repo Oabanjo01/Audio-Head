@@ -26,7 +26,7 @@ export const refreshToken = async (failedRequest: any) => {
       await AsyncStorage.setItem("tokens", JSON.stringify(tokens));
       failedRequest.response.config.headers["Authorization"] =
         "Bearer " + tokens.accessToken;
-      return Promise.resolve();
+      return Promise.resolve(failedRequest);
     } catch (error) {
       return Promise.reject(error);
     }

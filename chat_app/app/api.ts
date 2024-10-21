@@ -1,26 +1,23 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { refreshToken } from "root/controllers/tokenManager";
-import { store } from "root/redux/store";
 import { handleApiError } from "root/utils/errorHandlers/axiosErrorHandler";
 import { logErrorDetails } from "root/utils/errorHandlers/customErrorLogger";
 import { instance } from "src/apiInstance";
 
 const publicRoutes = ["sign-in", "generate-reset-password-link"];
 
-const authState = store.getState().auth;
-const { userData } = authState;
-
-instance.defaults.timeout = 10000;
-
 instance.interceptors.request.use(
   async (config) => {
-    if (config.url && !publicRoutes.includes(config?.url)) {
-      if (userData?.accessToken) {
-        config.headers["Authorization"] = `Bearer ${userData?.accessToken}`;
+    const token = await AsyncStorage.getItem("tokens");
+    if (token && config.url && !publicRoutes.includes(config?.url)) {
+      const parsedTokens = JSON.parse(token);
+      if (parsedTokens?.accessToken) {
+        config.headers["Authorization"] = `Bearer ${parsedTokens?.accessToken}`;
       }
     }
-    console.log(config.headers["Authorization"], "Config");
-    return Promise.resolve(config);
+    console.log(config.data, config.url, "Config");
+    return config;
   },
   async (error) => {
     logErrorDetails(error);
@@ -34,10 +31,11 @@ createAuthRefreshInterceptor(instance, refreshToken);
 instance.interceptors.response.use(
   async (response) => {
     console.log(response, "directly from responses api");
-    return Promise.resolve(response.data);
+    return response;
   },
-  async (error) => {
+  (error) => {
+    logErrorDetails(error);
     handleApiError(error);
-    return Promise.reject(error);
+    return error;
   }
 );

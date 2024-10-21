@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Platform, StatusBar, View } from "react-native";
@@ -19,18 +18,17 @@ export const AuthProvider = () => {
   const fetchItems = async () => {
     dispatch(loading(true));
     try {
-      const token = await AsyncStorage.getItem("tokens");
-      if (!token) return;
-      const parsedTokens = JSON.parse(token);
-      const response = (await authService<any, "profile">({
+      const response = await authService<any, "profile">({
         endPoint: "profile",
         method: "GET",
-        token: parsedTokens.accessToken,
-      })) as ProfileResponse;
+      });
       if (!response) return;
-      const { profile } = response;
+      const { data } = response;
+
+      const { profile } = data as ProfileResponse;
 
       if (profile) {
+        console.log("Gote hereeee");
         router.replace("/(tabs)/home");
         dispatch(login(profile));
       }
