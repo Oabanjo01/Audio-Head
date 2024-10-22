@@ -19,3 +19,27 @@ export type CreateProductPayload = {
 export type CreateProductResponse = {
   message: string;
 };
+
+export type FetchProductListingResponse = {
+  message: string;
+};
+
+export interface ProductType {
+  id: string;
+  name: string;
+  thumbnail: string;
+  category: string;
+  price: string;
+  images: string[];
+  date: string | Date;
+  description: string;
+  seller: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+}
+
+export interface ProductListingResponse {
+  listings: ProductType[];
+}

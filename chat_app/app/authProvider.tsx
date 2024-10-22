@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Platform, StatusBar, View } from "react-native";
@@ -18,6 +19,8 @@ export const AuthProvider = () => {
   const fetchItems = async () => {
     dispatch(loading(true));
     try {
+      const token = await AsyncStorage.getItem("tokens");
+      if (!token) return;
       const response = await authService<any, "profile">({
         endPoint: "profile",
         method: "GET",

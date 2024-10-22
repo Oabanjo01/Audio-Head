@@ -6,7 +6,7 @@ import { Colors } from "root/constants/Colors";
 import { CategoryIconName } from "root/constants/icons/icon";
 
 type IconComponentProps = {
-  name: CategoryIconName | string;
+  name: CategoryIconName;
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

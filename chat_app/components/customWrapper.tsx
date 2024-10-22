@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
 import {
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import { height, width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 
 export interface KeyboardAvoidingViewProps {
+  leftHeaderIcon?: boolean;
   children: JSX.Element;
   title?: string;
   rightHeaderIcon?: boolean;
@@ -25,6 +27,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   title,
   rightHeaderIcon,
   rightHeaderIconTitle,
+  leftHeaderIcon,
 }) => {
   const { signOut } = useAuthentication();
   return (
@@ -47,13 +50,38 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
               marginBottom: 20,
             }}
           >
-            <View style={{ flex: 1 }} />
+            <View style={{ flex: 1, alignItems: "flex-start" }}>
+              {leftHeaderIcon && (
+                <View
+                  style={{
+                    borderRadius: width * 0.07,
+                    borderColor: Colors.light.primary,
+                    height: width * 0.125,
+                    width: width * 0.125,
+                    marginLeft: 10,
+                    borderWidth: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Ionicons
+                    name={"arrow-back"}
+                    color={Colors.light.primary}
+                    size={width * 0.08}
+                    onPress={async () => {
+                      router.back();
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+
             <Text
               style={{
                 flex: 2,
                 textAlign: "center",
                 color: Colors.light.text,
-                fontSize: 16,
+                fontSize: 20,
                 fontWeight: "600",
               }}
             >
@@ -64,6 +92,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                 <View
                   style={{
                     borderRadius: width * 0.07,
+                    borderColor: Colors.light.primary,
                     height: width * 0.125,
                     width: width * 0.125,
                     marginRight: 10,
@@ -74,6 +103,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                 >
                   <Ionicons
                     name={rightHeaderIconTitle}
+                    color={Colors.light.primary}
                     size={width * 0.08}
                     onPress={async () => {
                       signOut();

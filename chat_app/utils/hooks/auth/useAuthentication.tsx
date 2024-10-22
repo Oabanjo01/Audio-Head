@@ -48,7 +48,7 @@ export const useAuthentication = () => {
       method: "post",
     });
     if (response?.data && response.status >= 200 && response.status < 300) {
-      router.back();
+      router.replace("/(auth)/signUp");
     }
     dispatch(loading(false));
   };

@@ -1,6 +1,9 @@
 import { AxiosResponse, Method } from "axios";
 import { showToast } from "root/components/toast";
-import { CreateProductResponse } from "root/constants/types/productTypes";
+import {
+  CreateProductResponse,
+  ProductListingResponse,
+} from "root/constants/types/productTypes";
 import {
   handleApiError,
   isNetworkError,
@@ -8,11 +11,11 @@ import {
 } from "root/utils/errorHandlers/axiosErrorHandler";
 import { instance } from "src/apiInstance";
 
-export type ProductData = FormData;
+export type ProductData = FormData | {};
 
-export type ProductResponse = CreateProductResponse | null;
+export type ProductResponse = CreateProductResponse | ProductListingResponse;
 
-type EndPointType = "create";
+type EndPointType = "create" | "listings";
 
 type ProductProps<T extends ProductData, E extends EndPointType> = {
   method: Method;
