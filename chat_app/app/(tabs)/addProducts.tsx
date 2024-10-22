@@ -14,7 +14,7 @@ import { FlatList } from "react-native-gesture-handler";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import Button from "root/components/auth/Button";
 import { TextField } from "root/components/auth/TextField";
-import CustomWrapper from "root/components/customWrapper";
+import CustomWrapper from "root/components/customScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import { showToast } from "root/components/toast";
 import categories, { CategoryItemType } from "root/constants/categories";

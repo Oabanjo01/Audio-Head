@@ -1,8 +1,8 @@
-import { Link } from "expo-router";
+import { Href, Link } from "expo-router";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import IconComponent from "root/components/customIcon";
-import CustomWrapper from "root/components/customWrapper";
+import CustomWrapper from "root/components/customScrollableWrapper";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
@@ -10,8 +10,11 @@ import { UserData } from "root/constants/types/authTypes";
 import { getAuthState } from "root/redux/slices/authSlice";
 import { useAppSelector } from "root/redux/store";
 
+type Route = Href<string | { pathname: string; params?: Record<string, any> }>;
+
 type profileListDataType = {
   title: string;
+  route?: Route | any;
   icon: CategoryIconName;
 };
 
@@ -22,6 +25,7 @@ export default function Profile() {
   const profileListData: profileListDataType[] = [
     {
       title: "Edit profile",
+      route: "/profileScreens/editProfile",
       icon: "edit",
     },
     {
@@ -33,7 +37,8 @@ export default function Profile() {
       icon: "sunny-outline",
     },
     {
-      title: "Your Items",
+      title: "Your Products",
+      route: "/profileScreens/userProducts",
       icon: "shelves",
     },
     {
@@ -86,11 +91,16 @@ export default function Profile() {
         />
 
         {profileListData.map((item, index) => {
-          const { icon, title } = item;
+          const { icon, title, route } = item;
           return (
             <Link
               key={index}
-              href="/profileScreens/editProfile"
+              href={{
+                pathname: route || "/(tabs)/profile",
+                params: {
+                  title: title,
+                },
+              }}
               asChild
               style={[
                 styles.optionsViewStyle,

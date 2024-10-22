@@ -30,3 +30,10 @@ export const formatPrice: (value: string) => {
 export const cleanCurrencyString = (value: string): string => {
   return value.replace(/[^0-9.]/g, "");
 };
+
+export const formatPriceIntl = (amount: string): string => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+  }).format(Number(amount));
+};

@@ -8,22 +8,27 @@ import {
   Text,
   View,
 } from "react-native";
-import CustomWrapper from "root/components/customWrapper";
+import CustomWrapper from "root/components/customScrollableWrapper";
 import { height, width } from "root/constants/Dimensions";
+import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { useProduct } from "root/utils/hooks/product/useProduct";
 
 const aspectRatio = 16 / 9;
 
 export default function Homepage() {
   const { fetchProductListing, productListing } = useProduct();
-
-  console.log(productListing, "productListing");
+  const { signOut } = useAuthentication();
 
   useEffect(() => {
     fetchProductListing();
   }, []);
   return (
-    <CustomWrapper title="Home" rightHeaderIcon rightHeaderIconTitle="log-out">
+    <CustomWrapper
+      title="Home"
+      rightHeaderIcon
+      rightHeaderIconTitle="log-out"
+      onPress={signOut}
+    >
       <>
         <View style={{ width }}>
           <Text
@@ -47,7 +52,12 @@ export default function Homepage() {
               return (
                 <Link
                   key={index}
-                  href="/productDetail/productDetail"
+                  href={{
+                    pathname: "/productDetail/productDetail",
+                    params: {
+                      item: JSON.stringify(item),
+                    },
+                  }}
                   asChild
                   style={{
                     height: height * 0.3,

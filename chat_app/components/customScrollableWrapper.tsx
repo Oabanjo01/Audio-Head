@@ -20,6 +20,7 @@ export interface KeyboardAvoidingViewProps {
   title?: string;
   rightHeaderIcon?: boolean;
   rightHeaderIconTitle?: IconName;
+  onPress?(): void;
 }
 
 const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
@@ -28,6 +29,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   rightHeaderIcon,
   rightHeaderIconTitle,
   leftHeaderIcon,
+  onPress,
 }) => {
   const { signOut } = useAuthentication();
   return (
@@ -106,7 +108,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                     color={Colors.light.primary}
                     size={width * 0.08}
                     onPress={async () => {
-                      signOut();
+                      onPress ? onPress() : null;
                     }}
                   />
                 </View>
