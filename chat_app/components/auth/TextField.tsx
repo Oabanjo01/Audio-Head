@@ -155,7 +155,7 @@ export const TextField: FC<TextFieldProps> = ({
                   setFieldValue(fieldName, text, true);
                 }
               }}
-              value={values}
+              value={price ? texts : values}
               onFocus={() => {
                 setIsFocused(true);
               }}
