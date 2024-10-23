@@ -74,7 +74,8 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
             <Text style={layOutStyles.titleStyle}>{title}</Text>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {rightHeaderIcon && (
-                <View
+                <Pressable
+                  onPress={onPress}
                   style={[layOutStyles.headerIconStyle, { marginRight: 10 }]}
                 >
                   {dropdown ? (
@@ -86,7 +87,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                       size={width * 0.08}
                     />
                   )}
-                </View>
+                </Pressable>
               )}
             </View>
           </View>

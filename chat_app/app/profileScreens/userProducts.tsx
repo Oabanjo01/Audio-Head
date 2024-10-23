@@ -37,6 +37,11 @@ const UserProducts = () => {
         <FlatList
           numColumns={2}
           data={productListing}
+          ListEmptyComponent={
+            <View>
+              <Text>Sigh, you have no products currently.</Text>
+            </View>
+          }
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.flatListContentContainer}
           showsHorizontalScrollIndicator={false}
