@@ -6,8 +6,11 @@ import CustomWrapper from "root/components/customScrollableWrapper";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { ProductType } from "root/constants/types/productTypes";
+import { getAuthState } from "root/redux/slices/authSlice";
+import { useAppSelector } from "root/redux/store";
 import { formatPriceIntl } from "root/utils/formatPrice";
 
+const aspectRatio = 16 / 9;
 const ProductDetail = () => {
   const { item } = useLocalSearchParams();
   const {
@@ -21,17 +24,23 @@ const ProductDetail = () => {
     thumbnail,
   }: ProductType = JSON.parse(item as string);
 
-  console.log(seller);
+  const { userData } = useAppSelector(getAuthState);
+  console.log(userData, "userData");
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   const onScrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const aspectRatio = 16 / 9;
-
   const modifiedDate = new Date(date).toDateString().split("T")[0];
   return (
-    <CustomWrapper title="Product Detail" leftHeaderIcon>
+    <CustomWrapper
+      title="Product Detail"
+      leftHeaderIcon={userData?.id === seller.id}
+      rightHeaderIcon
+      productData={item}
+      rightHeaderIconTitle="ellipsis-vertical"
+      dropdown
+    >
       <>
         <View
           style={{
@@ -70,19 +79,9 @@ const ProductDetail = () => {
               );
             }}
             pagingEnabled
-            renderItem={({ item, index }) => {
+            renderItem={({ item, index: _ }) => {
               return (
-                <Image
-                  source={{ uri: item }}
-                  style={{
-                    overflow: "hidden",
-                    justifyContent: "center",
-                    borderRadius: 20,
-                    height: (width * 0.9) / aspectRatio,
-                    width: width * 0.9,
-                    marginHorizontal: width * 0.025,
-                  }}
-                />
+                <Image source={{ uri: item }} style={styles.flatlistStyle} />
               );
             }}
           />
@@ -91,17 +90,16 @@ const ProductDetail = () => {
           {Array.from({ length: images.length }).map((_, index) => {
             return (
               <View
-                style={{
-                  marginTop: 5,
-                  marginHorizontal: 3,
-                  borderRadius: 10 / 2,
-                  width: 10,
-                  height: 10,
-                  backgroundColor:
-                    activeIndex === index
-                      ? Colors.light.primary
-                      : Colors.light.lightGrey,
-                }}
+                key={index}
+                style={[
+                  styles.indicatorStyle,
+                  {
+                    backgroundColor:
+                      activeIndex === index
+                        ? Colors.light.primary
+                        : "transparent",
+                  },
+                ]}
               />
             );
           })}
@@ -136,17 +134,7 @@ const ProductDetail = () => {
                 marginTop: height * 0.3,
               }}
             >
-              <View
-                style={{
-                  height: height * 0.05,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 15,
-                  width: height * 0.05,
-                  borderRadius: (height * 0.05) / 2,
-                  borderWidth: 1,
-                }}
-              >
+              <View style={styles.sellerAvatarStyle}>
                 <IconComponent name={"person-4"} />
               </View>
               <View
@@ -174,4 +162,31 @@ const ProductDetail = () => {
 
 export default ProductDetail;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  sellerAvatarStyle: {
+    height: height * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 15,
+    width: height * 0.05,
+    borderRadius: (height * 0.05) / 2,
+    borderWidth: 1,
+  },
+  indicatorStyle: {
+    marginTop: 5,
+    marginHorizontal: 3,
+    borderRadius: 10 / 2,
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+  },
+  flatlistStyle: {
+    overflow: "hidden",
+    justifyContent: "center",
+    borderRadius: 20,
+    height: (width * 0.9) / aspectRatio,
+    width: width * 0.9,
+    marginHorizontal: width * 0.025,
+  },
+});

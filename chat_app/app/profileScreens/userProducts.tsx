@@ -9,11 +9,13 @@ import {
   View,
 } from "react-native";
 import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
+import { Colors } from "root/constants/Colors";
 import { width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { useProduct } from "root/utils/hooks/product/useProduct";
 
-const aspectRatio = 16 / 9;
+// const aspectRatio = 16 / 9;
+
 const UserProducts = () => {
   const params: { title: string } = useLocalSearchParams();
   const { title } = params;
@@ -25,43 +27,30 @@ const UserProducts = () => {
     fetchProductListing();
   }, []);
 
-  const ItemSeparator = () => <View style={styles.separator} />;
-
   return (
     <CustomUnscrollableWrapper
-      rightHeaderIcon
-      rightHeaderIconTitle="ellipsis-vertical"
-      onPress={signOut}
+      //   onPress={signOut}
       title={title}
       leftHeaderIcon
     >
-      <View style={{ marginHorizontal: 20 }}>
+      <View style={styles.container}>
         <FlatList
+          numColumns={2}
           data={productListing}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{
-            alignItems: "center",
-          }}
+          contentContainerStyle={styles.flatListContentContainer}
           showsHorizontalScrollIndicator={false}
-          ItemSeparatorComponent={ItemSeparator}
-          renderItem={({ item, index }) => {
-            console.log(item.images[0], "item");
+          renderItem={({ item }) => {
             return (
               <Link
-                key={index}
                 href={{
-                  pathname: "/productDetail/productDetail",
+                  pathname: "/products/productDetail",
                   params: {
                     item: JSON.stringify(item),
                   },
                 }}
                 asChild
-                style={
-                  {
-                    //   height: height * 0.3,
-                    //   marginRight: width * 0.05,
-                  }
-                }
+                style={styles.itemContainer}
               >
                 <Pressable>
                   <Image
@@ -70,15 +59,7 @@ const UserProducts = () => {
                     resizeMethod="resize"
                     resizeMode="cover"
                   />
-                  <Text
-                    style={{
-                      letterSpacing: 1.5,
-                      marginTop: 10,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {item.name}
-                  </Text>
+                  <Text style={styles.itemName}>{item.name}</Text>
                 </Pressable>
               </Link>
             );
@@ -92,12 +73,41 @@ const UserProducts = () => {
 export default UserProducts;
 
 const styles = StyleSheet.create({
-  imageStyle: {
-    width: width * 0.9,
-    height: (width * 0.9) / aspectRatio,
-    borderRadius: 10,
+  container: {
+    // flex: 1,
+    height: "100%",
+    width: width,
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
-  separator: {
-    marginVertical: 10,
+  flatListContentContainer: {
+    paddingBottom: 20,
+  },
+  itemContainer: {
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+    width: width * 0.4,
+    margin: 10,
+    borderRadius: 10,
+    overflow: "hidden",
+    // elevation: 3,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 2, height: 10 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 3,
+  },
+  imageStyle: {
+    width: "100%",
+    height: (width / 2) * 0.75,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    aspectRatio: 3 / 2,
+  },
+  itemName: {
+    padding: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: Colors.light.text,
   },
 });

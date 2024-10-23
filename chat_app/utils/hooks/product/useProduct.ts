@@ -62,9 +62,35 @@ export const useProduct = () => {
     }
   };
 
+  const deletProduct = async (id: string) => {
+    dispatch(loading(true));
+    try {
+      const response = await productService<any, string>({
+        endPoint: `${id}`,
+        method: "DELETE",
+        payload: {
+          id,
+        },
+      });
+      if (response?.data && response.status >= 200 && response.status < 300) {
+        showToast({
+          text1: "Product deleted",
+          text2: "This product has been deleted",
+          position: "top",
+          type: "success",
+        });
+      }
+    } catch (e) {
+      console.log(e, "errorrr ===");
+    } finally {
+      dispatch(loading(false));
+    }
+  };
+
   return {
     createProduct,
     fetchProductListing,
     productListing,
+    deletProduct,
   };
 };

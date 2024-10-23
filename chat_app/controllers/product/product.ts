@@ -15,13 +15,14 @@ export type ProductData = FormData | {};
 
 export type ProductResponse = CreateProductResponse | ProductListingResponse;
 
-type EndPointType = "create" | "listings";
+type EndPointType = "create" | "listings" | string;
 
 type ProductProps<T extends ProductData, E extends EndPointType> = {
   method: Method;
   endPoint: E;
   data?: T;
   token?: string;
+  payload?: any;
 };
 
 export const productService = async <
@@ -31,12 +32,14 @@ export const productService = async <
   data,
   endPoint,
   method,
+  payload,
 }: ProductProps<T, E>): Promise<AxiosResponse<ProductResponse> | null> => {
   try {
     const payLoad = {
       method,
       url: `product/${endPoint}`,
       data: data,
+      payload,
     };
 
     const response = await instance.request<

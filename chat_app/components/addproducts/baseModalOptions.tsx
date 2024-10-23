@@ -1,6 +1,13 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 
@@ -16,6 +23,8 @@ export interface BaseItemProps {
   onPress: () => void;
   icon: IconProps | string;
   color?: string;
+  pressableStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 const BaseModalOption: React.FC<BaseItemProps> = ({
@@ -23,10 +32,12 @@ const BaseModalOption: React.FC<BaseItemProps> = ({
   title,
   color = Colors.light.primary,
   onPress,
+  pressableStyle,
+  textStyle,
 }) => {
   const renderIcon = () => {
     if (typeof icon === "string") {
-      return <IconComponent name={icon} size={26} color={color} />;
+      return <IconComponent name={icon as any} size={26} color={color} />;
     }
 
     const Icon = icon.library === "Ionicons" ? Ionicons : MaterialIcons;
@@ -34,9 +45,11 @@ const BaseModalOption: React.FC<BaseItemProps> = ({
   };
 
   return (
-    <Pressable style={styles.itemStyle} onPress={onPress}>
+    <Pressable style={[styles.itemStyle, pressableStyle]} onPress={onPress}>
       {renderIcon()}
-      <Text style={{ marginLeft: 15, fontSize: 16, fontWeight: "500" }}>
+      <Text
+        style={[{ marginLeft: 15, fontSize: 16, fontWeight: "500" }, textStyle]}
+      >
         {title}
       </Text>
     </Pressable>

@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useRef } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -11,7 +12,8 @@ import {
 import { IconName } from "root/components/auth/TextField";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
-import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
+
+import DropDownMenu from "./dropDownMenu";
 
 export interface KeyboardAvoidingViewProps {
   leftHeaderIcon?: boolean;
@@ -30,94 +32,57 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   leftHeaderIcon,
   onPress,
 }) => {
-  const { signOut } = useAuthentication();
+  const dropdownRef = useRef<any>(null);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.keyboardAvoidingView}
+      style={layOutStyles.keyboardAvoidingView}
     >
       <View style={{ width: "100%" }}>
         {title && (
-          <View
-            style={{
-              width,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 20,
-            }}
-          >
+          <View style={layOutStyles.headerLayout}>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
               {leftHeaderIcon && (
-                <View
-                  style={{
-                    borderRadius: width * 0.07,
-                    borderColor: Colors.light.primary,
-                    height: width * 0.125,
-                    width: width * 0.125,
-                    marginLeft: 10,
-                    borderWidth: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
+                <Pressable
+                  style={layOutStyles.headerIconStyle}
+                  onPress={async () => {
+                    router.back();
                   }}
                 >
                   <Ionicons
                     name={"arrow-back"}
                     color={Colors.light.primary}
                     size={width * 0.08}
-                    onPress={async () => {
-                      router.back();
-                    }}
                   />
-                </View>
+                </Pressable>
               )}
             </View>
 
-            <Text
-              style={{
-                flex: 2,
-                textAlign: "center",
-                color: Colors.light.text,
-                fontSize: 20,
-                fontWeight: "600",
-              }}
-            >
-              {title}
-            </Text>
+            <Text style={layOutStyles.titleStyle}>{title}</Text>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {rightHeaderIcon && (
-                <View
-                  style={{
-                    borderRadius: width * 0.07,
-                    borderColor: Colors.light.primary,
-                    height: width * 0.125,
-                    width: width * 0.125,
-                    marginRight: 10,
-                    borderWidth: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                <Pressable
+                  onPress={onPress}
+                  style={layOutStyles.headerIconStyle}
                 >
                   <Ionicons
                     name={rightHeaderIconTitle}
                     color={Colors.light.primary}
                     size={width * 0.08}
-                    onPress={async () => {
-                      onPress ? onPress() : null;
-                    }}
                   />
-                </View>
+                </Pressable>
               )}
             </View>
           </View>
         )}
         {children}
       </View>
+      <DropDownMenu ref={dropdownRef} />
     </KeyboardAvoidingView>
   );
 };
 
-export const styles = StyleSheet.create({
+export const layOutStyles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
     alignItems: "center",
@@ -126,6 +91,30 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingTop: height * 0.025,
+  },
+  headerIconStyle: {
+    borderRadius: width * 0.07,
+    borderColor: Colors.light.primary,
+    height: width * 0.125,
+    width: width * 0.125,
+    marginLeft: 10,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleStyle: {
+    flex: 2,
+    textAlign: "center",
+    color: Colors.light.text,
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  headerLayout: {
+    width,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
   },
 });
 
