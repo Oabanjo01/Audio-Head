@@ -288,7 +288,7 @@ export default function AddProduct() {
                   />
                   <TextField
                     label="Description"
-                    values={values.name}
+                    values={values.description}
                     numberOfLines={5}
                     maxLength={150}
                     multiline
