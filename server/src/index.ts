@@ -59,7 +59,7 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/product", productRouter);
 
-app.get("/verify", (req, res, next) => {
+app.get("/verify", (_req, res, next) => {
   res.render("verifyingEmail", {
     title: "Account Verification",
     message: "Please wait, we are verifying your account.",
@@ -68,7 +68,7 @@ app.get("/verify", (req, res, next) => {
   next();
 });
 
-app.get("/password-verification", (req, res, next) => {
+app.get("/password-verification", (_req, res, next) => {
   res.render("resettingpassword", {
     title: "Reset Password",
     message: "Please wait, this might take a minute.",
@@ -78,7 +78,7 @@ app.get("/password-verification", (req, res, next) => {
 });
 
 // catch error after failed dealings in the auth router
-app.use(function (err, req, res, next) {
+app.use(function (err, _req, res, _next) {
   res.status(500).json({ message: err.message });
 } as ErrorRequestHandler);
 

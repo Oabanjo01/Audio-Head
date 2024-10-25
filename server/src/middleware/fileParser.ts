@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const fileParser: RequestHandler = async (req, res, next) => {
+const fileParser: RequestHandler = async (req, _res, next) => {
   const form = formidable();
   const [fields, files] = await form.parse(req);
 

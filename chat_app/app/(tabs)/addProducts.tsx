@@ -49,6 +49,9 @@ export default function AddProduct() {
   const handlePresentOptionsModalPress = useCallback(() => {
     imageOptionsBottomSheetModalRef.current?.present();
   }, []);
+  const handleClosePresentOptionsModalPress = useCallback(() => {
+    imageOptionsBottomSheetModalRef.current?.dismiss();
+  }, []);
 
   const options = [
     {
@@ -58,6 +61,7 @@ export default function AddProduct() {
         console.log("presses");
         const newImages = images.filter((image) => image !== selectedImage);
         setImages(newImages);
+        handleClosePresentOptionsModalPress();
       },
     },
   ];

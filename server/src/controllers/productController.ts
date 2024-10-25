@@ -357,7 +357,7 @@ const findByCategory: RequestHandler<
   });
 };
 
-const getLatestProducts: RequestHandler<{}, {}, {}, {}> = async (req, res) => {
+const getLatestProducts: RequestHandler<{}, {}, {}, {}> = async (_req, res) => {
   const products = await ProductModel.find().sort("-createdAt").limit(10);
 
   const listings = products.map((p) => {
