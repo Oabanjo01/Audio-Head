@@ -13,27 +13,29 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.olabanjo01.chatapp",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSExceptionDomains": {
+            "localhost": {
+              "NSExceptionAllowsInsecureHTTPLoads": true
+            }
+          }
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "ios": {
-        "infoPlist": {
-          "NSAppTransportSecurity": {
-            "NSAllowsArbitraryLoads": true,
-            "NSExceptionDomains": {
-              "localhost": {
-                "NSExceptionAllowsInsecureHTTPLoads": true
-              }
-            }
-          }
-        }
-      },
       "package": "com.olabanjo01.chat_app",
-      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
       "bundler": "metro",
