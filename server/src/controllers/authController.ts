@@ -26,7 +26,7 @@ const rootPath = path.resolve(__dirname, "../");
 const createaNewUser: RequestHandler<{}, {}, CreateUserRequestBody> = async (
   req,
   res,
-  next
+  _next
 ) => {
   const { email, name, password } = req.body;
 
@@ -306,7 +306,7 @@ const generatePasswordResetLink: RequestHandler<
   }
 };
 
-const validGoThrough: RequestHandler = (req, res) => {
+const validGoThrough: RequestHandler = (_req, res) => {
   res.json({ message: "Password token is valid" });
 };
 

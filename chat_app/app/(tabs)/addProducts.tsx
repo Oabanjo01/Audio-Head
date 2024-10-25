@@ -51,6 +51,9 @@ export default function AddProduct() {
   const handlePresentImageModalPress = useCallback(() => {
     imageOptionsBottomSheetModalRef.current?.present();
   }, []);
+  const handleClosePresentOptionsModalPress = useCallback(() => {
+    imageOptionsBottomSheetModalRef.current?.dismiss();
+  }, []);
 
   const { createProduct } = useProduct();
 
@@ -62,6 +65,7 @@ export default function AddProduct() {
         const newImages = images.filter((image) => image !== selectedImage);
         setImages(newImages);
         formikRef.current?.setFieldValue("images", [...newImages]);
+        handleClosePresentOptionsModalPress();
       },
     },
   ];
