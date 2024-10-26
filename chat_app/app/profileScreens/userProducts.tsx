@@ -14,8 +14,6 @@ import { width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { useProduct } from "root/utils/hooks/product/useProduct";
 
-// const aspectRatio = 16 / 9;
-
 const UserProducts = () => {
   const params: { title: string } = useLocalSearchParams();
   const { title } = params;

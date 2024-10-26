@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx expo start -c",
+    "dev-build": "npx expo run:android",
+    "dev-build-ios": "npx expo run:ios",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
