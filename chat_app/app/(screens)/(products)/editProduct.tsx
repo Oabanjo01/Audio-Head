@@ -42,7 +42,7 @@ const EditProduct = () => {
   const handleProductDeletion = async (id: string) => {
     dismiss();
     await deletProduct(id).then(() => {
-      router.dismissAll();
+      router.navigate("/(screens)/userProducts");
     });
   };
 

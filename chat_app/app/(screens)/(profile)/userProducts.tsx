@@ -1,5 +1,5 @@
-import { Link, useLocalSearchParams } from "expo-router";
-import React, { useEffect } from "react";
+import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React from "react";
 import {
   FlatList,
   Image,
@@ -21,19 +21,19 @@ const UserProducts = () => {
   const { fetchProductListing, productListing } = useProduct();
   const { signOut } = useAuthentication();
 
-  useEffect(() => {
-    fetchProductListing();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProductListing();
+    }, [])
+  );
 
   return (
-    <CustomUnscrollableWrapper
-      //   onPress={signOut}
-      title={title}
-      leftHeaderIcon
-    >
+    <CustomUnscrollableWrapper title={title || "Your Products"} leftHeaderIcon>
       <View style={styles.container}>
         <FlatList
           numColumns={2}
+          // refreshing={true}
+          // refreshControl={}
           data={productListing}
           ListEmptyComponent={
             <View>
@@ -47,7 +47,7 @@ const UserProducts = () => {
             return (
               <Link
                 href={{
-                  pathname: "/products/productDetail",
+                  pathname: "/(products)/productDetail",
                   params: {
                     item: JSON.stringify(item),
                   },
@@ -77,7 +77,6 @@ export default UserProducts;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     height: "100%",
     width: width,
     alignItems: "center",
@@ -93,11 +92,6 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
-    // elevation: 3,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 2, height: 10 },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 3,
   },
   imageStyle: {
     width: "100%",

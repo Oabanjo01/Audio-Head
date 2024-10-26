@@ -53,7 +53,7 @@ export default function Homepage() {
                 <Link
                   key={index}
                   href={{
-                    pathname: "/products/productDetail",
+                    pathname: "/(products)/productDetail",
                     params: {
                       item: JSON.stringify(item),
                     },

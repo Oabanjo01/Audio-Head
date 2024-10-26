@@ -1,6 +1,13 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useRef, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
 import { Colors } from "root/constants/Colors";
@@ -150,6 +157,15 @@ const ProductDetail = () => {
                   Created on: {modifiedDate}
                 </Text>
               </View>
+              <Pressable
+                onPress={() => router.navigate("/(products)/chatScreen")}
+                style={[
+                  styles.sellerAvatarStyle,
+                  { marginRight: 0, marginLeft: 15 },
+                ]}
+              >
+                <IconComponent name={"message"} />
+              </Pressable>
             </View>
           ) : (
             <Image />

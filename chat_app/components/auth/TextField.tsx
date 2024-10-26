@@ -1,7 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { ComponentProps, FC, useState } from "react";
+import { FormikProps } from "formik";
+import React, { ComponentProps, FC, MutableRefObject, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -16,6 +17,7 @@ import { CategoriesNameType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { fontSize, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
+import { CreateProductModel } from "root/constants/types/productTypes";
 import {
   handleChangeType,
   handleDateChangeType,
@@ -50,11 +52,13 @@ interface TextFieldProps extends TextInputProps {
   rightIconName?: CategoryIconName;
   rightIconPress?(): void;
   values: any;
+  reference?: MutableRefObject<FormikProps<CreateProductModel> | null>;
 }
 
 export const TextField: FC<TextFieldProps> = ({
   setFieldValue,
   label,
+  reference,
   fieldName,
   showPasswords,
   isOpen = false,
@@ -75,6 +79,10 @@ export const TextField: FC<TextFieldProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [texts, setText] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(Platform.OS === "ios");
+
+  const handlePriceUpdate = (newValue: string) => {
+    reference?.current?.setFieldValue("price", newValue);
+  };
 
   const handlePress = () => {
     Keyboard.dismiss();
@@ -136,30 +144,55 @@ export const TextField: FC<TextFieldProps> = ({
                 ios: handlePress,
               })}
               onChangeText={(text) => {
-                if (price) {
-                  const validText = text.replace(/[^0-9.]/g, "");
-                  const dotCount = (validText.match(/\./g) || []).length;
-
-                  if (dotCount < 2 && price) {
-                    const { formattedValue } = formatPrice(text);
-                    setFieldValue(fieldName, cleanCurrencyString(text), true);
-                    setText(formattedValue);
-                  } else if (dotCount === 2) {
-                    return text;
-                  } else {
-                    setFieldValue(fieldName, cleanCurrencyString(text), true);
-                    setText(text);
-                  }
-                } else {
-                  setText(text);
+                if (!price) {
                   setFieldValue(fieldName, text, true);
+                  return;
                 }
+
+                const validText = cleanCurrencyString(text);
+                const dotCount = (validText.match(/\./g) || []).length;
+
+                if (dotCount > 1) return;
+
+                const { formattedValue } = formatPrice(validText);
+
+                setFieldValue(fieldName, formattedValue, true);
+                setText(formattedValue);
               }}
-              value={price ? texts : values}
+              value={values}
               onFocus={() => {
                 setIsFocused(true);
               }}
-              onBlur={() => setIsFocused(false)}
+              onBlur={() => {
+                setIsFocused(false);
+                if (!price) return;
+
+                const stringifiedPrice = String(
+                  reference?.current?.values.price
+                );
+
+                if (stringifiedPrice.endsWith(".")) {
+                  handlePriceUpdate(stringifiedPrice.slice(0, -1));
+                  return;
+                }
+
+                if (
+                  stringifiedPrice.length === 1 &&
+                  stringifiedPrice.includes(".")
+                ) {
+                  handlePriceUpdate("0");
+                  return;
+                }
+
+                if (
+                  stringifiedPrice.startsWith("0") &&
+                  !(stringifiedPrice.charAt(1) === ".")
+                ) {
+                  const removeStartingZero = stringifiedPrice.substring(1);
+                  handlePriceUpdate(removeStartingZero);
+                  return;
+                }
+              }}
               {...props}
             />
           </View>
