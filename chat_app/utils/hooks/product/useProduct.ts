@@ -16,6 +16,7 @@ export const useProduct = () => {
 
   const createProduct = async (newPayLoad: FormData) => {
     dispatch(loading(true));
+    console.log("got here");
     try {
       const response = await productService<FormData, "create">({
         data: newPayLoad,

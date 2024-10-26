@@ -3,17 +3,17 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 import CustomWrapper from "root/components/customScrollableWrapper";
 
-const test = () => {
+const ChatScreen = () => {
   const params: { title: string } = useLocalSearchParams();
   const { title } = params;
 
   return (
-    <CustomWrapper>
-      <Text>test</Text>
+    <CustomWrapper title="Chat" leftHeaderIcon>
+      <Text>ChatScreen</Text>
     </CustomWrapper>
   );
 };
 
-export default test;
+export default ChatScreen;
 
 const styles = StyleSheet.create({});

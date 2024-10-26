@@ -3,8 +3,7 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
-import { Colors } from "root/constants/Colors";
-import { height, width } from "root/constants/Dimensions";
+import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 import { UserData } from "root/constants/types/authTypes";
 import { getAuthState } from "root/redux/slices/authSlice";
@@ -14,7 +13,7 @@ type Route = Href<string | { pathname: string; params?: Record<string, any> }>;
 
 type profileListDataType = {
   title: string;
-  route?: Route | any;
+  route?: Route;
   icon: CategoryIconName;
 };
 
@@ -25,7 +24,7 @@ export default function Profile() {
   const profileListData: profileListDataType[] = [
     {
       title: "Edit profile",
-      route: "/profileScreens/editProfile",
+      route: "/(screens)/(profile)/editProfile",
       icon: "edit",
     },
     {
@@ -38,7 +37,7 @@ export default function Profile() {
     },
     {
       title: "Your Products",
-      route: "/profileScreens/userProducts",
+      route: "/(screens)/(profile)/userProducts",
       icon: "shelves",
     },
     {
@@ -81,14 +80,14 @@ export default function Profile() {
             <Text style={{ textAlign: "center", fontSize: 16 }}>{email}</Text>
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             height: 1,
             width: width * 0.6,
             marginBottom: height * 0.03,
             backgroundColor: Colors.light.lightGrey,
           }}
-        />
+        /> */}
 
         {profileListData.map((item, index) => {
           const { icon, title, route } = item;
@@ -96,7 +95,7 @@ export default function Profile() {
             <Link
               key={index}
               href={{
-                pathname: route || "/(tabs)/profile",
+                pathname: (route as any) || "/(tabs)/profile",
                 params: {
                   title: title,
                 },

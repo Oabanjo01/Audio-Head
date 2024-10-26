@@ -18,7 +18,7 @@ export interface DropDownRefProps {
 }
 
 interface DropDownProps {
-  productdata: any;
+  productdata?: any;
 }
 
 const DropDownMenu = forwardRef<DropDownRefProps, DropDownProps>(
@@ -41,7 +41,7 @@ const DropDownMenu = forwardRef<DropDownRefProps, DropDownProps>(
       switch (label) {
         case "Cart":
           router.push({
-            pathname: "/cartandPayments/cart",
+            pathname: "/(cart)/cart",
             params: {
               title: "Carted Items",
             },
@@ -49,7 +49,7 @@ const DropDownMenu = forwardRef<DropDownRefProps, DropDownProps>(
           break;
         case "Edit":
           router.push({
-            pathname: "/products/editProduct",
+            pathname: "/(products)/editProduct",
             params: {
               title: "Edit Product",
               productData: productdata,

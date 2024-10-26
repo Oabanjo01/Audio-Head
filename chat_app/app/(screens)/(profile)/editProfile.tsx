@@ -8,7 +8,7 @@ const EditProfile = () => {
   const { title } = params;
 
   return (
-    <CustomWrapper>
+    <CustomWrapper title={title} leftHeaderIcon>
       <Text>EditProfile</Text>
     </CustomWrapper>
   );

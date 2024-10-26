@@ -50,6 +50,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
       <ScrollView
         contentContainerStyle={layOutStyles.scrollViewContent}
         keyboardShouldPersistTaps="handled"
+        // refreshControl={}
         style={{ width: "100%" }}
       >
         {title && (

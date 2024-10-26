@@ -21,7 +21,6 @@ import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CreateProductModel } from "root/constants/types/productTypes";
-import { formatPrice } from "root/utils/formatPrice";
 import { useProduct } from "root/utils/hooks/product/useProduct";
 import { pickImage } from "root/utils/pickImage";
 import { createProductSchema } from "root/utils/validations";
@@ -151,7 +150,6 @@ export default function AddProduct() {
             handleChange,
             values,
           }) => {
-            console.log(values);
             return (
               <>
                 <View style={{ paddingHorizontal: width * 0.035 }}>
@@ -221,13 +219,14 @@ export default function AddProduct() {
                   <TextField
                     label="Price"
                     autoCapitalize="none"
+                    reference={formikRef}
                     maxLength={15}
                     keyboardType="numeric"
                     viewProps={{
                       paddingVertical: 15,
                       marginBottom: 10,
                     }}
-                    values={formatPrice(String(values.price))}
+                    values={String(values.price)}
                     leftIcon
                     leftIconTitle="cash-outline"
                     secureTextEntry={false}
