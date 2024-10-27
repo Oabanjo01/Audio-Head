@@ -1,7 +1,7 @@
 import { AxiosResponse, Method } from "axios";
 import { showToast } from "root/components/toast";
 import {
-  CreateProductResponse,
+  GenericProductResponse,
   ProductListingResponse,
 } from "root/constants/types/productTypes";
 import {
@@ -13,7 +13,7 @@ import { instance } from "src/apiInstance";
 
 export type ProductData = FormData | {};
 
-export type ProductResponse = CreateProductResponse | ProductListingResponse;
+export type ProductResponse = GenericProductResponse | ProductListingResponse;
 
 type EndPointType = "create" | "listings" | string;
 

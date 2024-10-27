@@ -2,7 +2,7 @@ import axios from "axios";
 
 // just to avoid circular dependency warnings
 export const instance = axios.create({
-  baseURL: "http://192.168.0.168:8000/", // house wifi
+  baseURL: "http://192.168.0.199:8000/", // house wifi
   timeout: 60000,
   // headers: {
   //   "Content-Type": "application/json",
@@ -11,7 +11,7 @@ export const instance = axios.create({
 });
 
 export const refreshInstance = axios.create({
-  baseURL: "http://192.168.0.168:8000/",
+  baseURL: "http://192.168.0.199:8000/",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

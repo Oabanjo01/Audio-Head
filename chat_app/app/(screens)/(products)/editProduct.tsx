@@ -1,18 +1,25 @@
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams } from "expo-router";
 import { Formik, FormikProps } from "formik";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import Button from "root/components/auth/Button";
-import TextField from "root/components/auth/TextField";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
 import GeneralModal from "root/components/modal";
+import ProductForm from "root/components/product/editProductForm";
+import { ImageSection } from "root/components/product/imageListSlider";
+import { showToast } from "root/components/toast";
+import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
+import {
+  CreateProductModel,
+  ProductType,
+} from "root/constants/types/productTypes";
 import { useProduct } from "root/utils/hooks/product/useProduct";
-// import * as yup from 'yup';
+import { updateProductSchema } from "root/utils/validations";
 
 type OptionType = {
   title: string;
@@ -20,36 +27,84 @@ type OptionType = {
   onPress?(): void;
 };
 
-const options: OptionType[] = [
+type UpdateProductModel = Omit<CreateProductModel, "purchasingDate" | "images">;
+
+const options = [
   { icon: "cancel", title: "Cancel" },
   { icon: "delete-outline", title: "Confirm Delete" },
 ];
 
-const EditProduct = () => {
-  const formikRef = useRef<FormikProps<any> | null>(null);
-  const deleteProductBottomSheetModalRef = useRef<BottomSheetModal>(null);
+const thumbnailOptions = [
+  { icon: "images-outline", title: "Set as Thumbnail" },
+  { icon: "delete-outline", title: "Delete Image" },
+];
 
+const EditProduct = () => {
   const params: { title: string; productData: any } = useLocalSearchParams();
   const { title, productData } = params;
+  const parsedProductData: ProductType = JSON.parse(productData);
+  const { images, category, description, name, price, thumbnail, id } =
+    parsedProductData;
 
-  const prevProductData = JSON.parse(productData);
-  console.log(prevProductData.id, "productData  - edit product");
+  const [imageList, setImageList] = useState<string[]>(images);
+  const [imageToModify, setImageToModify] = useState<string>("");
+
+  const formikRef = useRef<FormikProps<any>>(null);
+  const deleteProductRef = useRef<BottomSheetModal>(null);
+  const categoriesRef = useRef<BottomSheetModal>(null);
+  const thumbnailRef = useRef<BottomSheetModal>(null);
 
   const { dismiss } = useBottomSheetModal();
+  const { deletProduct, deleteImage } = useProduct();
 
-  const { deletProduct } = useProduct();
-
-  const handleProductDeletion = async (id: string) => {
+  const handleDeletion = async (id: string, title: string) => {
     dismiss();
-    await deletProduct(id).then(() => {
+    if (title.toLowerCase().includes("confirm")) {
+      await deletProduct(id);
       router.navigate("/(screens)/userProducts");
-    });
+      return;
+    }
+
+    if (title.toLowerCase().includes("image")) {
+      if (imageList.length <= 1) {
+        showToast({
+          text1: "Cannot delete",
+          text2: "You can't delete the last image",
+          type: "error",
+          position: "top",
+        });
+        return;
+      }
+
+      const splittedString = imageToModify.split("/");
+      const imageId = splittedString[splittedString.length - 1].split(".")[0];
+      await deleteImage(id, imageId);
+
+      setImageList((prevImages) =>
+        prevImages.filter((img) => img !== imageToModify)
+      );
+      setImageToModify("");
+    }
   };
 
-  const renderItem = useCallback((item: OptionType, _: number) => {
-    return (
+  const renderModalOptionsItems = useCallback(
+    (item: CategoryItemType) => (
       <BaseModalOption
-        key={`index_ ${item.title}`}
+        title={item.name}
+        icon={item.icon}
+        onPress={() => {
+          formikRef.current?.setFieldValue("category", item.name);
+          dismiss();
+        }}
+      />
+    ),
+    []
+  );
+
+  const renderItem = useCallback(
+    (item: OptionType) => (
+      <BaseModalOption
+        key={`index_${item.title}`}
         title={item.title}
         icon={item.icon}
         textStyle={{
@@ -63,135 +118,108 @@ const EditProduct = () => {
         color={item.title.includes("Delete") ? "white" : Colors.light.primary}
         onPress={() => {
           item.title.includes("Delete")
-            ? handleProductDeletion(prevProductData.id)
+            ? handleDeletion(id, item.title)
             : dismiss();
         }}
       />
-    );
-  }, []);
+    ),
+    [id]
+  );
+
+  const initialValues = {
+    category,
+    description,
+    name,
+    price,
+    thumbnail,
+  };
+
   return (
-    <CustomWrapper title={title} leftHeaderIcon>
+    <CustomUnscrollableWrapper title={title} leftHeaderIcon>
       <>
         <Formik
           innerRef={formikRef}
-          initialValues={{}}
-          // validationSchema={createProductSchema}
-          onSubmit={async (values) => {}}
-        >
-          {({
-            handleSubmit,
-            errors,
-            touched,
-            setFieldValue,
-            isValidating,
-            isValid,
-            handleChange,
-            values,
-          }) => {
-            console.log(values);
-            return (
-              <>
-                <View style={{ paddingHorizontal: width * 0.035 }}>
-                  {/* <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                    <Pressable
-                      style={styles.addImageBox}
-                      onPress={async () => {
-                        const response = await pickImage();
-                        if (!response) return;
-
-                        const imageList = response?.map((image) => {
-                          return image.uri;
-                        });
-                        if (images.length + imageList.length > 5) {
-                          return showToast({
-                            text1: `Too many images selected`,
-                            text2: `Image length exceeds 5`,
-                            type: `info`,
-                            position: "top",
-                          });
-                        }
-                        setImages([...images, ...imageList]);
-                        setFieldValue("images", [...images, ...imageList]);
-                      }}
-                    >
-                      <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
-                    </Pressable>
-                    <View style={{ flex: 1 }}>
-                      <FlatList
-                        data={images}
-                        horizontal
-                        renderItem={({ item, index }) => {
-                          return (
-                            <Pressable
-                              onLongPress={() => {
-                                setSelectedImage(item);
-                                handlePresentImageModalPress();
-                              }}
-                            >
-                              <Image
-                                source={{ uri: item }}
-                                style={styles.image}
-                              />
-                            </Pressable>
-                          );
-                        }}
-                      />
-                    </View>
-                  </View> */}
-                  <TextField
-                    label="Name"
-                    leftIconTitle="bag-outline"
-                    maxLength={12}
-                    leftIcon
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
-                    }}
-                    values={values.name}
-                    autoCapitalize="none"
-                    secureTextEntry={false}
-                    setFieldValue={setFieldValue}
-                    fieldName="name"
-                    error={errors.name && isValid ? true : false}
-                    // errorMessage={errors.name}
-                  />
-                </View>
-                <Button
-                  buttonStyle={{
-                    marginTop: height * 0.05,
-                    alignSelf: "center",
-                    paddingVertical: 10,
-                  }}
-                  // disabled={!isValid || images.length === 0}
-                  // onPress={handleSubmit}
-                  label={"Create"}
-                />
-
-                <Pressable
-                  onPress={() => {
-                    deleteProductBottomSheetModalRef.current?.present();
-                  }}
-                >
-                  <Text style={{ color: Colors.light.redColor }}>
-                    Delete Product?
-                  </Text>
-                </Pressable>
-              </>
-            );
+          initialValues={initialValues}
+          validationSchema={updateProductSchema}
+          onSubmit={async (values) => {
+            // Handle submit
           }}
+        >
+          {({ handleSubmit, isValid }) => (
+            <>
+              <View style={styles.container}>
+                <ImageSection
+                  imageList={imageList}
+                  setImageList={setImageList}
+                  onThumbnailPress={(image) => {
+                    setImageToModify(image);
+                    thumbnailRef.current?.present();
+                  }}
+                  formikRef={formikRef}
+                />
+                <ProductForm
+                  onCategoryPress={() => categoriesRef.current?.present()}
+                />
+              </View>
+
+              <Button
+                buttonStyle={styles.updateButton}
+                disabled={!isValid || imageList.length === 0}
+                onPress={handleSubmit}
+                label="Update"
+              />
+
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => deleteProductRef.current?.present()}
+              >
+                <Text style={styles.deleteButtonText}>Delete Product?</Text>
+              </Pressable>
+            </>
+          )}
         </Formik>
+
         <GeneralModal
-          ref={deleteProductBottomSheetModalRef}
-          title="Categories"
+          ref={deleteProductRef}
+          title="Confirm Product Deletion?"
           itemsList={options}
           keyExtractor={(item: OptionType) => item.title}
           renderItem={renderItem}
         />
+        <GeneralModal
+          ref={categoriesRef}
+          title="Categories"
+          itemsList={categories}
+          keyExtractor={(item) => item.name}
+          renderItem={renderModalOptionsItems}
+        />
+        <GeneralModal
+          ref={thumbnailRef}
+          title="Set as Thumbnail"
+          itemsList={thumbnailOptions}
+          keyExtractor={(item: OptionType) => item.title}
+          renderItem={renderItem}
+        />
       </>
-    </CustomWrapper>
+    </CustomUnscrollableWrapper>
   );
 };
 
-export default EditProduct;
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: width * 0.035,
+  },
+  updateButton: {
+    marginTop: height * 0.05,
+    alignSelf: "center",
+    paddingVertical: 10,
+  },
+  deleteButton: {
+    alignSelf: "center",
+  },
+  deleteButtonText: {
+    color: Colors.light.redColor,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default EditProduct;

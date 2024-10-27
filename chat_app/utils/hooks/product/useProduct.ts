@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { showToast } from "root/components/toast";
 import {
-  CreateProductResponse,
+  GenericProductResponse,
   ProductListingResponse,
   ProductType,
 } from "root/constants/types/productTypes";
@@ -24,7 +24,56 @@ export const useProduct = () => {
         method: "POST",
       });
       if (response?.data && response.status >= 200 && response.status < 300) {
-        const { message } = response.data as CreateProductResponse;
+        const { message } = response.data as GenericProductResponse;
+        showToast({
+          text1: "Yayyy!",
+          text2: message,
+          position: "top",
+          type: "success",
+        });
+      }
+    } catch (e) {
+      console.log(e, "errorrr ===");
+    } finally {
+      dispatch(loading(false));
+    }
+  };
+
+  const updateProduct = async (newPayLoad: FormData, productId: string) => {
+    dispatch(loading(true));
+    console.log("got here");
+    try {
+      const response = await productService<FormData, any>({
+        data: newPayLoad,
+        endPoint: `${productId}`,
+        method: "PATCH",
+      });
+      if (response?.data && response.status >= 200 && response.status < 300) {
+        const { message } = response.data as GenericProductResponse;
+        showToast({
+          text1: "Yayyy!",
+          text2: message,
+          position: "top",
+          type: "success",
+        });
+      }
+    } catch (e) {
+      console.log(e, "errorrr ===");
+    } finally {
+      dispatch(loading(false));
+    }
+  };
+
+  const deleteImage = async (id: string, productId: string) => {
+    dispatch(loading(true));
+    try {
+      const response = await productService<any, any>({
+        endPoint: `image/${id}/${productId}`,
+        method: "DELETE",
+      });
+      if (response?.data && response.status >= 200 && response.status < 300) {
+        const { message } = response.data as GenericProductResponse;
+        // router.navigate("/(screens)/userProducts");
         showToast({
           text1: "Yayyy!",
           text2: message,
@@ -93,5 +142,6 @@ export const useProduct = () => {
     fetchProductListing,
     productListing,
     deletProduct,
+    deleteImage,
   };
 };

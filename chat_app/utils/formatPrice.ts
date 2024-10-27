@@ -32,8 +32,9 @@ export const cleanCurrencyString = (value: string): string => {
 };
 
 export const formatPriceIntl = (amount: string): string => {
+  const cleanedAmount = cleanCurrencyString(amount);
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN",
-  }).format(Number(amount));
+  }).format(Number(cleanedAmount));
 };

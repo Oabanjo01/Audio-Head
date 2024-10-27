@@ -2,18 +2,12 @@ import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Formik, FormikProps } from "formik";
 import mime from "mime";
 import React, { useCallback, useRef, useState } from "react";
-import {
-  Image,
-  Keyboard,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import Button from "root/components/auth/Button";
 import { TextField } from "root/components/auth/TextField";
+import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import { showToast } from "root/components/toast";
@@ -27,7 +21,7 @@ import { createProductSchema } from "root/utils/validations";
 
 const initialValues: CreateProductModel = {
   name: "",
-  price: 0,
+  price: "0",
   purchasingDate: new Date().toISOString().split("T")[0],
   category: "",
   description: "",
@@ -175,7 +169,8 @@ export default function AddProduct() {
                         setFieldValue("images", [...images, ...imageList]);
                       }}
                     >
-                      <Text style={{ flexWrap: "wrap" }}>Add Images</Text>
+                      <IconComponent name="images-outline" size={30} />
+                      {/* <Text style={{ flexWrap: "wrap" }}>Add Images</Text> */}
                     </Pressable>
                     <View style={{ flex: 1 }}>
                       <FlatList
@@ -202,7 +197,7 @@ export default function AddProduct() {
                   <TextField
                     label="Name"
                     leftIconTitle="bag-outline"
-                    maxLength={12}
+                    maxLength={20}
                     leftIcon
                     viewProps={{
                       paddingVertical: 15,

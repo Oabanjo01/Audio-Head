@@ -27,7 +27,6 @@ export default function TabLayout() {
           options={{
             title: "Home",
             tabBarIcon: ({ color, focused }) => {
-              console.log(focused, "What is passed down?");
               return <TabBarIcon color={color} iconName={"home"} focused />;
             },
           }}

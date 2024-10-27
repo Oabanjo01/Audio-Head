@@ -2,6 +2,8 @@ import { categoryNames } from "root/constants/categories";
 import { CreateProductModel } from "root/constants/types/productTypes";
 import * as yup from "yup";
 
+import { cleanCurrencyString } from "./formatPrice";
+
 declare module "yup" {
   interface StringSchema {
     validateEmail(message: string): this;
@@ -21,23 +23,14 @@ yup.addMethod(yup.string, "validateEmail", function validateEmail(message) {
   });
 });
 
-export const signInSchema = yup.object({
-  password: yup
-    .string()
-    .required("Password is required")
-    .matches(
-      regexPassword,
-      "Must Contain atleast 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-    ),
+const emailSchema = {
   email: yup
     .string()
     .validateEmail("This is an invalid email")
     .email("A valid email is required")
     .required("Email address is required"),
-});
-
-export const signUpSchema = yup.object({
-  name: yup.string().required("Your full name is required"),
+};
+const passwordSchema = {
   password: yup
     .string()
     .required("Password is required")
@@ -45,19 +38,38 @@ export const signUpSchema = yup.object({
       regexPassword,
       "Must Contain atleast 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
     ),
-  email: yup
+};
+
+const productModificationSchema = {
+  name: yup.string().required("Product name is requird"),
+  price: yup
     .string()
-    .validateEmail("This is an invalid email")
-    .email("A valid email is required")
-    .required("An email address is required"),
+    .required("Product price is requird")
+    .transform((value) => {
+      const cleanedValue = cleanCurrencyString(value);
+      return cleanedValue;
+    })
+    .min(0, "Price must be greater than 0"),
+  description: yup.string().required("Product descriptioname is requird"),
+  category: yup
+    .string()
+    .oneOf(categoryNames, "Invalid category selectd")
+    .required("Product category is requird"),
+};
+
+export const signInSchema = yup.object({
+  ...passwordSchema,
+  ...emailSchema,
+});
+
+export const signUpSchema = yup.object({
+  name: yup.string().required("Your full name is required"),
+  ...passwordSchema,
+  ...emailSchema,
 });
 
 export const forgotPasswordSchema = yup.object({
-  email: yup
-    .string()
-    .validateEmail("This is an invalid email")
-    .email("A valid email is required")
-    .required("An email address is required"),
+  ...emailSchema,
 });
 
 export const createProductSchema = new yup.ObjectSchema<
@@ -66,19 +78,14 @@ export const createProductSchema = new yup.ObjectSchema<
     "name" | "description" | "price" | "purchasingDate" | "category"
   >
 >({
-  name: yup.string().required("Product name is requird"),
-  price: yup
-    .number()
-    // .typeError("Must be a number")
-    // .strict(true)
-    .required("Product price is requird"),
-  // .min(0, "Price must be greater than 0"),
-  description: yup.string().required("Product descriptioname is requird"),
+  ...productModificationSchema,
   purchasingDate: yup.string().required("Product creation date is requird"),
-  category: yup
-    .string()
-    .oneOf(categoryNames, "Invalid category selectd")
-    .required("Product category is requird"),
+});
+
+export const updateProductSchema = new yup.ObjectSchema<
+  Pick<CreateProductModel, "name" | "description" | "price" | "category">
+>({
+  ...productModificationSchema,
 });
 
 export type SignInSchemaType = yup.InferType<typeof signInSchema>;
@@ -87,3 +94,4 @@ export type ForgotPasswordSchemaType = yup.InferType<
   typeof forgotPasswordSchema
 >;
 export type CreateProductSchemaType = yup.InferType<typeof createProductSchema>;
+export type UpdateProductSchemaType = yup.InferType<typeof updateProductSchema>;

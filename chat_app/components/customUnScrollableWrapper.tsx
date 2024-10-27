@@ -22,6 +22,8 @@ export interface KeyboardAvoidingViewProps {
   rightHeaderIcon?: boolean;
   rightHeaderIconTitle?: IconName;
   onPress?(): void;
+  dropdown?: boolean;
+  productData?: any;
 }
 
 const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
@@ -31,6 +33,8 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   rightHeaderIconTitle,
   leftHeaderIcon,
   onPress,
+  dropdown = false,
+  productData,
 }) => {
   const dropdownRef = useRef<any>(null);
   return (
@@ -38,7 +42,7 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={layOutStyles.keyboardAvoidingView}
     >
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", height: "100%" }}>
         {title && (
           <View style={layOutStyles.headerLayout}>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
@@ -63,13 +67,17 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
               {rightHeaderIcon && (
                 <Pressable
                   onPress={onPress}
-                  style={layOutStyles.headerIconStyle}
+                  style={[layOutStyles.headerIconStyle, { marginRight: 10 }]}
                 >
-                  <Ionicons
-                    name={rightHeaderIconTitle}
-                    color={Colors.light.primary}
-                    size={width * 0.08}
-                  />
+                  {dropdown ? (
+                    <DropDownMenu ref={dropdownRef} productdata={productData} />
+                  ) : (
+                    <Ionicons
+                      name={rightHeaderIconTitle}
+                      color={Colors.light.primary}
+                      size={width * 0.08}
+                    />
+                  )}
                 </Pressable>
               )}
             </View>
@@ -77,7 +85,6 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
         )}
         {children}
       </View>
-      <DropDownMenu ref={dropdownRef} />
     </KeyboardAvoidingView>
   );
 };
@@ -87,6 +94,7 @@ export const layOutStyles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
   },
+
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: "white",

@@ -95,8 +95,10 @@ export const TextField: FC<TextFieldProps> = ({
     setShowDatePicker(false);
     if (selectedDate) {
       const formattedDate = selectedDate.toISOString();
-      setText(formattedDate.split("T")[0]);
-      setFieldValue(fieldName, formattedDate, true);
+      console.log(formattedDate, "formattedDate");
+      const readableDate = formattedDate.split("T")[0];
+      setText(readableDate);
+      setFieldValue(fieldName, readableDate, true);
     }
   };
   return (

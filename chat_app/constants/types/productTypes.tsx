@@ -6,7 +6,7 @@ export type CreateProductModel = {
   images: ProductImage[];
   thumbnail?: string;
   name: string;
-  price: number;
+  price: string;
   purchasingDate: unknown;
   category: CategoriesNameType | "";
   description: string;
@@ -16,7 +16,7 @@ export type CreateProductPayload = {
   formData: FormData;
 };
 
-export type CreateProductResponse = {
+export type GenericProductResponse = {
   message: string;
 };
 

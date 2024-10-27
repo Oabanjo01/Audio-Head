@@ -32,7 +32,6 @@ const ProductDetail = () => {
   }: ProductType = JSON.parse(item as string);
 
   const { userData } = useAppSelector(getAuthState);
-  console.log(userData, "userData");
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
@@ -93,7 +92,12 @@ const ProductDetail = () => {
             }}
           />
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
           {Array.from({ length: images.length }).map((_, index) => {
             return (
               <View
