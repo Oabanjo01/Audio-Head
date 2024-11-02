@@ -128,204 +128,208 @@ export default function AddProduct() {
         rightHeaderIcon
         rightHeaderIconTitle="cart"
       >
-        <Formik
-          innerRef={formikRef}
-          initialValues={initialValues}
-          validationSchema={createProductSchema}
-          onSubmit={async (values) => handleSubmit(values, images)}
-        >
-          {({
-            handleSubmit,
-            errors,
-            touched,
-            setFieldValue,
-            isValidating,
-            isValid,
-            handleChange,
-            values,
-          }) => {
-            return (
-              <>
-                <View style={{ paddingHorizontal: width * 0.035 }}>
-                  <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                    <Pressable
-                      style={styles.addImageBox}
-                      onPress={async () => {
-                        const response = await pickImage();
-                        if (!response) return;
+        <View style={{ paddingBottom: height * 0.15 }}>
+          <Formik
+            innerRef={formikRef}
+            initialValues={initialValues}
+            validationSchema={createProductSchema}
+            onSubmit={async (values) => handleSubmit(values, images)}
+          >
+            {({
+              handleSubmit,
+              errors,
+              touched,
+              setFieldValue,
+              isValidating,
+              isValid,
+              handleChange,
+              values,
+            }) => {
+              return (
+                <>
+                  <View style={{ paddingHorizontal: width * 0.035 }}>
+                    <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                      <Pressable
+                        style={styles.addImageBox}
+                        onPress={async () => {
+                          const response = await pickImage();
+                          if (!response) return;
 
-                        const imageList = response?.map((image) => {
-                          return image.uri;
-                        });
-                        if (images.length + imageList.length > 5) {
-                          return showToast({
-                            text1: `Too many images selected`,
-                            text2: `Image length exceeds 5`,
-                            type: `info`,
-                            position: "top",
+                          const imageList = response?.map((image) => {
+                            return image.uri;
                           });
-                        }
-                        setImages([...images, ...imageList]);
-                        setFieldValue("images", [...images, ...imageList]);
-                      }}
-                    >
-                      <IconComponent name="images-outline" size={30} />
-                      {/* <Text style={{ flexWrap: "wrap" }}>Add Images</Text> */}
-                    </Pressable>
-                    <View style={{ flex: 1 }}>
-                      <FlatList
-                        data={images}
-                        horizontal
-                        renderItem={({ item, index }) => {
-                          return (
-                            <Pressable
-                              onLongPress={() => {
-                                setSelectedImage(item);
-                                handlePresentImageModalPress();
-                              }}
-                            >
-                              <Image
-                                source={{ uri: item }}
-                                style={styles.image}
-                              />
-                            </Pressable>
-                          );
+                          if (images.length + imageList.length > 5) {
+                            return showToast({
+                              text1: `Too many images selected`,
+                              text2: `Image length exceeds 5`,
+                              type: `info`,
+                              position: "top",
+                            });
+                          }
+                          setImages([...images, ...imageList]);
+                          setFieldValue("images", [...images, ...imageList]);
                         }}
-                      />
+                      >
+                        <IconComponent name="images-outline" size={30} />
+                        {/* <Text style={{ flexWrap: "wrap" }}>Add Images</Text> */}
+                      </Pressable>
+                      <View style={{ flex: 1 }}>
+                        <FlatList
+                          data={images}
+                          horizontal
+                          renderItem={({ item, index }) => {
+                            return (
+                              <Pressable
+                                onLongPress={() => {
+                                  setSelectedImage(item);
+                                  handlePresentImageModalPress();
+                                }}
+                              >
+                                <Image
+                                  source={{ uri: item }}
+                                  style={styles.image}
+                                />
+                              </Pressable>
+                            );
+                          }}
+                        />
+                      </View>
                     </View>
+                    <TextField
+                      label="Name"
+                      leftIconTitle="bag-outline"
+                      maxLength={20}
+                      leftIcon
+                      viewProps={{
+                        paddingVertical: 15,
+                        marginBottom: 10,
+                      }}
+                      values={values.name}
+                      autoCapitalize="none"
+                      secureTextEntry={false}
+                      setFieldValue={setFieldValue}
+                      fieldName="name"
+                      error={errors.name && isValid ? true : false}
+                      errorMessage={errors.name}
+                    />
+                    <TextField
+                      label="Price"
+                      autoCapitalize="none"
+                      reference={formikRef}
+                      maxLength={15}
+                      keyboardType="numeric"
+                      viewProps={{
+                        paddingVertical: 15,
+                        marginBottom: 10,
+                      }}
+                      values={String(values.price)}
+                      leftIcon
+                      leftIconTitle="cash-outline"
+                      secureTextEntry={false}
+                      setFieldValue={setFieldValue}
+                      error={
+                        errors.price && isValidating && touched.price
+                          ? true
+                          : false
+                      }
+                      price
+                      handleChange={handleChange}
+                      errorMessage={errors.price}
+                      fieldName="price"
+                    />
+                    <TextField
+                      label="Purchasing Date"
+                      editable={false}
+                      values={values.purchasingDate}
+                      autoCapitalize="none"
+                      viewProps={{
+                        paddingVertical: 15,
+                        marginBottom: 10,
+                      }}
+                      isDateField
+                      leftIcon
+                      leftIconTitle="time-outline"
+                      secureTextEntry={false}
+                      setFieldValue={setFieldValue}
+                      error={
+                        errors.purchasingDate &&
+                        isValidating &&
+                        touched.purchasingDate
+                          ? true
+                          : false
+                      }
+                      errorMessage={errors.purchasingDate}
+                      fieldName="purchasingDate"
+                    />
+                    <TextField
+                      label="Category"
+                      editable={false}
+                      values={values.category}
+                      categoryValue={values.category}
+                      autoCapitalize="none"
+                      viewProps={{
+                        paddingVertical: 15,
+                        marginBottom: 10,
+                      }}
+                      leftIcon
+                      leftIconTitle="grid-outline"
+                      rightIconName="caret-down"
+                      rightIcon
+                      rightIconPress={handlePresentCategoryModalPress}
+                      secureTextEntry={false}
+                      error={
+                        errors.category && isValidating && touched.category
+                          ? true
+                          : false
+                      }
+                      errorMessage={errors.category}
+                      setFieldValue={setFieldValue}
+                      fieldName="category"
+                    />
+                    <TextField
+                      label="Description"
+                      values={values.description}
+                      numberOfLines={5}
+                      maxLength={150}
+                      multiline
+                      viewProps={{
+                        paddingVertical: 15,
+                        marginBottom: 10,
+                      }}
+                      autoCapitalize="none"
+                      error={
+                        errors.description &&
+                        isValidating &&
+                        touched.description
+                          ? true
+                          : false
+                      }
+                      errorMessage={errors.description}
+                      leftIconTitle="document-outline"
+                      leftIcon
+                      secureTextEntry={false}
+                      setFieldValue={setFieldValue}
+                      fieldName="description"
+                      style={{
+                        width: width * 0.7,
+                      }}
+                    />
                   </View>
-                  <TextField
-                    label="Name"
-                    leftIconTitle="bag-outline"
-                    maxLength={20}
-                    leftIcon
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
+                  <Button
+                    buttonStyle={{
+                      marginTop: height * 0.05,
+                      alignSelf: "center",
+                      paddingVertical: 10,
                     }}
-                    values={values.name}
-                    autoCapitalize="none"
-                    secureTextEntry={false}
-                    setFieldValue={setFieldValue}
-                    fieldName="name"
-                    error={errors.name && isValid ? true : false}
-                    errorMessage={errors.name}
+                    disabled={!isValid || images.length === 0}
+                    onPress={handleSubmit}
+                    label={"Create"}
                   />
-                  <TextField
-                    label="Price"
-                    autoCapitalize="none"
-                    reference={formikRef}
-                    maxLength={15}
-                    keyboardType="numeric"
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
-                    }}
-                    values={String(values.price)}
-                    leftIcon
-                    leftIconTitle="cash-outline"
-                    secureTextEntry={false}
-                    setFieldValue={setFieldValue}
-                    error={
-                      errors.price && isValidating && touched.price
-                        ? true
-                        : false
-                    }
-                    price
-                    handleChange={handleChange}
-                    errorMessage={errors.price}
-                    fieldName="price"
-                  />
-                  <TextField
-                    label="Purchasing Date"
-                    editable={false}
-                    values={values.purchasingDate}
-                    autoCapitalize="none"
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
-                    }}
-                    isDateField
-                    leftIcon
-                    leftIconTitle="time-outline"
-                    secureTextEntry={false}
-                    setFieldValue={setFieldValue}
-                    error={
-                      errors.purchasingDate &&
-                      isValidating &&
-                      touched.purchasingDate
-                        ? true
-                        : false
-                    }
-                    errorMessage={errors.purchasingDate}
-                    fieldName="purchasingDate"
-                  />
-                  <TextField
-                    label="Category"
-                    editable={false}
-                    values={values.category}
-                    categoryValue={values.category}
-                    autoCapitalize="none"
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
-                    }}
-                    leftIcon
-                    leftIconTitle="grid-outline"
-                    rightIconName="caret-down"
-                    rightIcon
-                    rightIconPress={handlePresentCategoryModalPress}
-                    secureTextEntry={false}
-                    error={
-                      errors.category && isValidating && touched.category
-                        ? true
-                        : false
-                    }
-                    errorMessage={errors.category}
-                    setFieldValue={setFieldValue}
-                    fieldName="category"
-                  />
-                  <TextField
-                    label="Description"
-                    values={values.description}
-                    numberOfLines={5}
-                    maxLength={150}
-                    multiline
-                    viewProps={{
-                      paddingVertical: 15,
-                      marginBottom: 10,
-                    }}
-                    autoCapitalize="none"
-                    error={
-                      errors.description && isValidating && touched.description
-                        ? true
-                        : false
-                    }
-                    errorMessage={errors.description}
-                    leftIconTitle="document-outline"
-                    leftIcon
-                    secureTextEntry={false}
-                    setFieldValue={setFieldValue}
-                    fieldName="description"
-                    style={{
-                      width: width * 0.7,
-                    }}
-                  />
-                </View>
-                <Button
-                  buttonStyle={{
-                    marginTop: height * 0.05,
-                    alignSelf: "center",
-                    paddingVertical: 10,
-                  }}
-                  disabled={!isValid || images.length === 0}
-                  onPress={handleSubmit}
-                  label={"Create"}
-                />
-              </>
-            );
-          }}
-        </Formik>
+                </>
+              );
+            }}
+          </Formik>
+        </View>
       </CustomWrapper>
       <GeneralModal
         ref={categoriesBottomSheetModalRef}

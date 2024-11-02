@@ -5,6 +5,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import Button from "root/components/auth/Button";
+import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
 import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import ProductForm from "root/components/product/editProductForm";
@@ -19,6 +20,10 @@ import {
   ProductType,
 } from "root/constants/types/productTypes";
 import { useProduct } from "root/utils/hooks/product/useProduct";
+import {
+  filterLocalImages,
+  isCloudImage,
+} from "root/utils/images/filterOutLocalImages";
 import { updateProductSchema } from "root/utils/validations";
 
 type OptionType = {
@@ -34,7 +39,7 @@ const options = [
   { icon: "delete-outline", title: "Confirm Delete" },
 ];
 
-const thumbnailOptions = [
+const thumbnailOptions: OptionType[] = [
   { icon: "images-outline", title: "Set as Thumbnail" },
   { icon: "delete-outline", title: "Delete Image" },
 ];
@@ -47,6 +52,8 @@ const EditProduct = () => {
     parsedProductData;
 
   const [imageList, setImageList] = useState<string[]>(images);
+  const [restorableImageList, setrestorableImageList] =
+    useState<string[]>(images);
   const [imageToModify, setImageToModify] = useState<string>("");
 
   const formikRef = useRef<FormikProps<any>>(null);
@@ -57,7 +64,11 @@ const EditProduct = () => {
   const { dismiss } = useBottomSheetModal();
   const { deletProduct, deleteImage } = useProduct();
 
-  const handleDeletion = async (id: string, title: string) => {
+  const handleDeletion = async (
+    id: string,
+    title: string,
+    imageToDelete: string
+  ) => {
     dismiss();
     if (title.toLowerCase().includes("confirm")) {
       await deletProduct(id);
@@ -66,22 +77,38 @@ const EditProduct = () => {
     }
 
     if (title.toLowerCase().includes("image")) {
-      if (imageList.length <= 1) {
-        showToast({
-          text1: "Cannot delete",
-          text2: "You can't delete the last image",
-          type: "error",
-          position: "top",
-        });
+      if (!isCloudImage(imageToDelete)) {
+        setImageList((prevImages) =>
+          prevImages.filter((img) => img !== imageToDelete)
+        );
+        setrestorableImageList((prevImages) =>
+          prevImages.filter((img) => img !== imageToDelete)
+        );
+        setImageToModify("");
         return;
       }
 
-      const splittedString = imageToModify.split("/");
+      if (
+        filterLocalImages(imageList).length <= 1 &&
+        isCloudImage(imageToDelete)
+      ) {
+        return showToast({
+          text1: "Cannot delete",
+          text2: "You cannot delete the last saved product image",
+          type: "error",
+          position: "top",
+        });
+      }
+
+      const splittedString = imageToDelete.split("/");
       const imageId = splittedString[splittedString.length - 1].split(".")[0];
       await deleteImage(id, imageId);
 
       setImageList((prevImages) =>
-        prevImages.filter((img) => img !== imageToModify)
+        prevImages.filter((img) => img !== imageToDelete)
+      );
+      setrestorableImageList((prevImages) =>
+        prevImages.filter((img) => img !== imageToDelete)
       );
       setImageToModify("");
     }
@@ -101,8 +128,8 @@ const EditProduct = () => {
     []
   );
 
-  const renderItem = useCallback(
-    (item: OptionType) => (
+  const renderItem = useCallback((item: OptionType, imageToModify?: string) => {
+    return (
       <BaseModalOption
         key={`index_${item.title}`}
         title={item.title}
@@ -118,13 +145,12 @@ const EditProduct = () => {
         color={item.title.includes("Delete") ? "white" : Colors.light.primary}
         onPress={() => {
           item.title.includes("Delete")
-            ? handleDeletion(id, item.title)
+            ? handleDeletion(id, item.title, imageToModify!)
             : dismiss();
         }}
       />
-    ),
-    [id]
-  );
+    );
+  }, []);
 
   const initialValues = {
     category,
@@ -149,6 +175,7 @@ const EditProduct = () => {
             <>
               <View style={styles.container}>
                 <ImageSection
+                  restorableImageList={restorableImageList}
                   imageList={imageList}
                   setImageList={setImageList}
                   onThumbnailPress={(image) => {
@@ -169,6 +196,8 @@ const EditProduct = () => {
                 label="Update"
               />
 
+              <ShinyPurpleButton title="Press Me" onPress={() => {}} />
+
               <Pressable
                 style={styles.deleteButton}
                 onPress={() => deleteProductRef.current?.present()}
@@ -184,7 +213,9 @@ const EditProduct = () => {
           title="Confirm Product Deletion?"
           itemsList={options}
           keyExtractor={(item: OptionType) => item.title}
-          renderItem={renderItem}
+          renderItem={(item: any, index: number) => {
+            return renderItem(item);
+          }}
         />
         <GeneralModal
           ref={categoriesRef}
@@ -195,10 +226,12 @@ const EditProduct = () => {
         />
         <GeneralModal
           ref={thumbnailRef}
-          title="Set as Thumbnail"
+          // title="Modify Existing Picture"
           itemsList={thumbnailOptions}
           keyExtractor={(item: OptionType) => item.title}
-          renderItem={renderItem}
+          renderItem={(item: any, index: number) => {
+            return renderItem(item, imageToModify);
+          }}
         />
       </>
     </CustomUnscrollableWrapper>

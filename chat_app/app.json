@@ -32,10 +32,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.olabanjo01.chat_app",
-      "permissions": [
-        "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
     },
     "web": {
       "bundler": "metro",

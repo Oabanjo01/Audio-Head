@@ -10,7 +10,7 @@ export type Ref = BottomSheetModal;
 
 type BottomSheetProps = {
   itemsList: any[];
-  title: string;
+  title?: string;
   initialSnap?: number;
   renderItem: (item: any, index: number) => ReactElement;
   keyExtractor: (item: any, index: number) => string;

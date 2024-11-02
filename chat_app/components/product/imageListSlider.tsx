@@ -5,9 +5,14 @@ import IconComponent from "root/components/customIcon";
 import { showToast } from "root/components/toast";
 import { Colors } from "root/constants/Colors";
 import { width } from "root/constants/Dimensions";
+import {
+  filterLocalImages,
+  isCloudImage,
+} from "root/utils/images/filterOutLocalImages";
 import { pickImage } from "root/utils/pickImage";
 
 interface ImageSectionProps {
+  restorableImageList: string[];
   imageList: string[];
   setImageList: (images: string[]) => void;
   onThumbnailPress: (image: string) => void;
@@ -15,6 +20,7 @@ interface ImageSectionProps {
 }
 
 export const ImageSection = ({
+  restorableImageList,
   imageList,
   setImageList,
   onThumbnailPress,
@@ -54,20 +60,30 @@ export const ImageSection = ({
         renderItem={({ item, index }) => (
           <Pressable onLongPress={() => onThumbnailPress(item)}>
             <Image source={{ uri: item }} style={styles.image} />
-            <Pressable
-              onPress={() => {
-                const newImages = imageList.filter((_, i) => i !== index);
-                setImageList(newImages);
-                formikRef.current?.setFieldValue("images", newImages);
-              }}
-              style={styles.removeImageBtn}
-            >
-              <IconComponent
-                name="cancel"
-                color={Colors.light.errorClor}
-                style={styles.removeIcon}
-              />
-            </Pressable>
+            {filterLocalImages(imageList).length < 2 && (
+              <Pressable
+                onPress={() => {
+                  if (isCloudImage(item)) {
+                    return showToast({
+                      text1: "Cannot delete",
+                      text2: "You cannot remove the last saved product image",
+                      type: "error",
+                      position: "top",
+                    });
+                  }
+                  const newImages = imageList.filter((_, i) => i !== index);
+                  setImageList(newImages);
+                  formikRef.current?.setFieldValue("images", newImages);
+                }}
+                style={styles.removeImageBtn}
+              >
+                <IconComponent
+                  name="cancel"
+                  color={Colors.light.errorClor}
+                  style={styles.removeIcon}
+                />
+              </Pressable>
+            )}
           </Pressable>
         )}
         contentContainerStyle={styles.listContainer}
@@ -77,7 +93,7 @@ export const ImageSection = ({
         <IconComponent
           name="arrow-undo-circle-outline"
           onPress={() => {
-            setImageList(imageList);
+            setImageList(restorableImageList);
             formikRef.current?.setFieldValue("images", imageList);
           }}
         />

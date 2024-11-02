@@ -1,25 +1,34 @@
+import { useKeyboard } from "@react-native-community/hooks";
 import { Tabs } from "expo-router";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { TabBarIcon } from "root/components/animatedTabbarIcon";
 import IconComponent from "root/components/customIcon";
 import { Colors } from "root/constants/Colors";
 import { height, width } from "root/constants/Dimensions";
 
 export default function TabLayout() {
+  const keyboard = useKeyboard();
+
+  console.log(keyboard.keyboardShown, "keyboard.keyboardShown");
+
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "white" }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -64} // Adjust this value as needed
+      style={{
+        height: "100%",
+        backgroundColor: "white",
+      }}
     >
       <Tabs
         backBehavior="firstRoute"
         screenOptions={{
           tabBarShowLabel: false,
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarActiveTintColor: Colors.light.primary,
-          // tabBarInactiveTintColor: "white",
-          tabBarStyle: styles.tabBarStyle,
+          tabBarStyle: [
+            styles.tabBarStyle,
+            { bottom: keyboard.keyboardShown ? -100 : height * 0.02 },
+          ],
         }}
       >
         <Tabs.Screen
@@ -38,7 +47,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused, size }) => (
               <View
                 style={[
-                  styles.middleTabbarStyle,
+                  styles.middleIconTabbarStyle,
                   { backgroundColor: focused ? color : "white" },
                 ]}
               >
@@ -80,11 +89,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     position: "absolute",
-    bottom: height * 0.05,
+    // bottom: Platform.select({
+    //   android: height * 0.02,
+    //   ios: height * 0.05,
+    // }),
     marginHorizontal: 10,
     borderRadius: 14,
   },
-  middleTabbarStyle: {
+  middleIconTabbarStyle: {
     height: width * 0.17,
     borderRadius: (width * 0.17) / 2,
     width: width * 0.17,

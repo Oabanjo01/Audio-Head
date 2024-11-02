@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import React, { useRef } from "react";
 import {
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -44,11 +43,15 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={"padding"}
       style={layOutStyles.keyboardAvoidingView}
     >
       <ScrollView
-        contentContainerStyle={layOutStyles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          layOutStyles.scrollViewContent,
+          { flexGrow: 1 },
+        ]}
         keyboardShouldPersistTaps="handled"
         // refreshControl={}
         style={{ width: "100%" }}
