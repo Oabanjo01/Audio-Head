@@ -9,13 +9,11 @@ import { height, width } from "root/constants/Dimensions";
 export default function TabLayout() {
   const keyboard = useKeyboard();
 
-  console.log(keyboard.keyboardShown, "keyboard.keyboardShown");
-
   return (
     <KeyboardAvoidingView
       style={{
         height: "100%",
-        backgroundColor: "white",
+        backgroundColor: "blue",
       }}
     >
       <Tabs

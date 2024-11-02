@@ -4,7 +4,6 @@ import { Formik, FormikProps } from "formik";
 import React, { useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
-import Button from "root/components/auth/Button";
 import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
 import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
 import GeneralModal from "root/components/modal";
@@ -189,14 +188,19 @@ const EditProduct = () => {
                 />
               </View>
 
-              <Button
+              {/* <Button
                 buttonStyle={styles.updateButton}
                 disabled={!isValid || imageList.length === 0}
                 onPress={handleSubmit}
                 label="Update"
-              />
+              /> */}
 
-              <ShinyPurpleButton title="Press Me" onPress={() => {}} />
+              <ShinyPurpleButton
+                buttonStyle={styles.updateButton}
+                label="Update"
+                onPress={handleSubmit}
+                disabled={!isValid || imageList.length === 0}
+              />
 
               <Pressable
                 style={styles.deleteButton}
@@ -244,8 +248,8 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     marginTop: height * 0.05,
-    alignSelf: "center",
-    paddingVertical: 10,
+    // alignSelf: "center",
+    // paddingVertical: 10,
   },
   deleteButton: {
     alignSelf: "center",

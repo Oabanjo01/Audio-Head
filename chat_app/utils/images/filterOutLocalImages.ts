@@ -7,7 +7,6 @@ export const filterLocalImages: (selectedImage: string[]) => string[] = (
     const cloudImage = image.startsWith(imageBaseUrl);
     return cloudImage;
   });
-  console.log(filteredImages);
   return filteredImages;
 };
 

@@ -91,11 +91,12 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
 
 export const layOutStyles = StyleSheet.create({
   scrollViewContent: {
+    flexGrow: 1,
     alignItems: "center",
   },
 
   keyboardAvoidingView: {
-    height: "100%",
+    flex: 1,
     backgroundColor: "white",
     paddingTop: height * 0.025,
   },

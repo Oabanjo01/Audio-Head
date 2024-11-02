@@ -5,7 +5,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { Image, Keyboard, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
-import Button from "root/components/auth/Button";
+import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
 import { TextField } from "root/components/auth/TextField";
 import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
@@ -315,7 +315,7 @@ export default function AddProduct() {
                       }}
                     />
                   </View>
-                  <Button
+                  <ShinyPurpleButton
                     buttonStyle={{
                       marginTop: height * 0.05,
                       alignSelf: "center",

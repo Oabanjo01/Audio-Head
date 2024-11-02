@@ -44,6 +44,7 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   return (
     <KeyboardAvoidingView
       behavior={"padding"}
+      keyboardVerticalOffset={0}
       style={layOutStyles.keyboardAvoidingView}
     >
       <ScrollView

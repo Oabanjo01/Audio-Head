@@ -1,20 +1,23 @@
-import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
+  ActivityIndicator,
   Pressable,
   PressableProps,
   StyleProp,
   StyleSheet,
   Text,
-  TextStyle,
   ViewStyle,
 } from "react-native";
+import { Colors } from "root/constants/Colors";
+import { height, width } from "root/constants/Dimensions";
 
-interface ShinyPurpleButtonProps extends Omit<PressableProps, "style"> {
-  onPress: () => void;
-  title: string;
-  style?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
+interface ShinyButtonProps extends PressableProps {
+  label: string;
+  onPress?(): void;
+  buttonStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+  submitting?: boolean;
   gradientColors?: string[];
   gradientLocations?: number[];
 }
@@ -28,47 +31,73 @@ const DEFAULT_GRADIENT_COLORS = [
 
 const DEFAULT_GRADIENT_LOCATIONS = [0, 0.3, 0.6, 1] as const;
 
-const ShinyPurpleButton: React.FC<ShinyPurpleButtonProps> = ({
+const ShinyPurpleButton: React.FC<ShinyButtonProps> = ({
+  label,
   onPress,
-  title,
-  style,
-  textStyle,
+  buttonStyle,
+  disabled,
+  submitting,
   gradientColors = DEFAULT_GRADIENT_COLORS,
   gradientLocations = DEFAULT_GRADIENT_LOCATIONS,
-  ...pressableProps
+  ...props
 }) => {
-  // Define gradient props with correct typing
-  const gradientProps: LinearGradientProps = {
-    colors: gradientColors,
+  const gradientProps = {
+    colors: disabled
+      ? [
+          Colors.light.lightGrey,
+          Colors.light.lightGrey,
+          Colors.light.lightGrey,
+          Colors.light.lightGrey,
+        ]
+      : gradientColors,
     start: { x: 0, y: 0 },
     end: { x: 1, y: 1 },
     locations: gradientLocations,
-    style: styles.gradient,
   };
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={disabled ? null : onPress}
       style={({ pressed }) => [
-        styles.buttonContainer,
-        { opacity: pressed ? 0.9 : 1 },
-        style,
+        { opacity: pressed && !disabled ? 0.9 : 1 },
+        buttonStyle,
       ]}
-      {...pressableProps}
+      {...props}
     >
-      <LinearGradient {...gradientProps}>
-        <Text style={[styles.text, textStyle]}>{title}</Text>
+      <LinearGradient
+        {...gradientProps}
+        style={[
+          styles.gradient,
+          !disabled && {
+            borderWidth: 1,
+            borderColor: Colors.light.primary,
+          },
+        ]}
+      >
+        <Text style={[styles.innerTextStyle]}>{label}</Text>
+        {disabled === true && submitting ? (
+          <ActivityIndicator color={Colors.light.background} />
+        ) : null}
       </LinearGradient>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    borderRadius: 25,
-    overflow: "hidden",
-    elevation: 5,
-    shadowColor: "#6A5ACD",
+  gradient: {
+    width: width * 0.9,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 15,
+    marginBottom: height * 0.025,
+    paddingVertical: 10,
+    borderRadius: 5,
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    elevation: 7,
+    shadowColor: Colors.light.primary,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -76,16 +105,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-  gradient: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
+  innerTextStyle: {
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+    marginRight: 10,
     textShadowColor: "rgba(0, 0, 0, 0.2)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,

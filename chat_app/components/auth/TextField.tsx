@@ -51,7 +51,7 @@ interface TextFieldProps extends TextInputProps {
   rightIcon?: boolean;
   rightIconName?: CategoryIconName;
   rightIconPress?(): void;
-  values: any;
+  values?: any;
   reference?: MutableRefObject<FormikProps<CreateProductModel> | null>;
 }
 

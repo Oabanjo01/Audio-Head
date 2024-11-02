@@ -22,7 +22,7 @@ import {
 import { ObjectSchema } from "yup";
 
 import IconComponent from "../customIcon";
-import Button from "./Button";
+import ShinyPurpleButton from "./ShinyPurpleButton";
 import TextField from "./TextField";
 import TextFieldError from "./TextFieldError";
 
@@ -178,7 +178,7 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
                 </View>
               )}
 
-              <Button
+              <ShinyPurpleButton
                 label={buttonLabel}
                 onPress={handleSubmit}
                 disabled={isSubmitting}

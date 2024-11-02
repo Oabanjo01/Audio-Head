@@ -13,18 +13,18 @@ import { height, width } from "root/constants/Dimensions";
 
 interface ButtonProps extends PressableProps {
   label: string;
-  disabled?: boolean;
   // loveeeee this
   onPress?(): void;
   buttonStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
   submitting?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
   label,
   onPress,
-  disabled,
   buttonStyle,
+  disabled,
   submitting,
   ...props
 }) => {
