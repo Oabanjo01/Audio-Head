@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import React, { forwardRef, useImperativeHandle } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 

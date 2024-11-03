@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import Toast, { ToastPosition } from "react-native-toast-message";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 
 interface ToastProps {

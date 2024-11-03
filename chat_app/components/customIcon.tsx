@@ -2,10 +2,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { CategoryIconName } from "root/constants/icons/icon";
 
-type IconComponentProps = {
+export type IconComponentProps = {
   name: CategoryIconName;
   size?: number;
   color?: string;

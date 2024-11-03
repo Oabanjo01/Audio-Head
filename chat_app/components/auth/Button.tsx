@@ -8,7 +8,7 @@ import {
   Text,
   ViewStyle,
 } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 
 interface ButtonProps extends PressableProps {

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TextProps } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 
 interface TextFieldErrorProps extends TextProps {
   error: string;

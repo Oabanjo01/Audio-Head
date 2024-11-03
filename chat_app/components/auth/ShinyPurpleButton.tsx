@@ -9,7 +9,11 @@ import {
   Text,
   ViewStyle,
 } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
+import {
+  DEFAULT_GRADIENT_COLORS,
+  DEFAULT_GRADIENT_LOCATIONS,
+} from "root/constants/colors/gradientColors";
 import { height, width } from "root/constants/Dimensions";
 
 interface ShinyButtonProps extends PressableProps {
@@ -21,15 +25,6 @@ interface ShinyButtonProps extends PressableProps {
   gradientColors?: string[];
   gradientLocations?: number[];
 }
-
-const DEFAULT_GRADIENT_COLORS = [
-  "#FFFFFF",
-  "#A7A0E8",
-  "#6A5ACD",
-  "#483D8B",
-] as const;
-
-const DEFAULT_GRADIENT_LOCATIONS = [0, 0.3, 0.6, 1] as const;
 
 const ShinyPurpleButton: React.FC<ShinyButtonProps> = ({
   label,

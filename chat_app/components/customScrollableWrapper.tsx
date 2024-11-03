@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { IconName } from "root/components/auth/TextField";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 

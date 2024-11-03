@@ -8,7 +8,7 @@ import {
   TextStyle,
   ViewStyle,
 } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 
 import IconComponent from "../customIcon";

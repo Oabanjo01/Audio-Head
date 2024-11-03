@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { ProductType } from "root/constants/types/productTypes";
 import { getAuthState } from "root/redux/slices/authSlice";

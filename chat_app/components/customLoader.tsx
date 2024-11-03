@@ -1,7 +1,7 @@
 import LottieView from "lottie-react-native";
 import React from "react";
 import { Modal, View } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 
 export default function Loader() {
   return (

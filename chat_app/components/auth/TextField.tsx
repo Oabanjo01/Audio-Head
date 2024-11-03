@@ -14,7 +14,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { CategoriesNameType } from "root/constants/categories";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { fontSize, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 import { CreateProductModel } from "root/constants/types/productTypes";

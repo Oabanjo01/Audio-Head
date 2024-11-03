@@ -6,12 +6,15 @@
     "start": "npx expo start -c",
     "dev-build": "npx expo run:android",
     "dev-build-ios": "npx expo run:ios",
+    "dev-client": "npx expo start --dev-client",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "eas-ios-local": "eas build --profile development-simulator -p ios --local --clear-cache",
+    "eas-android-local": "eas build --profile development -p android --local --clear-cache"
   },
   "jest": {
     "preset": "jest-expo"

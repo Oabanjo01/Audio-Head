@@ -1,7 +1,7 @@
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Formik, FormikProps } from "formik";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
@@ -9,20 +9,15 @@ import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper
 import GeneralModal from "root/components/modal";
 import ProductForm from "root/components/product/editProductForm";
 import { ImageSection } from "root/components/product/imageListSlider";
-import { showToast } from "root/components/toast";
 import categories, { CategoryItemType } from "root/constants/categories";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 import {
   CreateProductModel,
   ProductType,
 } from "root/constants/types/productTypes";
-import { useProduct } from "root/utils/hooks/product/useProduct";
-import {
-  filterLocalImages,
-  isCloudImage,
-} from "root/utils/images/filterOutLocalImages";
+import { handleProductImageDeletion } from "root/utils/hooks/product/handleProductImageDeletion";
 import { updateProductSchema } from "root/utils/validations";
 
 type OptionType = {
@@ -50,68 +45,20 @@ const EditProduct = () => {
   const { images, category, description, name, price, thumbnail, id } =
     parsedProductData;
 
-  const [imageList, setImageList] = useState<string[]>(images);
-  const [restorableImageList, setrestorableImageList] =
-    useState<string[]>(images);
-  const [imageToModify, setImageToModify] = useState<string>("");
-
   const formikRef = useRef<FormikProps<any>>(null);
   const deleteProductRef = useRef<BottomSheetModal>(null);
   const categoriesRef = useRef<BottomSheetModal>(null);
   const thumbnailRef = useRef<BottomSheetModal>(null);
 
   const { dismiss } = useBottomSheetModal();
-  const { deletProduct, deleteImage } = useProduct();
-
-  const handleDeletion = async (
-    id: string,
-    title: string,
-    imageToDelete: string
-  ) => {
-    dismiss();
-    if (title.toLowerCase().includes("confirm")) {
-      await deletProduct(id);
-      router.navigate("/(screens)/userProducts");
-      return;
-    }
-
-    if (title.toLowerCase().includes("image")) {
-      if (!isCloudImage(imageToDelete)) {
-        setImageList((prevImages) =>
-          prevImages.filter((img) => img !== imageToDelete)
-        );
-        setrestorableImageList((prevImages) =>
-          prevImages.filter((img) => img !== imageToDelete)
-        );
-        setImageToModify("");
-        return;
-      }
-
-      if (
-        filterLocalImages(imageList).length <= 1 &&
-        isCloudImage(imageToDelete)
-      ) {
-        return showToast({
-          text1: "Cannot delete",
-          text2: "You cannot delete the last saved product image",
-          type: "error",
-          position: "top",
-        });
-      }
-
-      const splittedString = imageToDelete.split("/");
-      const imageId = splittedString[splittedString.length - 1].split(".")[0];
-      await deleteImage(id, imageId);
-
-      setImageList((prevImages) =>
-        prevImages.filter((img) => img !== imageToDelete)
-      );
-      setrestorableImageList((prevImages) =>
-        prevImages.filter((img) => img !== imageToDelete)
-      );
-      setImageToModify("");
-    }
-  };
+  const {
+    handleDeletion,
+    imageList,
+    imageToModify,
+    restorableImageList,
+    setImageToModify,
+    setImageList,
+  } = handleProductImageDeletion(images);
 
   const renderModalOptionsItems = useCallback(
     (item: CategoryItemType) => (
@@ -188,13 +135,6 @@ const EditProduct = () => {
                 />
               </View>
 
-              {/* <Button
-                buttonStyle={styles.updateButton}
-                disabled={!isValid || imageList.length === 0}
-                onPress={handleSubmit}
-                label="Update"
-              /> */}
-
               <ShinyPurpleButton
                 buttonStyle={styles.updateButton}
                 label="Update"
@@ -230,7 +170,6 @@ const EditProduct = () => {
         />
         <GeneralModal
           ref={thumbnailRef}
-          // title="Modify Existing Picture"
           itemsList={thumbnailOptions}
           keyExtractor={(item: OptionType) => item.title}
           renderItem={(item: any, index: number) => {
@@ -248,8 +187,6 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     marginTop: height * 0.05,
-    // alignSelf: "center",
-    // paddingVertical: 10,
   },
   deleteButton: {
     alignSelf: "center",

@@ -3,7 +3,7 @@ import React from "react";
 import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 import IconComponent from "root/components/customIcon";
 import { showToast } from "root/components/toast";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import {
   filterLocalImages,
@@ -45,7 +45,10 @@ export const ImageSection = ({
     setImageList(updatedImages);
     formikRef.current?.setFieldValue("images", updatedImages);
   };
-
+  console.log(
+    filterLocalImages(imageList).length,
+    "filterLocalImages(imageList).length"
+  );
   return (
     <View style={styles.container}>
       <Pressable style={styles.addImageBox} onPress={handleImagePick}>
@@ -60,30 +63,33 @@ export const ImageSection = ({
         renderItem={({ item, index }) => (
           <Pressable onLongPress={() => onThumbnailPress(item)}>
             <Image source={{ uri: item }} style={styles.image} />
-            {filterLocalImages(imageList).length < 2 && (
-              <Pressable
-                onPress={() => {
-                  if (isCloudImage(item)) {
-                    return showToast({
-                      text1: "Cannot delete",
-                      text2: "You cannot remove the last saved product image",
-                      type: "error",
-                      position: "top",
-                    });
-                  }
-                  const newImages = imageList.filter((_, i) => i !== index);
-                  setImageList(newImages);
-                  formikRef.current?.setFieldValue("images", newImages);
-                }}
-                style={styles.removeImageBtn}
-              >
-                <IconComponent
-                  name="cancel"
-                  color={Colors.light.errorClor}
-                  style={styles.removeIcon}
-                />
-              </Pressable>
-            )}
+            {/* {filterLocalImages(imageList).length > 1 && ( */}
+            <Pressable
+              onPress={() => {
+                if (
+                  filterLocalImages(imageList).length === 1 &&
+                  isCloudImage(item)
+                ) {
+                  return showToast({
+                    text1: "Cannot delete",
+                    text2: "You cannot remove the last saved product image",
+                    type: "error",
+                    position: "top",
+                  });
+                }
+                const newImages = imageList.filter((_, i) => i !== index);
+                setImageList(newImages);
+                formikRef.current?.setFieldValue("images", newImages);
+              }}
+              style={styles.removeImageBtn}
+            >
+              <IconComponent
+                name="cancel"
+                color={Colors.light.errorClor}
+                style={styles.removeIcon}
+              />
+            </Pressable>
+            {/* )} */}
           </Pressable>
         )}
         contentContainerStyle={styles.listContainer}

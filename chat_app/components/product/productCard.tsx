@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { ProductType } from "root/constants/types/productTypes";
 import { getAuthState } from "root/redux/slices/authSlice";

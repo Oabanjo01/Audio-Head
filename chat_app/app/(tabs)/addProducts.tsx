@@ -12,7 +12,7 @@ import CustomWrapper from "root/components/customScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import { showToast } from "root/components/toast";
 import categories, { CategoryItemType } from "root/constants/categories";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 import { CreateProductModel } from "root/constants/types/productTypes";
 import { useProduct } from "root/utils/hooks/product/useProduct";
@@ -317,7 +317,6 @@ export default function AddProduct() {
                   </View>
                   <ShinyPurpleButton
                     buttonStyle={{
-                      marginTop: height * 0.05,
                       alignSelf: "center",
                       paddingVertical: 10,
                     }}

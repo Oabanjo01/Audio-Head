@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { IconName } from "root/components/auth/TextField";
-import { Colors } from "root/constants/Colors";
+import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 
 import DropDownMenu from "./dropDownMenu";

@@ -9,7 +9,7 @@ import {
 
 import { useProduct } from "./useProduct";
 
-export const MakeShorter = (images: string[]) => {
+export const handleProductImageDeletion = (images: string[]) => {
   const [imageList, setImageList] = useState<string[]>(images);
   const [restorableImageList, setrestorableImageList] =
     useState<string[]>(images);
@@ -74,5 +74,6 @@ export const MakeShorter = (images: string[]) => {
     imageList,
     imageToModify,
     setImageToModify,
+    setImageList,
   };
 };
