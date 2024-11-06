@@ -14,9 +14,25 @@ export const handleProductImageDeletion = (images: string[]) => {
   const [restorableImageList, setrestorableImageList] =
     useState<string[]>(images);
   const [imageToModify, setImageToModify] = useState<string>("");
+  const [newThumbnail, setThumbnail] = useState<string>("");
 
   const { dismiss } = useBottomSheetModal();
   const { deletProduct, deleteImage } = useProduct();
+
+  const makeThumbnail = (image: string, onPress: Function) => {
+    if (isCloudImage(image)) {
+      setThumbnail(image);
+      onPress();
+      return;
+    }
+    showToast({
+      text1: "Error",
+      text2: "Cannot make a local image a thumbnail",
+      type: "error",
+      position: "top",
+    });
+    onPress();
+  };
 
   const handleDeletion = async (
     id: string,
@@ -75,5 +91,7 @@ export const handleProductImageDeletion = (images: string[]) => {
     imageToModify,
     setImageToModify,
     setImageList,
+    makeThumbnail,
+    newThumbnail,
   };
 };

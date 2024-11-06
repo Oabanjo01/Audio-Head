@@ -17,7 +17,7 @@ import {
   CreateProductModel,
   ProductType,
 } from "root/constants/types/productTypes";
-import { handleProductImageDeletion } from "root/utils/hooks/product/handleProductImageDeletion";
+import { handleProductImageDeletion } from "root/utils/hooks/product/useHandleProductImageModifications";
 import { updateProductSchema } from "root/utils/validations";
 
 type OptionType = {
@@ -48,7 +48,7 @@ const EditProduct = () => {
   const formikRef = useRef<FormikProps<any>>(null);
   const deleteProductRef = useRef<BottomSheetModal>(null);
   const categoriesRef = useRef<BottomSheetModal>(null);
-  const thumbnailRef = useRef<BottomSheetModal>(null);
+  const optionsRef = useRef<BottomSheetModal>(null);
 
   const { dismiss } = useBottomSheetModal();
   const {
@@ -58,6 +58,8 @@ const EditProduct = () => {
     restorableImageList,
     setImageToModify,
     setImageList,
+    makeThumbnail,
+    newThumbnail,
   } = handleProductImageDeletion(images);
 
   const renderModalOptionsItems = useCallback(
@@ -92,17 +94,19 @@ const EditProduct = () => {
         onPress={() => {
           item.title.includes("Delete")
             ? handleDeletion(id, item.title, imageToModify!)
-            : dismiss();
+            : makeThumbnail(imageToModify!, () => dismiss());
         }}
       />
     );
   }, []);
+  console.log(thumbnail, "thumbnail", newThumbnail, "newThumbnail");
 
   const initialValues = {
     category,
     description,
     name,
     price,
+    images,
     thumbnail,
   };
 
@@ -114,7 +118,12 @@ const EditProduct = () => {
           initialValues={initialValues}
           validationSchema={updateProductSchema}
           onSubmit={async (values) => {
+            const payload = {
+              ...values,
+              thumbnail: newThumbnail || thumbnail,
+            };
             // Handle submit
+            console.log(payload, "values");
           }}
         >
           {({ handleSubmit, isValid }) => (
@@ -126,12 +135,13 @@ const EditProduct = () => {
                   setImageList={setImageList}
                   onThumbnailPress={(image) => {
                     setImageToModify(image);
-                    thumbnailRef.current?.present();
+                    optionsRef.current?.present();
                   }}
                   formikRef={formikRef}
                 />
                 <ProductForm
                   onCategoryPress={() => categoriesRef.current?.present()}
+                  formikRef={formikRef}
                 />
               </View>
 
@@ -169,7 +179,8 @@ const EditProduct = () => {
           renderItem={renderModalOptionsItems}
         />
         <GeneralModal
-          ref={thumbnailRef}
+          ref={optionsRef}
+          title="Options"
           itemsList={thumbnailOptions}
           keyExtractor={(item: OptionType) => item.title}
           renderItem={(item: any, index: number) => {

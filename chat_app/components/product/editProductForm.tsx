@@ -1,13 +1,14 @@
-import { useFormikContext } from "formik";
+import { FormikProps, useFormikContext } from "formik";
 import React from "react";
 import TextField from "root/components/auth/TextField";
 import { width } from "root/constants/Dimensions";
 
 interface ProductFormProps {
   onCategoryPress: () => void;
+  formikRef: React.RefObject<FormikProps<any>>;
 }
 
-const ProductForm = ({ onCategoryPress }: ProductFormProps) => {
+const ProductForm = ({ onCategoryPress, formikRef }: ProductFormProps) => {
   const {
     values,
     errors,
@@ -36,7 +37,7 @@ const ProductForm = ({ onCategoryPress }: ProductFormProps) => {
         secureTextEntry={false}
         setFieldValue={setFieldValue}
         fieldName="name"
-        // error={errors.name && isValid}
+        error={(errors.name && isValid) as boolean}
       />
 
       <TextField
@@ -50,7 +51,7 @@ const ProductForm = ({ onCategoryPress }: ProductFormProps) => {
         leftIconTitle="cash-outline"
         secureTextEntry={false}
         setFieldValue={setFieldValue}
-        // error={errors.price && isValidating && touched.price}
+        error={(errors.price && isValidating && touched.price) as boolean}
         price
         handleChange={handleChange}
         fieldName="price"
@@ -69,7 +70,7 @@ const ProductForm = ({ onCategoryPress }: ProductFormProps) => {
         rightIcon
         rightIconPress={onCategoryPress}
         secureTextEntry={false}
-        // error={errors.category && isValidating && touched.category}
+        error={(errors.category && isValidating && touched.category) as boolean}
         setFieldValue={setFieldValue}
         fieldName="category"
       />
@@ -82,7 +83,9 @@ const ProductForm = ({ onCategoryPress }: ProductFormProps) => {
         multiline
         viewProps={fieldProps}
         autoCapitalize="none"
-        // error={errors.description && isValidating && touched.description}
+        error={
+          (errors.description && isValidating && touched.description) as boolean
+        }
         leftIconTitle="document-outline"
         leftIcon
         secureTextEntry={false}

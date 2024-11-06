@@ -3,6 +3,7 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import IconComponent from "root/components/customIcon";
 import CustomWrapper from "root/components/customScrollableWrapper";
+import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 import { UserData } from "root/constants/types/authTypes";
@@ -71,8 +72,9 @@ export default function Profile() {
               style={{
                 textAlign: "center",
                 fontSize: 18,
+                color: Colors.light.primary,
                 fontWeight: "600",
-                marginBottom: 10,
+                marginBottom: 5,
               }}
             >
               {name}

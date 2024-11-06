@@ -46,10 +46,10 @@ export function MyTabBar({
           {
             position: "absolute",
             backgroundColor: Colors.light.primary,
-            borderRadius: (buttonWidth - 35) / 2,
-            marginHorizontal: 35 / 2,
+            borderRadius: 30,
+            marginHorizontal: 10 / 2,
             height: dimension.height - 10,
-            width: buttonWidth - 35,
+            width: buttonWidth - 10,
           },
         ]}
       />
