@@ -21,7 +21,6 @@ type ProductProps<T extends ProductData, E extends EndPointType> = {
   method: Method;
   endPoint: E;
   data?: T;
-  token?: string;
   payload?: any;
 };
 
@@ -41,6 +40,8 @@ export const productService = async <
       data: data,
       payload,
     };
+
+    console.log(payLoad, "payLoad");
 
     const response = await instance.request<
       T,

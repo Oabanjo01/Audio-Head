@@ -25,7 +25,6 @@ const DropDownMenu = forwardRef<DropDownRefProps, DropDownProps>(
   (props, ref) => {
     const { productdata } = props;
 
-    console.log(productdata, "productdata");
     const dropdownRef = React.useRef<SelectDropdown | null>(null);
 
     const data: DropDownData[] = [

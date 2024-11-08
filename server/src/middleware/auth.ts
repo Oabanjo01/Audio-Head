@@ -54,6 +54,7 @@ export const validatePasswordToken: RequestHandler = async (req, res, next) => {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {
+    console.log("isAuthenticated");
     const authToken = req.headers.authorization;
 
     if (!authToken) {

@@ -201,6 +201,7 @@ const updateExistingProduct: RequestHandler<
   const { id } = req.params; // product id
   const { image } = req.files;
   const { id: userId } = req.user; // the users id
+  console.log("heree updating");
 
   const { category, description, name, price, purchasingDate, thumbnail } =
     req.body;

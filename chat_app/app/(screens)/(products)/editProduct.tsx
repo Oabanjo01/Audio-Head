@@ -1,14 +1,16 @@
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
 import { Formik, FormikProps } from "formik";
+import mime from "mime";
 import React, { useCallback, useRef } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
 import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import ProductForm from "root/components/product/editProductForm";
 import { ImageSection } from "root/components/product/imageListSlider";
+import { showToast } from "root/components/toast";
 import categories, { CategoryItemType } from "root/constants/categories";
 import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
@@ -18,6 +20,9 @@ import {
   ProductType,
 } from "root/constants/types/productTypes";
 import { handleProductImageDeletion } from "root/utils/hooks/product/useHandleProductImageModifications";
+import { useProduct } from "root/utils/hooks/product/useProduct";
+import { areImageListsEqual } from "root/utils/images/compareImageArray";
+import { isCloudImage } from "root/utils/images/filterOutLocalImages";
 import { updateProductSchema } from "root/utils/validations";
 
 type OptionType = {
@@ -61,6 +66,7 @@ const EditProduct = () => {
     makeThumbnail,
     newThumbnail,
   } = handleProductImageDeletion(images);
+  const { updateProduct } = useProduct();
 
   const renderModalOptionsItems = useCallback(
     (item: CategoryItemType) => (
@@ -99,7 +105,46 @@ const EditProduct = () => {
       />
     );
   }, []);
-  console.log(thumbnail, "thumbnail", newThumbnail, "newThumbnail");
+  console.log(
+    thumbnail,
+    "thumbnail",
+    newThumbnail,
+    "newThumbnail",
+    areImageListsEqual(imageList, images)
+  );
+
+  const handleSubmit = async (payload: object) => {
+    Keyboard.dismiss();
+
+    console.log(payload, "submit");
+    const formData = new FormData();
+
+    type FormKeys = keyof Omit<UpdateProductModel, "thumbnail">;
+
+    const appendInitialFormData = (key: FormKeys, value: string) => {
+      formData.append(key, value);
+    };
+
+    Object.entries(payload).forEach(([key, value]) =>
+      appendInitialFormData(key as FormKeys, value)
+    );
+
+    const imageBlob = images.map((image, index) => {
+      if (!isCloudImage(image)) {
+        return {
+          name: `image_${index}`,
+          type: mime.getType(image),
+          uri: image,
+        };
+      }
+    });
+
+    imageBlob.forEach((img) => formData.append("image", img as any));
+
+    await updateProduct(formData, id).then(() => {
+      formikRef.current?.resetForm();
+    });
+  };
 
   const initialValues = {
     category,
@@ -123,7 +168,7 @@ const EditProduct = () => {
               thumbnail: newThumbnail || thumbnail,
             };
             // Handle submit
-            console.log(payload, "values");
+            handleSubmit(payload);
           }}
         >
           {({ handleSubmit, isValid }) => (
@@ -148,8 +193,21 @@ const EditProduct = () => {
               <ShinyPurpleButton
                 buttonStyle={styles.updateButton}
                 label="Update"
-                onPress={handleSubmit}
-                disabled={!isValid || imageList.length === 0}
+                onPress={() => {
+                  !areImageListsEqual(imageList, images)
+                    ? handleSubmit()
+                    : showToast({
+                        text1: "Please select atleast one different image",
+                        type: "error",
+                        position: "top",
+                        text2: "No edits made",
+                      });
+                }}
+                disabled={
+                  !isValid || imageList.length === 0
+                  // ||
+                  // areImageListsEqual(imageList, images)
+                }
               />
 
               <Pressable

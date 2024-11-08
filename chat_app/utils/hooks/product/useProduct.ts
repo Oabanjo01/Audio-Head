@@ -46,7 +46,7 @@ export const useProduct = () => {
       const response = await productService<FormData, any>({
         data: newPayLoad,
         endPoint: `${productId}`,
-        method: "PATCH",
+        method: "patch",
       });
       if (response?.data && response.status >= 200 && response.status < 300) {
         const { message } = response.data as GenericProductResponse;
@@ -143,5 +143,6 @@ export const useProduct = () => {
     productListing,
     deletProduct,
     deleteImage,
+    updateProduct,
   };
 };
