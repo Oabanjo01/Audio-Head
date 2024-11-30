@@ -37,7 +37,7 @@ export const productService = async <
     const payLoad = {
       method,
       url: `product/${endPoint}`,
-      data: data,
+      data,
       payload,
     };
 

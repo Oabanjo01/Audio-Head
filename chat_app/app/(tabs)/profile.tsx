@@ -1,8 +1,8 @@
 import { Href, Link } from "expo-router";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import IconComponent from "root/components/customIcon";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import IconComponent from "root/components/custom/customIcon";
+import CustomWrapper from "root/components/custom/customScrollableWrapper";
 import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";

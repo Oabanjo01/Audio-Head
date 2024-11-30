@@ -8,7 +8,7 @@ import { getAuthState } from "root/redux/slices/authSlice";
 import { useAppSelector } from "root/redux/store";
 import { formatPriceIntl } from "root/utils/formatPrice";
 
-import IconComponent from "../customIcon";
+import IconComponent from "../custom/customIcon";
 
 const avatarSize = (((width * 0.6) / 2) * 0.75) / 3;
 const imageSize = (height / 3) * 0.75;

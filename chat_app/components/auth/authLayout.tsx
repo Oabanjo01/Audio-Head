@@ -1,18 +1,7 @@
-import { Link } from "expo-router";
-import { Formik } from "formik";
 import React, { useState } from "react";
-import {
-  Image,
-  Keyboard,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import Auth from "root/assets/svg/auth.svg";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { height, width } from "root/constants/Dimensions";
-import images from "root/constants/Images";
+import Fonts from "root/constants/types/fontTypes";
 import { AuthData } from "root/controllers/auth/auth";
 import {
   ForgotPasswordSchemaType,
@@ -21,10 +10,7 @@ import {
 } from "root/utils/validations";
 import { ObjectSchema } from "yup";
 
-import IconComponent from "../customIcon";
-import ShinyPurpleButton from "./ShinyPurpleButton";
-import TextField from "./TextField";
-import TextFieldError from "./TextFieldError";
+import CustomText from "../custom/customText";
 
 type SchemaType =
   | SignInSchemaType
@@ -96,9 +82,28 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
       contentContainerStyle={styles.scrollViewContent}
       keyboardShouldPersistTaps="handled"
     >
-      <Auth {...styles.image} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
+      <View
+        style={{
+          marginTop: 106,
+          alignItems: "center",
+        }}
+      >
+        <CustomText
+          fontFamily={Fonts.DM_Sans_Bold}
+          fontSize={51.25}
+          style={{ color: "white" }}
+        >
+          Audio
+        </CustomText>
+        <CustomText fontFamily={Fonts.DM_Sans_Bold} fontSize={14} color="white">
+          It's modular and designed to last
+        </CustomText>
+      </View>
+      {/* <Auth {...styles.image} /> */}
+      {/* <View style={{ backgroundColor: "white", height: 400, width: width }}>
+        <CustomText fontFamily={Fonts.DM_Sans_Light}>{title}</CustomText>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+      </View>
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
@@ -224,7 +229,7 @@ const AuthLayout: React.FC<AuthLayoutProp> = ({
             />
           </Pressable>
         </>
-      )}
+      )} */}
     </ScrollView>
   );
 };
@@ -234,20 +239,14 @@ export default AuthLayout;
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
+    width: width,
     alignItems: "center",
-    // paddingTop: height * 0.05,
     paddingHorizontal: 20,
   },
   image: {
     width: width * 0.7,
     height: height * 0.29,
     marginBottom: height * 0.02,
-  },
-  title: {
-    textAlign: "center",
-    fontWeight: "600",
-    fontSize: 20,
-    marginBottom: 10,
   },
   subtitle: {
     textAlign: "center",

@@ -1,7 +1,7 @@
 import { FormikProps } from "formik";
 import React from "react";
 import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
-import IconComponent from "root/components/customIcon";
+import IconComponent from "root/components/custom/customIcon";
 import { showToast } from "root/components/toast";
 import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";

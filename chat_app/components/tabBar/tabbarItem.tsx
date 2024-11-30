@@ -10,7 +10,7 @@ import Animated, {
 import { Colors } from "root/constants/colors/Colors";
 import { toSentenceCase } from "root/utils/toSentenceCase";
 
-import IconComponent from "../customIcon";
+import IconComponent from "../custom/customIcon";
 
 const renderIcon: Record<string, React.FC> = {
   home: (props: any) => <IconComponent name="home-outline" {...props} />,

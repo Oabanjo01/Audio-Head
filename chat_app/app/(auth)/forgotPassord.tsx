@@ -3,7 +3,7 @@ import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { forgotPasswordSchema } from "root/utils/validations";
 
-import CustomWrapper from "../../components/customScrollableWrapper";
+import CustomWrapper from "../../components/custom/customScrollableWrapper";
 
 export interface ForgotPassswordProps {
   email: string;

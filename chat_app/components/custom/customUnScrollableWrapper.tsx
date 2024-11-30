@@ -3,18 +3,17 @@ import { router } from "expo-router";
 import React, { useRef } from "react";
 import {
   KeyboardAvoidingView,
+  Platform,
   Pressable,
-  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from "react-native";
 import { IconName } from "root/components/auth/TextField";
 import { Colors } from "root/constants/colors/Colors";
-import { width } from "root/constants/Dimensions";
-import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
+import { height, width } from "root/constants/Dimensions";
 
-import { layOutStyles } from "./customUnScrollableWrapper";
-import DropDownMenu, { DropDownRefProps } from "./dropDownMenu";
+import DropDownMenu from "../dropDownMenu";
 
 export interface KeyboardAvoidingViewProps {
   leftHeaderIcon?: boolean;
@@ -27,7 +26,7 @@ export interface KeyboardAvoidingViewProps {
   productData?: any;
 }
 
-const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
+const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   children,
   title,
   rightHeaderIcon,
@@ -37,26 +36,13 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   dropdown = false,
   productData,
 }) => {
-  const { signOut } = useAuthentication();
-
-  const dropdownRef = useRef<DropDownRefProps>(null);
-
+  const dropdownRef = useRef<any>(null);
   return (
     <KeyboardAvoidingView
-      behavior={"padding"}
-      keyboardVerticalOffset={0}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={layOutStyles.keyboardAvoidingView}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          layOutStyles.scrollViewContent,
-          { flexGrow: 1 },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        // refreshControl={}
-        style={{ width: "100%" }}
-      >
+      <View style={{ width: "100%", height: "100%" }}>
         {title && (
           <View style={layOutStyles.headerLayout}>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
@@ -98,9 +84,46 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
           </View>
         )}
         {children}
-      </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 };
 
-export default CustomWrapper;
+export const layOutStyles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    alignItems: "center",
+  },
+
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: height * 0.025,
+  },
+  headerIconStyle: {
+    borderRadius: width * 0.07,
+    borderColor: Colors.light.primary,
+    height: width * 0.125,
+    width: width * 0.125,
+    marginLeft: 10,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleStyle: {
+    flex: 2,
+    textAlign: "center",
+    color: Colors.light.text,
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  headerLayout: {
+    width,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+});
+
+export default CustomUnscrollableWrapper;

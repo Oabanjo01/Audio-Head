@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import CustomWrapper from "root/components/custom/customScrollableWrapper";
 import { height, width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { useProduct } from "root/utils/hooks/product/useProduct";

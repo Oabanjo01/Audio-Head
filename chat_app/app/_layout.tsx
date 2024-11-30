@@ -20,10 +20,29 @@ import { AuthProvider } from "./authProvider";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+export const fonts = {
+  SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  DM_Sans_Black: require("../assets/fonts/DMSans-Black.ttf"),
+  DM_Sans_Bold: require("../assets/fonts/DMSans-Bold.ttf"),
+  DM_Sans_Extra_Bold: require("../assets/fonts/DMSans-ExtraBold.ttf"),
+  DM_Sans_Extra_Bold_Italic: require("../assets/fonts/DMSans-ExtraBoldItalic.ttf"),
+  DM_Sans_Extra_Light: require("../assets/fonts/DMSans-ExtraLight.ttf"),
+  DM_Sans_Extra_Light_Italic: require("../assets/fonts/DMSans-ExtraLightItalic.ttf"),
+  DM_Sans_Italic: require("../assets/fonts/DMSans-Italic.ttf"),
+  DM_Sans_Light: require("../assets/fonts/DMSans-Light.ttf"),
+  DM_Sans_Light_Italic: require("../assets/fonts/DMSans-LightItalic.ttf"),
+  DM_Sans_Medium: require("../assets/fonts/DMSans-Medium.ttf"),
+  DM_Sans_Medium_Italic: require("../assets/fonts/DMSans-MediumItalic.ttf"),
+  DM_Sans_Regular: require("../assets/fonts/DMSans-Regular.ttf"),
+  DM_Sans_Semi_Bold: require("../assets/fonts/DMSans-SemiBold.ttf"),
+  DM_Sans_Thin: require("../assets/fonts/DMSans-Thin.ttf"),
+  DM_Sans_Thin_Italic: require("../assets/fonts/DMSans-ThinItalic.ttf"),
+};
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    ...fonts,
   });
 
   useEffect(() => {

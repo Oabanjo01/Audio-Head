@@ -25,7 +25,7 @@ import {
 } from "root/constants/types/textInputs/formik";
 import { cleanCurrencyString, formatPrice } from "root/utils/formatPrice";
 
-import IconComponent from "../customIcon";
+import IconComponent from "../custom/customIcon";
 import TextFieldError from "./TextFieldError";
 
 const textWidth = width * 0.9;
