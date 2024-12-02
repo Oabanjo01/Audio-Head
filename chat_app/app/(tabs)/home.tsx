@@ -25,6 +25,7 @@ export default function Homepage() {
   return (
     <CustomWrapper
       title="Home"
+      showAppIcon
       rightHeaderIcon
       rightHeaderIconTitle="log-out"
       onPress={signOut}
@@ -85,10 +86,6 @@ export default function Homepage() {
               );
             }}
             horizontal
-            // contentContainerStyle={{
-            //   width,
-            //   height: height * 0.5,
-            // }}
           />
         </View>
       </>

@@ -5,8 +5,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  StatusBar,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { IconName } from "root/components/auth/TextField";
@@ -14,6 +14,7 @@ import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 
 import DropDownMenu from "../dropDownMenu";
+import CustomText from "./customText";
 
 export interface KeyboardAvoidingViewProps {
   leftHeaderIcon?: boolean;
@@ -62,7 +63,7 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
               )}
             </View>
 
-            <Text style={layOutStyles.titleStyle}>{title}</Text>
+            <CustomText style={layOutStyles.titleStyle}>{title}</CustomText>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {rightHeaderIcon && (
                 <Pressable
@@ -111,13 +112,13 @@ export const layOutStyles = StyleSheet.create({
     justifyContent: "center",
   },
   titleStyle: {
-    flex: 2,
     textAlign: "center",
     color: Colors.light.text,
     fontSize: 20,
     fontWeight: "600",
   },
   headerLayout: {
+    paddingTop: StatusBar.currentHeight! + height * 0.05,
     width,
     flexDirection: "row",
     justifyContent: "space-between",

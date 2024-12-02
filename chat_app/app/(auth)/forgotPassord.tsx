@@ -16,7 +16,7 @@ const ForgotPassswordValues = {
 const ForgotPassswordScreen = () => {
   const { forgotPassword } = useAuthentication();
   return (
-    <CustomWrapper>
+    <CustomWrapper showBackgroundImage>
       <AuthLayout
         submit={async (email) => {
           forgotPassword(email);

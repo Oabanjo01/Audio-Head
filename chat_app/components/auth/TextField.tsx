@@ -17,6 +17,7 @@ import { CategoriesNameType } from "root/constants/categories";
 import { Colors } from "root/constants/colors/Colors";
 import { fontSize, width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
+import Fonts from "root/constants/types/fontTypes";
 import { CreateProductModel } from "root/constants/types/productTypes";
 import {
   handleChangeType,
@@ -53,6 +54,8 @@ interface TextFieldProps extends TextInputProps {
   rightIconPress?(): void;
   values?: any;
   reference?: MutableRefObject<FormikProps<CreateProductModel> | null>;
+  leftIconColor?: string;
+  rightIconColor?: string;
 }
 
 export const TextField: FC<TextFieldProps> = ({
@@ -74,6 +77,8 @@ export const TextField: FC<TextFieldProps> = ({
   rightIconName,
   rightIconPress,
   values,
+  leftIconColor = Colors.light.primary,
+  rightIconColor = Colors.light.primary,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -133,15 +138,21 @@ export const TextField: FC<TextFieldProps> = ({
                 style={{
                   alignSelf: "center",
                   marginRight: 15,
+                  opacity: 0.75,
                 }}
-                color={Colors.light.primary}
+                color={isFocused ? Colors.light.primary : leftIconColor}
               />
             )}
             <TextInput
               placeholder={label}
               cursorColor={"black"}
               selectionColor={Colors.light.primary}
-              style={{ flex: 1, color: "black" }}
+              style={{
+                flex: 1,
+                color: "black",
+                fontFamily: Fonts.DM_Sans_Regular,
+                fontSize: 14,
+              }}
               onPress={Platform.select({
                 ios: handlePress,
               })}
@@ -205,8 +216,9 @@ export const TextField: FC<TextFieldProps> = ({
               size={24}
               style={{
                 alignSelf: "center",
+                opacity: 0.75,
               }}
-              color={Colors.light.primary}
+              color={isFocused ? Colors.light.primary : rightIconColor}
             />
           )}
           {rightIcon && (
@@ -217,7 +229,7 @@ export const TextField: FC<TextFieldProps> = ({
               style={{
                 alignSelf: "center",
               }}
-              color={Colors.light.primary}
+              color={rightIconColor}
             />
           )}
         </View>
@@ -254,7 +266,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   activeBorder: {
-    borderColor: Colors.light.text,
+    borderColor: Colors.light.primary,
     borderWidth: 1.5,
   },
   inActiveBorder: {

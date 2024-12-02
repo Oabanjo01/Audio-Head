@@ -2,19 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useRef } from "react";
 import {
+  Image,
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
-  Text,
   View,
 } from "react-native";
 import AuthenticationBackground from "root/assets/svg/AuthenticationBackground.svg";
 import { IconName } from "root/components/auth/TextField";
 import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
+import images from "root/constants/Images";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 
 import DropDownMenu, { DropDownRefProps } from "../dropDownMenu";
+import CustomText from "./customText";
 import { layOutStyles } from "./customUnScrollableWrapper";
 
 export interface KeyboardAvoidingViewProps {
@@ -26,6 +28,8 @@ export interface KeyboardAvoidingViewProps {
   onPress?(): void;
   dropdown?: boolean;
   productData?: any;
+  showBackgroundImage?: boolean;
+  showAppIcon?: boolean;
 }
 
 const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
@@ -37,6 +41,8 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   onPress,
   dropdown = false,
   productData,
+  showBackgroundImage = false,
+  showAppIcon = false,
 }) => {
   const { signOut } = useAuthentication();
 
@@ -48,17 +54,19 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
       keyboardVerticalOffset={0}
       style={layOutStyles.keyboardAvoidingView}
     >
-      <AuthenticationBackground
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-        width={width}
-        height={height}
-      />
+      {showBackgroundImage && (
+        <AuthenticationBackground
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+          width={width}
+          height={height}
+        />
+      )}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
@@ -87,8 +95,19 @@ const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                 </Pressable>
               )}
             </View>
-
-            <Text style={layOutStyles.titleStyle}>{title}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {showAppIcon && <Image source={images.appIcon} />}
+              <CustomText style={layOutStyles.titleStyle}>
+                {"  "}
+                {title}
+              </CustomText>
+            </View>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {rightHeaderIcon && (
                 <Pressable

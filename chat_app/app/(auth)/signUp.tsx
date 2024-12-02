@@ -20,7 +20,7 @@ const SignUpInitialValues = {
 const SignUpScreen = () => {
   const { signUp } = useAuthentication();
   return (
-    <CustomWrapper>
+    <CustomWrapper showBackgroundImage>
       <AuthLayout
         initialValues={SignUpInitialValues}
         submit={async (newPayLoad) => {
