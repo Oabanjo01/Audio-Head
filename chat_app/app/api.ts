@@ -30,7 +30,15 @@ instance.interceptors.request.use(
   }
 );
 
-createAuthRefreshInterceptor(instance, refreshToken);
+createAuthRefreshInterceptor(instance, refreshToken, {
+  pauseInstanceWhileRefreshing: true,
+  shouldRefresh: (error) => {
+    return (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes("auth/sign-out")
+    );
+  },
+});
 
 instance.interceptors.response.use(
   async (response) => {

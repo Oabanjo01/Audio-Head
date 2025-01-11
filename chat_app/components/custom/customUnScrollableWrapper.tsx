@@ -97,7 +97,8 @@ export const layOutStyles = StyleSheet.create({
   },
 
   keyboardAvoidingView: {
-    flex: 1,
+    width: width,
+    height: height,
     backgroundColor: "white",
     paddingTop: height * 0.025,
   },

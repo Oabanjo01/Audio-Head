@@ -6,9 +6,9 @@ const images: {
   apple: ImageSourcePropType | undefined;
   appIcon: ImageSourcePropType | undefined;
 } = {
-  google: require("root/assets/google.png"),
-  facebook: require("root/assets/facebook.png"),
-  apple: require("root/assets/apple.png"),
+  google: require("root/assets/socials/google.png"),
+  facebook: require("root/assets/socials/facebook.png"),
+  apple: require("root/assets/socials/apple.png"),
   appIcon: require("root/assets/appicon.png"),
 };
 
