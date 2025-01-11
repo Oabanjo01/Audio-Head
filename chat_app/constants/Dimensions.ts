@@ -1,7 +1,5 @@
 import { Dimensions } from "react-native";
 
-import { FontSize, FontWeight } from "./types/Sizes";
-
 export const fontSize: FontSize = {
   small: 12,
   medium: 14,
@@ -17,6 +15,15 @@ export const fontWeight: FontWeight = {
 } as const;
 
 export const { height, width } = Dimensions.get("window");
+
+export type FontSize = Record<
+  "small" | "medium" | "large" | "extraLarge",
+  number
+>;
+export type FontWeight = Record<
+  "light" | "medium" | "bold" | "veryBold",
+  string
+>;
 
 const styles = {
   fontSize,

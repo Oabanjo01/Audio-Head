@@ -21,7 +21,7 @@ export const Colors = {
     blueColor: "#48A2F5",
     greenColor: "#2DDA93",
     backDrop: "rgba(220, 220, 220, 0.5)",
-    primary: "#6A5ACD",
+    primary: "#0ACF83",
   },
   dark: {
     text: "#ECEDEE",

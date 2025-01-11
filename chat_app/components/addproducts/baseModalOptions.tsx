@@ -11,7 +11,7 @@ import {
 import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
 
-import IconComponent from "../customIcon";
+import IconComponent from "../custom/customIcon";
 
 export interface IconProps {
   name: string;

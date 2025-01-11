@@ -2,18 +2,22 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useRef } from "react";
 import {
+  Image,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
-  StyleSheet,
-  Text,
+  ScrollView,
   View,
 } from "react-native";
+import AuthenticationBackground from "root/assets/svg/AuthenticationBackground.svg";
 import { IconName } from "root/components/auth/TextField";
 import { Colors } from "root/constants/colors/Colors";
 import { height, width } from "root/constants/Dimensions";
+import images from "root/constants/Images";
+import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 
-import DropDownMenu from "./dropDownMenu";
+import DropDownMenu, { DropDownRefProps } from "../dropDownMenu";
+import CustomText from "./customText";
+import { layOutStyles } from "./customUnScrollableWrapper";
 
 export interface KeyboardAvoidingViewProps {
   leftHeaderIcon?: boolean;
@@ -24,9 +28,11 @@ export interface KeyboardAvoidingViewProps {
   onPress?(): void;
   dropdown?: boolean;
   productData?: any;
+  showBackgroundImage?: boolean;
+  showAppIcon?: boolean;
 }
 
-const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
+const CustomWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   children,
   title,
   rightHeaderIcon,
@@ -35,14 +41,42 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
   onPress,
   dropdown = false,
   productData,
+  showBackgroundImage = false,
+  showAppIcon = false,
 }) => {
-  const dropdownRef = useRef<any>(null);
+  const { signOut } = useAuthentication();
+
+  const dropdownRef = useRef<DropDownRefProps>(null);
+
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={"padding"}
+      keyboardVerticalOffset={0}
       style={layOutStyles.keyboardAvoidingView}
     >
-      <View style={{ width: "100%", height: "100%" }}>
+      {showBackgroundImage && (
+        <AuthenticationBackground
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+          width={width}
+          height={height}
+        />
+      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          layOutStyles.scrollViewContent,
+          { flexGrow: 1 },
+        ]}
+        keyboardShouldPersistTaps="handled"
+        // refreshControl={}
+        style={{ width: "100%" }}
+      >
         {title && (
           <View style={layOutStyles.headerLayout}>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
@@ -61,8 +95,19 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
                 </Pressable>
               )}
             </View>
-
-            <Text style={layOutStyles.titleStyle}>{title}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {showAppIcon && <Image source={images.appIcon} />}
+              <CustomText style={layOutStyles.titleStyle}>
+                {"  "}
+                {title}
+              </CustomText>
+            </View>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {rightHeaderIcon && (
                 <Pressable
@@ -84,46 +129,9 @@ const CustomUnscrollableWrapper: React.FC<KeyboardAvoidingViewProps> = ({
           </View>
         )}
         {children}
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-export const layOutStyles = StyleSheet.create({
-  scrollViewContent: {
-    flexGrow: 1,
-    alignItems: "center",
-  },
-
-  keyboardAvoidingView: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingTop: height * 0.025,
-  },
-  headerIconStyle: {
-    borderRadius: width * 0.07,
-    borderColor: Colors.light.primary,
-    height: width * 0.125,
-    width: width * 0.125,
-    marginLeft: 10,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  titleStyle: {
-    flex: 2,
-    textAlign: "center",
-    color: Colors.light.text,
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  headerLayout: {
-    width,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-});
-
-export default CustomUnscrollableWrapper;
+export default CustomWrapper;

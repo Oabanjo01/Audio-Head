@@ -3,7 +3,7 @@ import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { signUpSchema } from "root/utils/validations";
 
-import CustomWrapper from "../../components/customScrollableWrapper";
+import CustomWrapper from "../../components/custom/customScrollableWrapper";
 
 export interface SignUpProps {
   name: string;
@@ -20,7 +20,7 @@ const SignUpInitialValues = {
 const SignUpScreen = () => {
   const { signUp } = useAuthentication();
   return (
-    <CustomWrapper>
+    <CustomWrapper showBackgroundImage>
       <AuthLayout
         initialValues={SignUpInitialValues}
         submit={async (newPayLoad) => {

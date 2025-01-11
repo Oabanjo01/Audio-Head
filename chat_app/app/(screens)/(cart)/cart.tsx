@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import CustomWrapper from "root/components/custom/customScrollableWrapper";
 
 const Cart = () => {
   const params: { title: string } = useLocalSearchParams();

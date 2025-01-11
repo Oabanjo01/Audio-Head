@@ -6,7 +6,7 @@ import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
 
-import IconComponent from "./customIcon";
+import IconComponent from "./custom/customIcon";
 
 interface DropDownData {
   label: string;

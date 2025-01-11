@@ -1,8 +1,8 @@
 import { Href, Link } from "expo-router";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import IconComponent from "root/components/customIcon";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import IconComponent from "root/components/custom/customIcon";
+import CustomWrapper from "root/components/custom/customScrollableWrapper";
 import { Colors } from "root/constants/colors/Colors";
 import { width } from "root/constants/Dimensions";
 import { CategoryIconName } from "root/constants/icons/icon";
@@ -58,13 +58,25 @@ export default function Profile() {
           style={{
             width: width,
             marginBottom: 20,
+            flexDirection: "row",
+            justifyContent: "center",
           }}
         >
           <View style={styles.detailViewStyle}>
             {avatar ? (
-              <Image source={{ uri: avatar }} />
+              <Image source={{ uri: avatar }} height={50} width={50} />
             ) : (
-              <IconComponent name={"person"} size={width * 0.2} />
+              <IconComponent
+                name={"person"}
+                size={50}
+                style={
+                  {
+                    // height: 75,
+                    // width: 75,
+                    // backgroundColor: "orange",
+                  }
+                }
+              />
             )}
           </View>
           <View style={{ alignSelf: "center" }}>
@@ -82,14 +94,6 @@ export default function Profile() {
             <Text style={{ textAlign: "center", fontSize: 16 }}>{email}</Text>
           </View>
         </View>
-        {/* <View
-          style={{
-            height: 1,
-            width: width * 0.6,
-            marginBottom: height * 0.03,
-            backgroundColor: Colors.light.lightGrey,
-          }}
-        /> */}
 
         {profileListData.map((item, index) => {
           const { icon, title, route } = item;
@@ -133,12 +137,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     borderColor: "black",
-    width: width * 0.3,
-    height: width * 0.3,
-    borderRadius: (width * 0.3) / 2,
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "center",
+    width: 75,
+    height: 75,
+    borderRadius: 75 / 2,
   },
   optionsViewStyle: {
     marginBottom: 5,

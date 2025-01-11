@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import CustomWrapper from "root/components/customScrollableWrapper";
+import CustomWrapper from "root/components/custom/customScrollableWrapper";
 import { height, width } from "root/constants/Dimensions";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { useProduct } from "root/utils/hooks/product/useProduct";
@@ -25,6 +25,7 @@ export default function Homepage() {
   return (
     <CustomWrapper
       title="Home"
+      showAppIcon
       rightHeaderIcon
       rightHeaderIconTitle="log-out"
       onPress={signOut}
@@ -85,10 +86,6 @@ export default function Homepage() {
               );
             }}
             horizontal
-            // contentContainerStyle={{
-            //   width,
-            //   height: height * 0.5,
-            // }}
           />
         </View>
       </>

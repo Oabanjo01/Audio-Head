@@ -15,6 +15,10 @@ instance.interceptors.request.use(
       if (parsedTokens?.accessToken) {
         config.headers["Authorization"] = `Bearer ${parsedTokens?.accessToken}`;
       }
+      if (config.url.includes("product")) {
+        console.log("here is a product");
+        config.headers["Content-Type"] = "multipart/form-data";
+      }
     }
     console.log(config.data, config.url, "Config");
     return config;
@@ -26,7 +30,15 @@ instance.interceptors.request.use(
   }
 );
 
-createAuthRefreshInterceptor(instance, refreshToken);
+createAuthRefreshInterceptor(instance, refreshToken, {
+  pauseInstanceWhileRefreshing: true,
+  shouldRefresh: (error) => {
+    return (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes("auth/sign-out")
+    );
+  },
+});
 
 instance.interceptors.response.use(
   async (response) => {

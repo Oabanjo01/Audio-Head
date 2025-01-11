@@ -1,11 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Platform, StatusBar, View } from "react-native";
+import { StatusBar, View } from "react-native";
 import Toast from "react-native-toast-message";
-import Loader from "root/components/customLoader";
+import Loader from "root/components/custom/customLoader";
 import { toastConfig } from "root/components/toast";
-import { height } from "root/constants/Dimensions";
 import { ProfileResponse } from "root/constants/types/authTypes";
 import { authService } from "root/controllers/auth/auth";
 import { getAuthState, loading, login } from "root/redux/slices/authSlice";
@@ -46,8 +45,6 @@ export const AuthProvider = () => {
     <>
       <View
         style={{
-          paddingTop:
-            Platform.OS === "ios" ? height * 0.055 : StatusBar.currentHeight,
           backgroundColor: "transparent",
         }}
       >

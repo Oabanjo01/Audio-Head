@@ -1,7 +1,7 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
+import CustomUnscrollableWrapper from "root/components/custom/customUnScrollableWrapper";
 import ProductCard from "root/components/product/productCard";
 import { getAuthState } from "root/redux/slices/authSlice";
 import { useAppSelector } from "root/redux/store";

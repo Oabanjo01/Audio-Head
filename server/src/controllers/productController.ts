@@ -282,7 +282,7 @@ const updateExistingProduct: RequestHandler<
 
   await productExists.save();
 
-  sendResponse(res, 422, "This product has been successfully updated.");
+  sendResponse(res, 200, "This product has been successfully updated.");
 };
 
 const deleteProduct: RequestHandler = async (req, res) => {

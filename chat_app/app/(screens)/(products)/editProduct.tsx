@@ -6,7 +6,7 @@ import React, { useCallback, useRef } from "react";
 import { Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
 import BaseModalOption from "root/components/addproducts/baseModalOptions";
 import ShinyPurpleButton from "root/components/auth/ShinyPurpleButton";
-import CustomUnscrollableWrapper from "root/components/customUnScrollableWrapper";
+import CustomUnscrollableWrapper from "root/components/custom/customUnScrollableWrapper";
 import GeneralModal from "root/components/modal";
 import ProductForm from "root/components/product/editProductForm";
 import { ImageSection } from "root/components/product/imageListSlider";
@@ -140,7 +140,7 @@ const EditProduct = () => {
     });
 
     imageBlob.forEach((img) => formData.append("image", img as any));
-
+    console.log("blah blah");
     await updateProduct(formData, id).then(() => {
       formikRef.current?.resetForm();
     });

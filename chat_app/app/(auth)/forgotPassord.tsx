@@ -3,7 +3,7 @@ import AuthLayout from "root/components/auth/authLayout";
 import { useAuthentication } from "root/utils/hooks/auth/useAuthentication";
 import { forgotPasswordSchema } from "root/utils/validations";
 
-import CustomWrapper from "../../components/customScrollableWrapper";
+import CustomWrapper from "../../components/custom/customScrollableWrapper";
 
 export interface ForgotPassswordProps {
   email: string;
@@ -16,7 +16,7 @@ const ForgotPassswordValues = {
 const ForgotPassswordScreen = () => {
   const { forgotPassword } = useAuthentication();
   return (
-    <CustomWrapper>
+    <CustomWrapper showBackgroundImage>
       <AuthLayout
         submit={async (email) => {
           forgotPassword(email);
